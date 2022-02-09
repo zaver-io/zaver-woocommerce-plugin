@@ -1,0 +1,25 @@
+{
+    "name": "zaver/woocommerce-gateway",
+    "type": "project",
+    "config": {
+        "platform": {
+            "php": "7.4.0"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Zaver\\": "./classes/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "./php-sdk"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "zaver/php-sdk": "dev-main"
+    }
+}
