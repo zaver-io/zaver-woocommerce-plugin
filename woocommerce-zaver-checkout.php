@@ -20,10 +20,12 @@
  */
 
 namespace Zaver;
+use Exception;
 use WC_Order;
 
 class Plugin {
 	const PATH = __DIR__;
+	const PAYMENT_METHOD = 'zaver_checkout';
 
 	static public function instance(): self {
 		static $instance = null;
@@ -44,8 +46,8 @@ class Plugin {
 			if(class_exists(__NAMESPACE__ . '\Checkout_Gateway', false)) {
 				$gateways = WC()->payment_gateways()->payment_gateways();
 
-				if(isset($gateways['zaver_checkout'])) {
-					$instance = $gateways['zaver_checkout'];
+				if(isset($gateways[self::PAYMENT_METHOD])) {
+					$instance = $gateways[self::PAYMENT_METHOD];
 
 					return $instance;
 				}
@@ -64,6 +66,8 @@ class Plugin {
 
 		add_filter('woocommerce_payment_gateways', [$this, 'register_gateway']);
 		add_filter('wc_get_template', [$this, 'get_zaver_checkout_template'], 10, 3);
+		add_action('woocommerce_api_zaver_payment_callback', [$this, 'handle_payment_callback']);
+		add_action('template_redirect', [$this, 'check_order_received']);
 	}
 
 	private function autoloader(string $name): void {
@@ -90,12 +94,61 @@ class Plugin {
 			/** @var WC_Order */
 			$order = $args['order'];
 
-			if($order->get_payment_method() === 'zaver_checkout') {
+			if($order->get_payment_method() === self::PAYMENT_METHOD) {
 				return self::PATH . '/templates/checkout.php';
 			}
 		}
 
 		return $template;
+	}
+
+	public function handle_payment_callback(): void {
+		try {
+			$payment_status = $this->gateway()->receive_payment_callback();
+			$meta = $payment_status->getMerchantMetadata();
+
+			if(!isset($meta['orderId'])) {
+				throw new Exception('Missing order ID');
+			}
+
+			$order = wc_get_order($meta['orderId']);
+
+			if(!$order) {
+				throw new Exception('Order not found');
+			}
+
+			Helper::handle_payment_response($order, $payment_status, false);
+		}
+		catch(Exception $e) {
+			status_header(400);
+		}
+	}
+
+	/**
+	 * As the Zaver payment callback will only be called for sites over HTTPS,
+	 * we need an alternative way for those sites on HTTP. This is it.
+	 */
+	public function check_order_received(): void {
+		/** @var \WP_Query $wp */
+		global $wp;
+
+		$test = add_query_arg( 'wc-api', 'WC_Gateway_Paypal', home_url( '/' ) );
+
+		try {
+			// Ensure we're on the correct endpoint
+			if(!isset($wp->query_vars['order-received'])) return;
+
+			$order = wc_get_order($wp->query_vars['order-received']);
+
+			// Don't care about orders with other payment methods
+			if(!$order || $order->get_payment_method() !== self::PAYMENT_METHOD) return;
+
+			Helper::handle_payment_response($order);
+		}
+		catch(Exception $e) {
+			$order->update_status('failed');
+			wp_die(__('An error occured - please try again', 'zco'));
+		}
 	}
 }
 

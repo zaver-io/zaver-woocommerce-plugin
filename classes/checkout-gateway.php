@@ -2,13 +2,16 @@
 namespace Zaver;
 use Zaver\SDK\Checkout;
 use Zaver\SDK\Object\PaymentCreationRequest;
+use Zaver\SDK\Object\MerchantUrls;
 use WC_Payment_Gateway;
+use WC_Order;
+use Zaver\SDK\Object\PaymentStatusResponse;
 
 class Checkout_Gateway extends WC_Payment_Gateway {
 	private $api_instance = null;
 
 	public function __construct() {
-		$this->id = 'zaver_checkout';
+		$this->id = Plugin::PAYMENT_METHOD;
 		$this->has_fields = false;
 		$this->method_title = __('Zaver Checkout', 'zco');
 
@@ -66,12 +69,25 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 
 	public function process_payment($order_id): array {
 		$order = wc_get_order($order_id);
+
+		$merchant_urls = MerchantUrls::create()
+			->setCallbackUrl($this->get_callback_url($order))
+			->setSuccessUrl($this->get_return_url($order));
+
 		$payment = PaymentCreationRequest::create()
 			->setMerchantPaymentReference($order->get_order_number())
 			->setAmount($order->get_total())
 			->setCurrency($order->get_currency())
-			->setTitle('Foobar')
-			->setDescription('Test test');
+			->setMerchantUrls($merchant_urls)
+			->setMerchantMetadata([
+				'originPlatform' => 'woocommerce',
+				'originWebsite' => home_url(),
+				'originPage' => $order->get_created_via(),
+				'customerId' => (string)$order->get_customer_id(),
+				'orderId' => (string)$order->get_id(),
+			])
+			->setTitle($this->get_purchase_title($order))
+			->setDescription($this->get_purchase_description($order));
 
 		$response = $this->api()->createPayment($payment);
 		$order->update_meta_data('_zaver_payment', [
@@ -93,5 +109,40 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 		}
 
 		return $this->api_instance;
+	}
+
+	public function receive_payment_callback(): PaymentStatusResponse {
+		return $this->api()->receiveCallback($this->get_option('callback_token'));
+	}
+
+	private function get_purchase_title(WC_Order $order): string {
+		$items = $order->get_items();
+
+		// If there's only one order item, return it as title
+		if(count($items) === 1) {
+			return reset($items)->get_name();
+		}
+
+		// If there's multiple order items, return a generic title
+		return sprintf(__('Order %s', 'zco'), $order->get_order_number());
+	}
+
+	private function get_purchase_description(WC_Order $order): string {
+		/** @var \WC_Order_Item_Product[] */
+		$items = $order->get_items();
+		$lines = [];
+
+		foreach($items as $item) {
+			$lines[] = sprintf('%d x %s', $item->get_quantity(), $item->get_product()->get_sku());
+		}
+
+		return implode("\n", $lines);
+	}
+
+	private function get_callback_url(WC_Order $order): string {
+		return add_query_arg([
+			'wc-api' => 'zaver_payment_callback',
+			'key' => $order->get_order_key()
+		], home_url());
 	}
 }
