@@ -64,6 +64,20 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 				'title'       => __('Callback Token', 'zco'),
 				'description' => __('The callback token you got from Zaver.', 'zco'),
 			],
+			'primary_color' => [
+				'type'        => 'color',
+				'desc_tip'    => true,
+				'title'       => 'Primary color',
+				'description' => '',
+				'placeholder' => __('Default', 'zco'),
+			],
+			'secondary_color' => [
+				'type'        => 'color',
+				'desc_tip'    => true,
+				'title'       => 'Secondary color',
+				'description' => '',
+				'placeholder' => __('Default', 'zco'),
+			]
 		];
 	}
 
@@ -109,6 +123,20 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 		}
 
 		return $this->api_instance;
+	}
+
+	public function get_html_snippet(string $token): string {
+		$attributes = [];
+
+		if($primary_color = $this->get_option('primary_color')) {
+			$attributes['zco-primary-color'] = $primary_color;
+		}
+
+		if($secondary_color = $this->get_option('secondary_color')) {
+			$attributes['zco-secondary-color'] = $secondary_color;
+		}
+
+		return $this->api()->getHtmlSnippet($token, apply_filters('zco_html_snippet_attributes', $attributes, $this));
 	}
 
 	public function receive_payment_callback(): PaymentStatusResponse {

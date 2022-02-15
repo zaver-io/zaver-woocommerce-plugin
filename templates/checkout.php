@@ -8,7 +8,7 @@ if(!$payment) {
 	wp_die('Invalid order');
 }
 
-echo Plugin::gateway()->api()->getHtmlSnippet($payment['token']);
+echo Plugin::gateway()->get_html_snippet($payment['token']);
 ?>
 
 <style>

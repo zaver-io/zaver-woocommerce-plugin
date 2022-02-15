@@ -50,12 +50,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -606,7 +606,7 @@
             "source": {
                 "type": "git",
                 "url": "./php-sdk",
-                "reference": "f29b5d7a2d457106c6080bbf23ec7721866a67ce"
+                "reference": "a9599134a4bd999c25bc46dfd6e6895cfd89cfce"
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.0",
@@ -629,7 +629,7 @@
                 }
             ],
             "description": "PHP SDK for Zaver Checkout.",
-            "time": "2022-02-09T10:31:01+00:00"
+            "time": "2022-02-15T16:20:30+00:00"
         }
     ],
     "packages-dev": [],
