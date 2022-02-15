@@ -40,7 +40,7 @@ class Helper {
 					exit;
 				}
 				
-				$order->update_status('canceled');
+				$order->update_status('cancelled', __('Zaver payment cancelled - cancelling order', 'zco'));
 				break;
 			
 			case PaymentStatus::CREATED:

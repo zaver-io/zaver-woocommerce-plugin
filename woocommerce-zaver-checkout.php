@@ -19,6 +19,8 @@
  */
 
 namespace Zaver;
+use Zaver\SDK\Object\PaymentUpdateRequest;
+use Zaver\SDK\Config\PaymentStatus;
 use Exception;
 use WC_Order;
 
@@ -67,6 +69,7 @@ class Plugin {
 		add_filter('wc_get_template', [$this, 'get_zaver_checkout_template'], 10, 3);
 		add_action('woocommerce_api_zaver_payment_callback', [$this, 'handle_payment_callback']);
 		add_action('template_redirect', [$this, 'check_order_received']);
+		add_action('woocommerce_order_status_cancelled', [$this, 'cancelled_order'], 10, 2);
 	}
 
 	private function autoloader(string $name): void {
@@ -146,6 +149,17 @@ class Plugin {
 			$order->update_status('failed');
 			wp_die(__('An error occured - please try again', 'zco'));
 		}
+	}
+
+	public function woocommerce_order_status_cancelled(int $order_id, WC_Order $order): void {
+		$payment = $order->get_meta('_zaver_payment');
+
+		if(empty($payment) || !is_array($payment) || !isset($payment['id'])) return;
+
+		$update = PaymentUpdateRequest::create()
+			->setStatus(PaymentStatus::CANCELLED);
+
+		$this->gateway()->api()->updatePayment($payment['id'], $update);
 	}
 }
 
