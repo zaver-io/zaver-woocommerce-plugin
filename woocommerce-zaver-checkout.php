@@ -11,7 +11,6 @@
  * Text Domain: zaver
  * Domain Path: /languages
  *
- * Woo: 12345:342928dfsfhsf8429842374wdf4234sfd
  * WC requires at least: 6.0.0
  * WC tested up to: 6.1.1
  *
@@ -131,8 +130,6 @@ class Plugin {
 	public function check_order_received(): void {
 		/** @var \WP_Query $wp */
 		global $wp;
-
-		$test = add_query_arg( 'wc-api', 'WC_Gateway_Paypal', home_url( '/' ) );
 
 		try {
 			// Ensure we're on the correct endpoint
