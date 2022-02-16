@@ -19,10 +19,6 @@
  */
 
 namespace Zaver;
-use Zaver\SDK\Object\PaymentUpdateRequest;
-use Zaver\SDK\Config\PaymentStatus;
-use Exception;
-use WC_Order;
 
 class Plugin {
 	const PATH = __DIR__;
@@ -66,10 +62,8 @@ class Plugin {
 		spl_autoload_register([$this, 'autoloader']);
 
 		add_filter('woocommerce_payment_gateways', [$this, 'register_gateway']);
-		add_filter('wc_get_template', [$this, 'get_zaver_checkout_template'], 10, 3);
-		add_action('woocommerce_api_zaver_payment_callback', [$this, 'handle_payment_callback']);
-		add_action('template_redirect', [$this, 'check_order_received']);
-		add_action('woocommerce_order_status_cancelled', [$this, 'cancelled_order'], 10, 2);
+
+		Hooks::instance();
 	}
 
 	private function autoloader(string $name): void {
@@ -88,78 +82,6 @@ class Plugin {
 		$gateways[] = __NAMESPACE__ . '\Checkout_Gateway';
 
 		return $gateways;
-	}
-
-	public function get_zaver_checkout_template(string $template, string $template_name, array $args): string {
-		if($template_name === 'checkout/order-receipt.php' && isset($args['order']) && $args['order'] instanceof WC_Order) {
-
-			/** @var WC_Order */
-			$order = $args['order'];
-
-			if($order->get_payment_method() === self::PAYMENT_METHOD) {
-				return self::PATH . '/templates/checkout.php';
-			}
-		}
-
-		return $template;
-	}
-
-	public function handle_payment_callback(): void {
-		try {
-			$payment_status = $this->gateway()->receive_payment_callback();
-			$meta = $payment_status->getMerchantMetadata();
-
-			if(!isset($meta['orderId'])) {
-				throw new Exception('Missing order ID');
-			}
-
-			$order = wc_get_order($meta['orderId']);
-
-			if(!$order) {
-				throw new Exception('Order not found');
-			}
-
-			Helper::handle_payment_response($order, $payment_status, false);
-		}
-		catch(Exception $e) {
-			status_header(400);
-		}
-	}
-
-	/**
-	 * As the Zaver payment callback will only be called for sites over HTTPS,
-	 * we need an alternative way for those sites on HTTP. This is it.
-	 */
-	public function check_order_received(): void {
-		/** @var \WP_Query $wp */
-		global $wp;
-
-		try {
-			// Ensure we're on the correct endpoint
-			if(!isset($wp->query_vars['order-received'])) return;
-
-			$order = wc_get_order($wp->query_vars['order-received']);
-
-			// Don't care about orders with other payment methods
-			if(!$order || $order->get_payment_method() !== self::PAYMENT_METHOD) return;
-
-			Helper::handle_payment_response($order);
-		}
-		catch(Exception $e) {
-			$order->update_status('failed');
-			wp_die(__('An error occured - please try again', 'zco'));
-		}
-	}
-
-	public function woocommerce_order_status_cancelled(int $order_id, WC_Order $order): void {
-		$payment = $order->get_meta('_zaver_payment');
-
-		if(empty($payment) || !is_array($payment) || !isset($payment['id'])) return;
-
-		$update = PaymentUpdateRequest::create()
-			->setStatus(PaymentStatus::CANCELLED);
-
-		$this->gateway()->api()->updatePayment($payment['id'], $update);
 	}
 }
 

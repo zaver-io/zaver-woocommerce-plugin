@@ -32,18 +32,24 @@ class Helper {
 		switch($payment_status->getPaymentStatus()) {
 			case PaymentStatus::SETTLED:
 				$order->payment_complete($payment_status->getPaymentId());
+				$order->add_order_note(sprintf(__('Successful payment with Zaver - payment ID: %s', 'zco'), $payment_status->getPaymentId()));
+				Log::logger()->info('Successful payment with Zaver', ['orderId' => $order->get_id(), 'paymentId' => $payment_status->getPaymentId()]);
 				break;
 			
 			case PaymentStatus::CANCELLED:
+				Log::logger()->info('Zaver Payment was cancelled', ['orderId' => $order->get_id(), 'paymentId' => $payment_status->getPaymentId()]);
+
 				if($redirect) {
 					wp_redirect($order->get_cancel_order_url());
 					exit;
 				}
 				
-				$order->update_status('cancelled', __('Zaver payment cancelled - cancelling order', 'zco'));
+				$order->update_status('cancelled', __('Zaver payment was cancelled - cancelling order', 'zco'));
 				break;
 			
 			case PaymentStatus::CREATED:
+				Log::logger()->debug('Zaver Payment is still in CREATED state', ['orderId' => $order->get_id(), 'paymentId' => $payment_status->getPaymentId()]);
+
 				if($redirect) {
 					wp_redirect($order->get_checkout_payment_url(true));
 					exit;

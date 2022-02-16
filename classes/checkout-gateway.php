@@ -3,9 +3,10 @@ namespace Zaver;
 use Zaver\SDK\Checkout;
 use Zaver\SDK\Object\PaymentCreationRequest;
 use Zaver\SDK\Object\MerchantUrls;
+use Zaver\SDK\Object\PaymentStatusResponse;
+use Exception;
 use WC_Payment_Gateway;
 use WC_Order;
-use Zaver\SDK\Object\PaymentStatusResponse;
 
 class Checkout_Gateway extends WC_Payment_Gateway {
 	private $api_instance = null;
@@ -81,40 +82,54 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 		];
 	}
 
-	public function process_payment($order_id): array {
-		$order = wc_get_order($order_id);
+	public function process_payment($order_id): ?array {
+		try {
+			$order = wc_get_order($order_id);
 
-		$merchant_urls = MerchantUrls::create()
-			->setCallbackUrl($this->get_callback_url($order))
-			->setSuccessUrl($this->get_return_url($order));
+			if(!$order instanceof WC_Order) {
+				throw new Exception('Order not found');
+			}
 
-		$payment = PaymentCreationRequest::create()
-			->setMerchantPaymentReference($order->get_order_number())
-			->setAmount($order->get_total())
-			->setCurrency($order->get_currency())
-			->setMerchantUrls($merchant_urls)
-			->setMerchantMetadata([
-				'originPlatform' => 'woocommerce',
-				'originWebsite' => home_url(),
-				'originPage' => $order->get_created_via(),
-				'customerId' => (string)$order->get_customer_id(),
-				'orderId' => (string)$order->get_id(),
-			])
-			->setTitle($this->get_purchase_title($order))
-			->setDescription($this->get_purchase_description($order));
+			$merchant_urls = MerchantUrls::create()
+				->setCallbackUrl($this->get_callback_url($order))
+				->setSuccessUrl($this->get_return_url($order));
 
-		$response = $this->api()->createPayment($payment);
-		$order->update_meta_data('_zaver_payment', [
-			'id' => $response->getPaymentId(),
-			'token' => $response->getToken(),
-			'tokenValidUntil' => $response->getValidUntil()
-		]);
-		$order->save_meta_data();
+			$payment = PaymentCreationRequest::create()
+				->setMerchantPaymentReference($order->get_order_number())
+				->setAmount($order->get_total())
+				->setCurrency($order->get_currency())
+				->setMerchantUrls($merchant_urls)
+				->setMerchantMetadata([
+					'originPlatform' => 'woocommerce',
+					'originWebsite' => home_url(),
+					'originPage' => $order->get_created_via(),
+					'customerId' => (string)$order->get_customer_id(),
+					'orderId' => (string)$order->get_id(),
+				])
+				->setTitle($this->get_purchase_title($order))
+				->setDescription($this->get_purchase_description($order));
 
-		return [
-			'result' => 'success',
-			'redirect' => $order->get_checkout_payment_url(true)
-		];
+			$response = $this->api()->createPayment($payment);
+
+			$order->update_meta_data('_zaver_payment', [
+				'id' => $response->getPaymentId(),
+				'token' => $response->getToken(),
+				'tokenValidUntil' => $response->getValidUntil()
+			]);
+
+			$order->save_meta_data();
+
+			return [
+				'result' => 'success',
+				'redirect' => $order->get_checkout_payment_url(true)
+			];
+		}
+		catch(Exception $e) {
+			Log::logger()->error('Zaver error during payment process: %s', $e->getMessage(), ['orderId' => $order_id]);
+
+			wc_add_notice(__('An error occured - please try again, or contact site support', 'zco'), 'error');
+			return null;
+		}
 	}
 
 	public function api(): Checkout {
