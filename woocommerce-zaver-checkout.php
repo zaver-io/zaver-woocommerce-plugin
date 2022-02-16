@@ -1,14 +1,14 @@
 <?php
 /**
- * Plugin Name: WooCommerce Extension
+ * Plugin Name: WooCommerce Zaver Checkout
  * Plugin URI: 
- * Description: Your extension's description text.
+ * Description: The official Zaver Checkout payment gateway for WooCommerce.
  * Version: 0.0.1
  * Author: Zaver
  * Author URI: https://www.zaver.io/
  * Developer: Webbmaffian
  * Developer URI: https://www.webbmaffian.se/
- * Text Domain: zaver
+ * Text Domain: zco
  * Domain Path: /languages
  *
  * WC requires at least: 6.0.0
