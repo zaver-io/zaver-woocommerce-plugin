@@ -2,8 +2,11 @@
 namespace Zaver;
 use Zaver\SDK\Object\PaymentStatusResponse;
 use Zaver\SDK\Config\PaymentStatus;
+use Zaver\SDK\Object\RefundResponse;
+use Zaver\SDK\Config\RefundStatus;
 use Exception;
 use WC_Order;
+use WP_Error;
 
 class Helper {
 	static public function handle_payment_response(WC_Order $order, ?PaymentStatusResponse $payment_status = null, bool $redirect = true): void {
@@ -58,5 +61,67 @@ class Helper {
 				// Do nothing
 				break;
 		}
+	}
+
+	static public function handle_refund_response(WC_Order $order, RefundResponse $refund = null): void {
+
+		// Ensure that the order key is correct
+		if(!isset($_GET['key']) || !hash_equals($order->get_order_key(), wc_clean(wp_unslash($_GET['key'])))) {
+			throw new Exception('Invalid order key');
+		}
+
+		$refund_ids = $order->get_meta('_zaver_refund_ids');
+
+		if(empty($refund_ids) || !is_array($refund_ids)) {
+			throw new Exception('Missing refund ID on order');
+		}
+
+		if(!in_array($refund->getPaymentId(), $refund_ids)) {
+			throw new Exception('Mismatching refund ID');
+		}
+
+		switch($refund->getStatus()) {
+			case RefundStatus::PENDING_MERCHANT_APPROVAL:
+				if($username = $refund->getInitializingRepresentative()->getUsername()) {
+					$order->add_order_note(sprintf(__('Refund of %F %s initialized by %s with the description "%s". Refund ID: %s', 'zco'), $refund->getRefundAmount(), $refund->getCurrency(), $username, $refund->getDescription(), $refund->getRefundId()));
+				}
+				else {
+					$order->add_order_note(sprintf(__('Refund of %F %s initialized with the description "%s". Refund ID: %s', 'zco'), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getDescription(), $refund->getRefundId()));
+				}
+
+				Log::logger()->info('Refund of %F %s approved', $refund->getRefundAmount(), $refund->getCurrency(), ['orderId' => $order->get_id(), 'refundId' => $refund->getRefundId()]);
+				break;
+			
+			case RefundStatus::PENDING_EXECUTION:
+				if($username = $refund->getApprovingRepresentative()->getUsername()) {
+					$order->add_order_note(sprintf(__('Refund of %F %s approved by %s - Refund ID: %s', 'zco'), $refund->getRefundAmount(), $refund->getCurrency(), $username, $refund->getRefundId()));
+				}
+				else {
+					$order->add_order_note(sprintf(__('Refund of %F %s approved - Refund ID: %s', 'zco'), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getRefundId()));
+				}
+
+				Log::logger()->info('Refund of %F %s approved', $refund->getRefundAmount(), $refund->getCurrency(), ['orderId' => $order->get_id(), 'refundId' => $refund->getRefundId()]);
+				break;
+			
+			case RefundStatus::EXECUTED:
+				$order->add_order_note(sprintf(__('Refund of %F %s completed - Refund ID: %s', 'zco'), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getRefundId()));
+				Log::logger()->info('Refund of %F %s completed', $refund->getRefundAmount(), $refund->getCurrency(), ['orderId' => $order->get_id(), 'refundId' => $refund->getRefundId()]);
+				break;
+			
+			case RefundStatus::CANCELLED:
+				if($username = $refund->getApprovingRepresentative()->getUsername()) {
+					$order->add_order_note(sprintf(__('Refund of %F %s cancelled by %s - Refund ID: %s', 'zco'), $refund->getRefundAmount(), $refund->getCurrency(), $username, $refund->getRefundId()));
+				}
+				else {
+					$order->add_order_note(sprintf(__('Refund of %F %s cancelled - Refund ID: %s', 'zco'), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getRefundId()));
+				}
+
+				Log::logger()->info('Refund of %F %s cancelled', $refund->getRefundAmount(), $refund->getCurrency(), ['orderId' => $order->get_id(), 'refundId' => $refund->getRefundId()]);
+				break;
+		}
+	}
+
+	static public function wp_error(Exception $e, $data = null): WP_Error {
+		return new WP_Error($e->getCode() ?: 'error', $e->getMessage(), $data);
 	}
 }
