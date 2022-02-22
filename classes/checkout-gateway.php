@@ -126,6 +126,8 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 
 			$order->save_meta_data();
 
+			Log::logger()->debug('Created Zaver payment request', ['orderId' => $order_id, 'paymentId' => $response->getPaymentId()]);
+
 			return [
 				'result' => 'success',
 				'redirect' => $order->get_checkout_payment_url(true)

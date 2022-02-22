@@ -8,6 +8,8 @@ if(!$payment) {
 	wp_die('Invalid order');
 }
 
+Log::logger()->debug('Rendered Zaver Checkout', ['orderId' => $order->get_id(), 'paymentId' => $payment['id']]);
+
 do_action('zco_before_checkout', $order);
 echo Plugin::gateway()->get_html_snippet($payment['token']);
 do_action('zco_after_checkout', $order);
