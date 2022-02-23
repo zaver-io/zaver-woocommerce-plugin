@@ -1,6 +1,8 @@
 <?php
 namespace Zaver;
 use Zaver\SDK\Checkout;
+use Zaver\SDK\Refund;
+use Zaver\SDK\Config\ItemType;
 use Zaver\SDK\Object\PaymentCreationRequest;
 use Zaver\SDK\Object\MerchantUrls;
 use Zaver\SDK\Object\PaymentStatusResponse;
@@ -8,10 +10,16 @@ use Zaver\SDK\Object\MerchantRepresentative;
 use Zaver\SDK\Object\RefundCreationRequest;
 use Zaver\SDK\Object\RefundResponse;
 use Zaver\SDK\Object\RefundUpdateRequest;
-use Zaver\SDK\Refund;
+use Zaver\SDK\Object\RefundedLineItem;
+use Zaver\SDK\Object\LineItem;
 use WC_Order;
 use WC_Payment_Gateway;
 use Exception;
+use WC_Order_Item_Coupon;
+use WC_Order_Item_Fee;
+use WC_Order_Item_Product;
+use WC_Order_Item_Shipping;
+use WC_Order_Refund;
 
 class Checkout_Gateway extends WC_Payment_Gateway {
 	private $api_instance = null;
@@ -105,6 +113,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 				->setMerchantPaymentReference($order->get_order_number())
 				->setAmount($order->get_total())
 				->setCurrency($order->get_currency())
+				->setMarket($order->get_billing_country())
 				->setMerchantUrls($merchant_urls)
 				->setMerchantMetadata([
 					'originPlatform' => 'woocommerce',
@@ -113,8 +122,31 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 					'customerId' => (string)$order->get_customer_id(),
 					'orderId' => (string)$order->get_id(),
 				])
-				->setTitle($this->get_purchase_title($order))
-				->setDescription($this->get_purchase_description($order));
+				->setTitle($this->get_purchase_title($order));
+			
+			$types = ['line_item', 'shipping', 'fee', 'coupon'];
+			
+			foreach($order->get_items($types) as $item) {
+				$line_item = LineItem::create()
+					->setName($item->get_name())
+					->setQuantity($item->get_quantity())
+					->setMerchantMetadata(['orderItemId' => $item->get_id()]);
+				
+				if($item->is_type('line_item')) {
+					$this->prepare_line_item($line_item, $item);
+				}
+				elseif($item->is_type('shipping')) {
+					$this->prepare_shipping($line_item, $item);
+				}
+				elseif($item->is_type('fee')) {
+					$this->prepare_fee($line_item, $item);
+				}
+				elseif($item->is_type('coupon')) {
+					$this->prepare_coupon($line_item, $item);
+				}
+
+				$payment->addLineItem($line_item);
+			}
 
 			$response = $this->api()->createPayment($payment);
 
@@ -159,18 +191,44 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 				throw new Exception('Missing Zaver payment ID for order');
 			}
 
-			$request = RefundCreationRequest::create()
-				->setPaymentId($payment['id'])
-				->setInvoiceReference($order->get_order_number())
-				->setRefundAmount($amount)
-				->setCallbackUrl($this->get_refund_callback_url($order))
-				->setMerchantMetadata([
-					'originPlatform' => 'woocommerce',
-					'originWebsite' => home_url(),
-					'originPage' => $order->get_created_via(),
-					'customerId' => (string)$order->get_customer_id(),
-					'orderId' => (string)$order->get_id(),
-				]);
+			$refund = $this->get_refund($order, $amount);
+
+			$this->create_refund_request($order, $refund, $payment['id']);
+
+			return true;
+		}
+		catch(Exception $e) {
+			Log::logger()->error('Zaver error during refund process: %s', $e->getMessage(), ['orderId' => $order_id, 'amount' => $amount, 'reason' => $reason]);
+
+			return Helper::wp_error($e);
+		}
+	}
+
+	private function create_refund_request(WC_Order $order, WC_Order_Refund $refund, string $payment_id): void {
+		$request = RefundCreationRequest::create()
+			->setPaymentId($payment_id)
+			->setInvoiceReference($order->get_order_number())
+			->setRefundAmount($refund->get_amount())
+			->setRefundTaxAmount($refund->get_total_tax())
+			->setCallbackUrl($this->get_refund_callback_url($order))
+			->setMerchantMetadata([
+				'originPlatform' => 'woocommerce',
+				'originWebsite' => home_url(),
+				'originPage' => $order->get_created_via(),
+				'customerId' => (string)$order->get_customer_id(),
+				'orderId' => (string)$order->get_id(),
+			]);
+
+			// Refunded line items
+			if($item = $refund->get_items()) {
+				$line_item = RefundedLineItem::create();
+
+				$request->addLineItem($line_item);
+			}
+
+			throw new Exception('Hello');
+
+			
 			
 			if(!empty($reason) && is_string($reason)) {
 				$request->setDescription($reason);
@@ -190,7 +248,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 			$order->save_meta_data();
 			$order->add_order_note(sprintf(__('Requested a refund of %F %s - refund ID: %s', 'zco'), $response->getRefundAmount(), $response->getCurrency(), $response->getRefundId()));
 
-			Log::logger()->info('Requested a refund of %F %s', $response->getRefundAmount(), $response->getCurrency(), ['orderId' => $order_id, 'refundId' => $response->getRefundId(), 'amount' => $amount, 'reason' => $reason]);
+			Log::logger()->info('Requested a refund of %F %s', $response->getRefundAmount(), $response->getCurrency(), ['orderId' => $order->get_id(), 'refundId' => $response->getRefundId(), 'amount' => $amount, 'reason' => $reason]);
 
 			if(is_user_logged_in()) {
 				$user = wp_get_current_user();
@@ -199,14 +257,6 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 
 				$this->refund_api()->approveRefund($response->getRefundId(), RefundUpdateRequest::create()->setActingRepresentative($representive));
 			}
-
-			return true;
-		}
-		catch(Exception $e) {
-			Log::logger()->error('Zaver error during refund process: %s', $e->getMessage(), ['orderId' => $order_id, 'amount' => $amount, 'reason' => $reason]);
-
-			return Helper::wp_error($e);
-		}
 	}
 
 	public function can_refund_order($order) {
@@ -271,18 +321,6 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 		return sprintf(__('Order %s', 'zco'), $order->get_order_number());
 	}
 
-	private function get_purchase_description(WC_Order $order): string {
-		/** @var \WC_Order_Item_Product[] */
-		$items = $order->get_items();
-		$lines = [];
-
-		foreach($items as $item) {
-			$lines[] = sprintf('%d x %s', $item->get_quantity(), $item->get_product()->get_sku());
-		}
-
-		return implode("\n", $lines);
-	}
-
 	private function get_payment_callback_url(WC_Order $order): string {
 		return add_query_arg([
 			'wc-api' => 'zaver_payment_callback',
@@ -295,5 +333,81 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 			'wc-api' => 'zaver_refund_callback',
 			'key' => $order->get_order_key()
 		], home_url());
+	}
+
+	/**
+	 * Return the last amount-matching refund of order.
+	 */
+	private function get_refund(WC_Order $order, $amount = null): WC_Order_Refund {
+		$return = null;
+
+		foreach($order->get_refunds() as $refund) {
+			if($refund->get_amount() === $amount) {
+
+				// Don't return directly, as there might be a more recent refund with the same amount
+				$return = $refund;
+			}
+		}
+
+		if(is_null($return)) {
+			throw new Exception('No refund found');
+		}
+
+		return $return;
+	}
+
+	private function prepare_line_item(LineItem $zaver_item, WC_Order_Item_Product $wc_item): void {
+		$tax = (float)$wc_item->get_total_tax();
+		$total_price = (float)$wc_item->get_total() + $tax;
+		$unit_price = $total_price / $wc_item->get_quantity();
+		$product = $wc_item->get_product();
+		
+		$zaver_item
+			->setUnitPrice($unit_price)
+			->setTotalAmount($total_price)
+			->setTaxRatePercent(Helper::get_line_item_tax_rate($wc_item))
+			->setTaxAmount($tax)
+			->setItemType(Helper::get_zaver_item_type($product))
+			->setMerchantReference($product->get_sku());
+	}
+
+	private function prepare_shipping(LineItem $zaver_item, WC_Order_Item_Shipping $wc_item): void {
+		$tax = (float)$wc_item->get_total_tax();
+		$total_price = (float)$wc_item->get_total() + $tax;
+		$unit_price = $total_price / $wc_item->get_quantity();
+		
+		$zaver_item
+			->setUnitPrice($unit_price)
+			->setTotalAmount($total_price)
+			->setTaxRatePercent(Helper::get_line_item_tax_rate($wc_item, true))
+			->setTaxAmount($tax)
+			->setItemType(ItemType::SHIPPING)
+			->setMerchantReference($wc_item->get_method_id());
+	}
+
+	private function prepare_fee(LineItem $zaver_item, WC_Order_Item_Fee $wc_item): void {
+		$tax = (float)$wc_item->get_total_tax();
+		$total_price = (float)$wc_item->get_total() + $tax;
+		$unit_price = $total_price / $wc_item->get_quantity();
+		
+		$zaver_item
+			->setUnitPrice($unit_price)
+			->setTotalAmount($total_price)
+			->setTaxRatePercent(Helper::get_line_item_tax_rate($wc_item))
+			->setTaxAmount($tax)
+			->setItemType(ItemType::FEE);
+	}
+
+	private function prepare_coupon(LineItem $zaver_item, WC_Order_Item_Coupon $wc_item): void {
+		$tax = (float)$wc_item->get_discount_tax();
+		$total_price = (float)$wc_item->get_discount() + $tax;
+		$unit_price = $total_price / $wc_item->get_quantity();
+		
+		$zaver_item
+			->setUnitPrice($unit_price)
+			->setTotalAmount($total_price)
+			->setTaxRatePercent(Helper::get_line_item_tax_rate($wc_item))
+			->setTaxAmount($tax)
+			->setItemType(ItemType::DISCOUNT);
 	}
 }
