@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Zaver Checkout\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-07 13:20+0000\n"
+"POT-Creation-Date: 2022-03-07 13:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Loco-Version: 2.5.8; wp-5.9\n"
 "X-Domain: zco"
 
-#: classes/checkout-gateway.php:93
+#: classes/checkout-gateway.php:105
 msgid "An error occured - please try again, or contact site support"
 msgstr ""
 
@@ -26,11 +26,11 @@ msgid ""
 "site support."
 msgstr ""
 
-#: classes/checkout-gateway.php:56
+#: classes/checkout-gateway.php:61
 msgid "API Key"
 msgstr ""
 
-#: classes/checkout-gateway.php:62
+#: classes/checkout-gateway.php:67
 msgid "Callback Token"
 msgstr ""
 
@@ -42,11 +42,15 @@ msgstr ""
 msgid "Change payment method"
 msgstr ""
 
-#: classes/checkout-gateway.php:70
+#: classes/checkout-gateway.php:48
+msgid "Customer Message"
+msgstr ""
+
+#: classes/checkout-gateway.php:75 classes/checkout-gateway.php:82
 msgid "Default"
 msgstr ""
 
-#: classes/checkout-gateway.php:50
+#: classes/checkout-gateway.php:55
 msgid "Enable test mode"
 msgstr ""
 
@@ -72,7 +76,7 @@ msgstr ""
 msgid "https://www.zaver.io/"
 msgstr ""
 
-#: classes/checkout-gateway.php:51
+#: classes/checkout-gateway.php:56
 msgid ""
 "If you received any test credentials from Zaver, this checkbox should be "
 "checked."
@@ -87,7 +91,7 @@ msgstr ""
 msgid "Pay with Zaver"
 msgstr ""
 
-#: classes/checkout-gateway.php:68
+#: classes/checkout-gateway.php:73
 msgid "Primary color"
 msgstr ""
 
@@ -132,24 +136,20 @@ msgstr ""
 msgid "Requested a refund of %F %s - refund ID: %s"
 msgstr ""
 
-#: classes/checkout-gateway.php:69
-msgid "Some elements in the Zaver Checkout will get this color."
-msgstr ""
-
 #: classes/payment-processor.php:190
 #, php-format
 msgid "Successful payment with Zaver - payment ID: %s"
 msgstr ""
 
-#: classes/checkout-gateway.php:49
+#: classes/checkout-gateway.php:54
 msgid "Test mode"
 msgstr ""
 
-#: classes/checkout-gateway.php:57
+#: classes/checkout-gateway.php:62
 msgid "The API key you got from Zaver."
 msgstr ""
 
-#: classes/checkout-gateway.php:63
+#: classes/checkout-gateway.php:68
 msgid "The callback token you got from Zaver."
 msgstr ""
 

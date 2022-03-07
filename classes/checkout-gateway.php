@@ -42,11 +42,6 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 				'description' => __('This controls the title which the user sees during checkout.', 'zco'),
 				'default'     => __('Zaver Checkout', 'zco'),
 			],
-			'description' => [
-				'type'    => 'textarea',
-				'default' => '',
-				'title'   => __('Customer Message', 'zco'),
-			],
 			'test_mode' => [
 				'type'        => 'checkbox',
 				'default'     => 'no',
@@ -71,7 +66,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 				'type'        => 'color',
 				'desc_tip'    => true,
 				'title'       => __('Primary color', 'zco'),
-				'description' => '',
+				'description' => __('Some elements in the Zaver Checkout will get this color.', 'zco'),
 				'placeholder' => __('Default', 'zco'),
 			]
 		];

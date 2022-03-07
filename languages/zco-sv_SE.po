@@ -3,9 +3,9 @@ msgstr ""
 "Project-Id-Version: WooCommerce Zaver Checkout\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-07 11:35+0000\n"
-"PO-Revision-Date: 2022-03-07 13:03+0000\n"
+"PO-Revision-Date: 2022-03-07 13:21+0000\n"
 "Last-Translator: \n"
-"Language-Team: Svenska\n"
+"Language-Team: Swedish\n"
 "Language: sv_SE\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Loco-Version: 2.5.8; wp-5.9\n"
 "X-Domain: zco"
 
-#: classes/checkout-gateway.php:105
+#: classes/checkout-gateway.php:93
 msgid "An error occured - please try again, or contact site support"
 msgstr "Ett fel inträffade - vänligen prova igen, eller kontakta supporten"
 
@@ -27,11 +27,11 @@ msgstr ""
 "Ett fel inträffade med din Zaver-betalning - vänligen prova igen, eller "
 "kontakta supporten."
 
-#: classes/checkout-gateway.php:61
+#: classes/checkout-gateway.php:56
 msgid "API Key"
 msgstr "API-nyckel"
 
-#: classes/checkout-gateway.php:67
+#: classes/checkout-gateway.php:62
 msgid "Callback Token"
 msgstr "Callback-token"
 
@@ -43,15 +43,11 @@ msgstr "Avbröt Zaver-betalning"
 msgid "Change payment method"
 msgstr "Byt betalningsmetod"
 
-#: classes/checkout-gateway.php:48
-msgid "Customer Message"
-msgstr "Kundmeddelande"
-
-#: classes/checkout-gateway.php:75 classes/checkout-gateway.php:82
+#: classes/checkout-gateway.php:70
 msgid "Default"
 msgstr "Standard"
 
-#: classes/checkout-gateway.php:55
+#: classes/checkout-gateway.php:50
 msgid "Enable test mode"
 msgstr "Aktiva testläge"
 
@@ -77,7 +73,7 @@ msgstr "Misslyckades med Zaver-betalningen: %s"
 msgid "https://www.zaver.io/"
 msgstr ""
 
-#: classes/checkout-gateway.php:56
+#: classes/checkout-gateway.php:51
 msgid ""
 "If you received any test credentials from Zaver, this checkbox should be "
 "checked."
@@ -94,7 +90,7 @@ msgstr "Order %s"
 msgid "Pay with Zaver"
 msgstr "Betala med Zaver"
 
-#: classes/checkout-gateway.php:73
+#: classes/checkout-gateway.php:68
 msgid "Primary color"
 msgstr "Primärfärg"
 
@@ -143,20 +139,24 @@ msgstr ""
 msgid "Requested a refund of %F %s - refund ID: %s"
 msgstr "Begäran av återbetalning på %F %s - Återbetalnings-ID: %s"
 
+#: classes/checkout-gateway.php:69
+msgid "Some elements in the Zaver Checkout will get this color."
+msgstr "Vissa element i Zaver Checkout kommer få denna färg."
+
 #: classes/payment-processor.php:190
 #, php-format
 msgid "Successful payment with Zaver - payment ID: %s"
 msgstr "Lyckad betalning med Zaver - Betalnings-ID: %s"
 
-#: classes/checkout-gateway.php:54
+#: classes/checkout-gateway.php:49
 msgid "Test mode"
 msgstr "Testläge"
 
-#: classes/checkout-gateway.php:62
+#: classes/checkout-gateway.php:57
 msgid "The API key you got from Zaver."
 msgstr "API-nyckeln du fått av Zaver."
 
-#: classes/checkout-gateway.php:68
+#: classes/checkout-gateway.php:63
 msgid "The callback token you got from Zaver."
 msgstr "Callback-tokenet du fått av Zaver."
 
