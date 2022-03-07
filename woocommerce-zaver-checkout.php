@@ -57,11 +57,16 @@ class Plugin {
 		return $instance;
 	}
 
+	static public function get_basename(bool $to_file = false): string {
+		return plugin_basename($to_file ? __FILE__ : self::PATH);
+	}
+
 	private function __construct() {
 		require(self::PATH . '/vendor/autoload.php');
 		spl_autoload_register([$this, 'autoloader']);
-		load_plugin_textdomain('zco', false, plugin_basename(self::PATH) . '/languages');
+		load_plugin_textdomain('zco', false, self::get_basename() . '/languages');
 		add_filter('woocommerce_payment_gateways', [$this, 'register_gateway']);
+		add_filter('plugin_action_links_' . self::get_basename(true), [$this, 'add_settings_link']);
 
 		Hooks::instance();
 	}
@@ -82,6 +87,23 @@ class Plugin {
 		$gateways[] = __NAMESPACE__ . '\Checkout_Gateway';
 
 		return $gateways;
+	}
+
+	public function add_settings_link(array $links): array {
+		array_unshift(
+			$links,
+			sprintf(
+				'<a href="%s">%s</a>',
+				esc_url(add_query_arg([
+					'page' => 'wc-settings',
+					'tab' => 'checkout',
+					'section' => self::PAYMENT_METHOD
+				], admin_url('admin.php'))),
+				__('Settings', 'zco')
+			)
+		);
+		
+		return $links;
 	}
 }
 

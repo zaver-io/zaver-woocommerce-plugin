@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Zaver Checkout\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-07 11:35+0000\n"
-"PO-Revision-Date: 2022-03-07 13:48+0000\n"
+"PO-Revision-Date: 2022-03-07 13:21+0000\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -138,10 +138,6 @@ msgstr ""
 #, php-format
 msgid "Requested a refund of %F %s - refund ID: %s"
 msgstr "Begäran av återbetalning på %F %s - Återbetalnings-ID: %s"
-
-#: woocommerce-zaver-checkout.php:102
-msgid "Settings"
-msgstr "Inställningar"
 
 #: classes/checkout-gateway.php:69
 msgid "Some elements in the Zaver Checkout will get this color."
