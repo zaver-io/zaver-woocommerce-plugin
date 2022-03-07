@@ -62,8 +62,13 @@ final class Hooks {
 			Payment_Processor::handle_response($order, $payment_status, false);
 		}
 		catch(Exception $e) {
-			$order->update_status('failed', sprintf(__('Failed with Zaver payment: %s', 'zco'), $e->getMessage()));
-			Log::logger()->error('Failed with Zaver payment: %s', $e->getMessage(), ['orderId' => $order->get_id()]);
+			if($order) {
+				$order->update_status('failed', sprintf(__('Failed with Zaver payment: %s', 'zco'), $e->getMessage()));
+				Log::logger()->error('Failed with Zaver payment: %s', $e->getMessage(), ['orderId' => $order->get_id()]);
+			}
+			else {
+				Log::logger()->error('Failed with Zaver payment: %s', $e->getMessage());
+			}
 
 			status_header(400);
 		}
