@@ -59,7 +59,7 @@ final class Hooks {
 				throw new Exception('Order not found');
 			}
 
-			Helper::handle_payment_response($order, $payment_status, false);
+			Payment_Processor::handle_response($order, $payment_status, false);
 		}
 		catch(Exception $e) {
 			$order->update_status('failed', sprintf(__('Failed with Zaver payment: %s', 'zco'), $e->getMessage()));
@@ -86,7 +86,7 @@ final class Hooks {
 			// Don't care about orders with other payment methods
 			if(!$order || $order->get_payment_method() !== Plugin::PAYMENT_METHOD) return;
 
-			Helper::handle_payment_response($order);
+			Payment_Processor::handle_response($order);
 		}
 		catch(Exception $e) {
 			$order->update_status('failed', sprintf(__('Failed with Zaver payment: %s', 'zco'), $e->getMessage()));
@@ -95,6 +95,33 @@ final class Hooks {
 			wc_add_notice(__('An error occured with your Zaver payment - please try again, or contact the site support.', 'zco'), 'error');
 			wp_redirect(wc_get_checkout_url());
 			exit;
+		}
+	}
+
+	public function handle_refund_callback(): void {
+		try {
+			$refund = Plugin::gateway()->receive_refund_callback();
+			$meta = $refund->getMerchantMetadata();
+
+			Log::logger()->debug('Received Zaver refund callback', (array)$refund);
+
+			if(!isset($meta['orderId'])) {
+				throw new Exception('Missing order ID');
+			}
+
+			$order = wc_get_order($meta['orderId']);
+
+			if(!$order) {
+				throw new Exception('Order not found');
+			}
+
+			Refund_Processor::handle_response($order, $refund);
+		}
+		catch(Exception $e) {
+			$order->update_status('failed', sprintf(__('Failed with Zaver payment: %s', 'zco'), $e->getMessage()));
+			Log::logger()->error('Failed with Zaver payment: %s', $e->getMessage(), ['orderId' => $order->get_id()]);
+
+			status_header(400);
 		}
 	}
 
@@ -120,32 +147,5 @@ final class Hooks {
 
 	public function add_cancel_link(WC_Order $order): void {
 		printf('<p class="zco-cancel-order"><a href="%s">&larr; %s</a></p>', $order->get_cancel_order_url(wc_get_checkout_url()), __('Change payment method', 'zco'));
-	}
-
-	public function handle_refund_callback(): void {
-		try {
-			$refund = Plugin::gateway()->receive_refund_callback();
-			$meta = $refund->getMerchantMetadata();
-
-			Log::logger()->debug('Received Zaver refund callback', (array)$refund);
-
-			if(!isset($meta['orderId'])) {
-				throw new Exception('Missing order ID');
-			}
-
-			$order = wc_get_order($meta['orderId']);
-
-			if(!$order) {
-				throw new Exception('Order not found');
-			}
-
-			Helper::handle_refund_response($order, $refund);
-		}
-		catch(Exception $e) {
-			$order->update_status('failed', sprintf(__('Failed with Zaver payment: %s', 'zco'), $e->getMessage()));
-			Log::logger()->error('Failed with Zaver payment: %s', $e->getMessage(), ['orderId' => $order->get_id()]);
-
-			status_header(400);
-		}
 	}
 }

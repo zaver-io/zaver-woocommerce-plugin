@@ -606,7 +606,7 @@
             "source": {
                 "type": "git",
                 "url": "./php-sdk",
-                "reference": "83b93845d7c8d8e7e2d58f72568ea2af2cd72d24"
+                "reference": "d823301965f5ec208787f58cbd0a0f628343dca5"
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.0",
@@ -629,7 +629,7 @@
                 }
             ],
             "description": "PHP SDK for Zaver Checkout.",
-            "time": "2022-02-23T10:01:47+00:00"
+            "time": "2022-03-01T15:17:53+00:00"
         }
     ],
     "packages-dev": [],
