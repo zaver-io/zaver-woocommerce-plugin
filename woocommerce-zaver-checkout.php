@@ -60,7 +60,7 @@ class Plugin {
 	private function __construct() {
 		require(self::PATH . '/vendor/autoload.php');
 		spl_autoload_register([$this, 'autoloader']);
-
+		load_plugin_textdomain('zco', false, plugin_basename(self::PATH) . '/languages');
 		add_filter('woocommerce_payment_gateways', [$this, 'register_gateway']);
 
 		Hooks::instance();

@@ -70,7 +70,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 			'primary_color' => [
 				'type'        => 'color',
 				'desc_tip'    => true,
-				'title'       => 'Primary color',
+				'title'       => __('Primary color', 'zco'),
 				'description' => '',
 				'placeholder' => __('Default', 'zco'),
 			],
