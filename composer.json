@@ -7,20 +7,7 @@
         },
         "vendor-dir": "trunk/vendor"
     },
-    "autoload": {
-        "psr-4": {
-            "Zaver\\": "./classes/"
-        }
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "./php-sdk"
-        }
-    ],
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "require": {
-        "zaver/php-sdk": "dev-main"
+        "zaver/sdk": "^1.0.0"
     }
 }
