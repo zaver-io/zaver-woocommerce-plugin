@@ -4,11 +4,9 @@ name: deploy
 
 trigger:
   branch:
-  - main
-  event:
-  - tag
+    - main
   ref:
-  - refs/tags/v[0-9]*
+    - refs/tags/*
 
 steps:
   - name: build-composer
