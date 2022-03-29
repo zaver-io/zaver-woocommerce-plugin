@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WooCommerce Zaver Checkout
+ * Plugin Name: Zaver Checkout for WooCommerce
  * Plugin URI: 
  * Description: The official Zaver Checkout payment gateway for WooCommerce.
  * Version: 1.0.0
