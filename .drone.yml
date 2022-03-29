@@ -23,7 +23,7 @@ steps:
     image: lunagod/drone-zip
     settings:
       input: 
-        - woocommerce-zaver-checkout/*
+        - woocommerce-zaver-checkout/**/*
       output: woocommerce-zaver-checkout.zip
 
   - name: upload-to-s3
