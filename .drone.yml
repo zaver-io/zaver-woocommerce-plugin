@@ -14,10 +14,10 @@ trigger:
 
 steps:
   - name: build-composer
-      image: composer
-      commands:
-        - composer install --ignore-platform-reqs
-        - mv trunk woocommerce-zaver-checkout
+    image: composer
+    commands:
+      - composer install --ignore-platform-reqs
+      - mv trunk woocommerce-zaver-checkout
 
   - name: create-zip
     image: lunagod/drone-zip
