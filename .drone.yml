@@ -17,14 +17,12 @@ steps:
     image: composer
     commands:
       - composer install --ignore-platform-reqs
-      - mv trunk woocommerce-zaver-checkout
 
   - name: create-zip
-    image: lunagod/drone-zip
-    settings:
-      input: 
-        - woocommerce-zaver-checkout/**/*
-      output: woocommerce-zaver-checkout.zip
+    image: javieraviles/zip
+    commands:
+      - mv trunk woocommerce-zaver-checkout
+      - zip -r woocommerce-zaver-checkout.zip woocommerce-zaver-checkout
 
   - name: upload-to-s3
     image: plugins/s3
