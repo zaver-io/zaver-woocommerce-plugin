@@ -21,7 +21,7 @@ steps:
     commands:
       - mv trunk woocommerce-zaver-checkout
       - zip -r woocommerce-zaver-checkout-latest.zip woocommerce-zaver-checkout
-      - cp woocommerce-zaver-checkout-latest.zip woocommerce-zaver-checkout-${DRONE_TAG##v}.zip
+      - cp woocommerce-zaver-checkout-latest.zip woocommerce-zaver-checkout-${DRONE_TAG}.zip
 
   - name: upload-to-s3
     image: plugins/s3
