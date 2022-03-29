@@ -1,0 +1,40 @@
+kind: pipeline
+type: docker
+name: deploy
+
+trigger:
+  branch:
+  - main
+  event:
+  - push
+  # event:
+  # - tag
+  # ref:
+  # - refs/tags/v[0-9]*
+
+steps:
+  - name: build-composer
+      image: composer
+      commands:
+        - composer install --ignore-platform-reqs
+        - mv trunk woocommerce-zaver-checkout
+
+  - name: create-zip
+    image: lunagod/drone-zip
+    settings:
+      input: 
+        - woocommerce-zaver-checkout/*
+      output: woocommerce-zaver-checkout.zip
+
+  - name: upload-to-s3
+    image: plugins/s3
+    settings:
+      bucket: wm-static
+      access_key:
+        from_secret: s3_key
+      secret_key:
+        from_secret: s3_secret
+      source: woocommerce-zaver-checkout.zip
+      target: /zaver/woocommerce-zaver-checkout
+      endpoint: https://fra1.digitaloceanspaces.com
+      acl: public-read
