@@ -6,11 +6,9 @@ trigger:
   branch:
   - main
   event:
-  - push
-  # event:
-  # - tag
-  # ref:
-  # - refs/tags/v[0-9]*
+  - tag
+  ref:
+  - refs/tags/v[0-9]*
 
 steps:
   - name: build-composer
@@ -22,7 +20,8 @@ steps:
     image: javieraviles/zip
     commands:
       - mv trunk woocommerce-zaver-checkout
-      - zip -r woocommerce-zaver-checkout.zip woocommerce-zaver-checkout
+      - zip -r woocommerce-zaver-checkout-latest.zip woocommerce-zaver-checkout
+      - cp woocommerce-zaver-checkout-latest.zip woocommerce-zaver-checkout-${DRONE_TAG##v}.zip
 
   - name: upload-to-s3
     image: plugins/s3
@@ -32,7 +31,7 @@ steps:
         from_secret: s3_key
       secret_key:
         from_secret: s3_secret
-      source: woocommerce-zaver-checkout.zip
+      source: woocommerce-zaver-checkout-*.zip
       target: /zaver/woocommerce-zaver-checkout
       endpoint: https://fra1.digitaloceanspaces.com
       acl: public-read
