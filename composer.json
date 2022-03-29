@@ -4,7 +4,8 @@
     "config": {
         "platform": {
             "php": "7.4.0"
-        }
+        },
+        "vendor-dir": "trunk/vendor"
     },
     "autoload": {
         "psr-4": {
