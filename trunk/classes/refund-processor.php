@@ -18,8 +18,6 @@ use WC_Order_Refund;
 
 class Refund_Processor {
 	static public function process(WC_Order $order, float $amount): void {
-		throw new Exception('Oh no :-(');
-		
 		$payment = $order->get_meta('_zaver_payment');
 
 		if(empty($payment) || !is_array($payment) || !isset($payment['id'])) {
