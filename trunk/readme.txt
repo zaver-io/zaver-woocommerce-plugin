@@ -1,4 +1,5 @@
 === Zaver Checkout for WooCommerce ===
+Contributors: webbmaffian
 Tags: woocommerce, zaver, checkout, payment, sdk, credit card, refund, swish
 Stable tag: 0.0.0-dev
 Requires at least: 4.7
@@ -14,6 +15,9 @@ WooCommerce plugin for Zaver Checkout.
 WooCommerce plugin for Zaver Checkout.
 
 == Changelog ==
+
+= 1.0.2 =
+* CI/CD with WordPress SVN repo
 
 = 1.0.1 =
 * Minor adjustments.

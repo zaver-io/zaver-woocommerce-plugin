@@ -9,6 +9,11 @@ trigger:
     - refs/tags/*
 
 steps:
+  - name: set-version-number
+    image: alpine
+    commands:
+      - grep -rl 0.0.0-dev trunk | xargs sed -i 's/0.0.0-dev/${DRONE_TAG}/g'
+
   - name: build-composer
     image: composer
     commands:
@@ -33,3 +38,20 @@ steps:
       target: /zaver/woocommerce-zaver-checkout
       endpoint: https://fra1.digitaloceanspaces.com
       acl: public-read
+  
+  - name: publish-to-wordpress-org
+    image: profiprog/svn
+    environment:
+      SVN_USERNAME:
+        from_secret: svn_username
+      SVN_PASSWORD:
+        from_secret: svn_password
+    commands:
+      - mkdir svn-repo
+      - svn co https://plugins.svn.wordpress.org/zaver-checkout-for-woocommerce svn-repo --depth empty
+      - cd svn-repo
+      - svn mkdir --parents trunk assets tags
+      - cp -rp ../trunk/* trunk/
+      - cp -rp ../assets/* assets/
+      - svn cp trunk tags/${DRONE_TAG}
+      - svn ci -m 'Version ${DRONE_TAG}' --username ${SVN_USERNAME} --password ${SVN_PASSWORD}
