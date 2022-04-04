@@ -82,10 +82,10 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 
 			Payment_Processor::process($order);
 
-			return [
+			return apply_filters('zco_process_payment_result', [
 				'result' => 'success',
 				'redirect' => $order->get_checkout_payment_url(true)
-			];
+			]);
 		}
 		catch(Exception $e) {
 			Log::logger()->error('Zaver error during payment process: %s', $e->getMessage(), ['orderId' => $order_id]);

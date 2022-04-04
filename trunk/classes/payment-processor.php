@@ -63,6 +63,8 @@ class Payment_Processor {
 			$payment->addLineItem($line_item);
 		}
 
+		do_action('zco_before_process_payment', $payment, $order);
+
 		$response = Plugin::gateway()->api()->createPayment($payment);
 
 		$order->update_meta_data('_zaver_payment', [
@@ -83,6 +85,8 @@ class Payment_Processor {
 		}
 
 		Log::logger()->debug('Created Zaver payment request', ['orderId' => $order->get_id(), 'paymentId' => $response->getPaymentId()]);
+
+		do_action('zco_after_process_payment', $payment, $order, $response);
 	}
 
 	static private function get_purchase_title(WC_Order $order): string {
@@ -90,11 +94,16 @@ class Payment_Processor {
 
 		// If there's only one order item, return it as title
 		if(count($items) === 1) {
-			return reset($items)->get_name();
+			$title = reset($items)->get_name();
 		}
 
 		// If there's multiple order items, return a generic title
-		return sprintf(__('Order %s', 'zco'), $order->get_order_number());
+		else {
+			$title = sprintf(__('Order %s', 'zco'), $order->get_order_number());
+		}
+
+		
+		return apply_filters('zco_payment_purchase_title', $title, $order);
 	}
 
 	static private function get_callback_url(WC_Order $order): ?string {
@@ -119,6 +128,8 @@ class Payment_Processor {
 			->setTaxAmount($tax)
 			->setItemType(Helper::get_zaver_item_type($product))
 			->setMerchantReference($product->get_sku());
+		
+		do_action('zco_process_payment_line_item', $zaver_item, $wc_item);
 	}
 
 	static private function prepare_shipping(LineItem $zaver_item, WC_Order_Item_Shipping $wc_item): void {
@@ -133,6 +144,8 @@ class Payment_Processor {
 			->setTaxAmount($tax)
 			->setItemType(ItemType::SHIPPING)
 			->setMerchantReference($wc_item->get_method_id());
+		
+		do_action('zco_process_payment_shipping', $zaver_item, $wc_item);
 	}
 
 	static private function prepare_fee(LineItem $zaver_item, WC_Order_Item_Fee $wc_item): void {
@@ -146,6 +159,8 @@ class Payment_Processor {
 			->setTaxRatePercent(Helper::get_line_item_tax_rate($wc_item))
 			->setTaxAmount($tax)
 			->setItemType(ItemType::FEE);
+
+		do_action('zco_process_payment_fee', $zaver_item, $wc_item);
 	}
 
 	static private function prepare_coupon(LineItem $zaver_item, WC_Order_Item_Coupon $wc_item): void {
@@ -159,6 +174,8 @@ class Payment_Processor {
 			->setTaxRatePercent(Helper::get_line_item_tax_rate($wc_item))
 			->setTaxAmount($tax)
 			->setItemType(ItemType::DISCOUNT);
+		
+		do_action('zco_process_payment_coupon', $zaver_item, $wc_item);
 	}
 
 	static public function handle_response(WC_Order $order, ?PaymentStatusResponse $payment_status = null, bool $redirect = true): void {
@@ -183,6 +200,8 @@ class Payment_Processor {
 		elseif($payment_status->getPaymentId() !== $payment['id']) {
 			throw new Exception('Mismatching payment ID');
 		}
+
+		do_action('zco_process_payment_handle_response', $order, $payment_status, $redirect);
 
 		switch($payment_status->getPaymentStatus()) {
 			case PaymentStatus::SETTLED:

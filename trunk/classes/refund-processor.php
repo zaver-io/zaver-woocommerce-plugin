@@ -74,6 +74,8 @@ class Refund_Processor {
 			$request->setMerchantUrls($merchant_urls);
 		}
 
+		do_action('zco_before_process_refund', $request, $refund, $order);
+
 		$response = Plugin::gateway()->refund_api()->createRefund($request);
 		
 		$refund->update_meta_data('_zaver_refund_id', $response->getRefundId());
@@ -85,6 +87,8 @@ class Refund_Processor {
 		if($representive = self::get_current_representative()) {
 			Plugin::gateway()->refund_api()->approveRefund($response->getRefundId(), RefundUpdateRequest::create()->setActingRepresentative($representive));
 		}
+
+		do_action('zco_after_process_refund', $request, $refund, $order);
 	}
 
 	/**
@@ -108,7 +112,7 @@ class Refund_Processor {
 			throw new Exception('No refund found');
 		}
 
-		return $return;
+		return apply_filters('zco_find_refund', $return, $order, $amount);
 	}
 
 	static private function get_callback_url(WC_Order $order): ?string {
@@ -143,6 +147,8 @@ class Refund_Processor {
 			->setRefundTaxRatePercent(Helper::get_line_item_tax_rate($wc_item))
 			->setRefundQuantity($wc_item->get_quantity())
 			->setRefundUnitPrice($unit_price);
+
+		do_action('zco_process_refund_item', $zaver_item, $wc_item);
 	}
 
 	static public function handle_response(WC_Order $order, RefundResponse $refund = null): void {
@@ -161,6 +167,8 @@ class Refund_Processor {
 		if(!in_array($refund->getPaymentId(), $refund_ids)) {
 			throw new Exception('Mismatching refund ID');
 		}
+
+		do_action('zco_process_refund_handle_response', $order, $refund);
 
 		switch($refund->getStatus()) {
 			case RefundStatus::PENDING_MERCHANT_APPROVAL:
