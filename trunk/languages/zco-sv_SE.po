@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Zaver Checkout\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-07 11:35+0000\n"
-"PO-Revision-Date: 2022-03-07 13:48+0000\n"
+"PO-Revision-Date: 2022-04-04 15:10+0000\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -12,14 +12,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.5.8; wp-5.9\n"
+"X-Loco-Version: 2.5.8; wp-5.9.2\n"
 "X-Domain: zco"
 
 #: classes/checkout-gateway.php:93
 msgid "An error occured - please try again, or contact site support"
 msgstr "Ett fel inträffade - vänligen prova igen, eller kontakta supporten"
 
-#: classes/hooks.php:95
+#: classes/hooks.php:100
 msgid ""
 "An error occured with your Zaver payment - please try again, or contact the "
 "site support."
@@ -35,11 +35,11 @@ msgstr "API-nyckel"
 msgid "Callback Token"
 msgstr "Callback-token"
 
-#: classes/hooks.php:139
+#: classes/hooks.php:144
 msgid "Cancelled Zaver payment"
 msgstr "Avbröt Zaver-betalning"
 
-#: classes/hooks.php:149
+#: classes/hooks.php:154
 msgid "Change payment method"
 msgstr "Byt betalningsmetod"
 
@@ -59,19 +59,23 @@ msgstr "Aktiva Zaver Checkout"
 msgid "Enable/Disable"
 msgstr "Aktivera/Inaktivera"
 
-#: classes/hooks.php:143
+#: classes/hooks.php:148
 #, php-format
 msgid "Failed to cancel Zaver payment: %s"
 msgstr "Misslyckades att avbryta Zaver-betalningen: %s"
 
-#: classes/hooks.php:65 classes/hooks.php:92 classes/hooks.php:121
+#: classes/hooks.php:66 classes/hooks.php:97 classes/hooks.php:126
 #, php-format
 msgid "Failed with Zaver payment: %s"
 msgstr "Misslyckades med Zaver-betalningen: %s"
 
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/zaver-checkout-for-woocommerce/"
+msgstr "https://wordpress.org/plugins/zaver-checkout-for-woocommerce/"
+
 #. Author URI of the plugin
 msgid "https://www.zaver.io/"
-msgstr ""
+msgstr "https://www.zaver.io/"
 
 #: classes/checkout-gateway.php:51
 msgid ""
@@ -94,32 +98,32 @@ msgstr "Betala med Zaver"
 msgid "Primary color"
 msgstr "Primärfärg"
 
-#: classes/refund-processor.php:184
+#: classes/refund-processor.php:182
 #, php-format
 msgid "Refund of %F %s approved - Refund ID: %s"
 msgstr "Återbetalning på %F %s godkänd - Återbetalnings-ID: %s"
 
-#: classes/refund-processor.php:181
+#: classes/refund-processor.php:179
 #, php-format
 msgid "Refund of %F %s approved by %s - Refund ID: %s"
 msgstr "Återbetalning på %F %s godkänd av %s - Återbetalnings-ID: %s"
 
-#: classes/refund-processor.php:200
+#: classes/refund-processor.php:198
 #, php-format
 msgid "Refund of %F %s cancelled - Refund ID: %s"
 msgstr "Återbetalning på %F %s avbruten - Återbetalnings-ID: %s"
 
-#: classes/refund-processor.php:197
+#: classes/refund-processor.php:195
 #, php-format
 msgid "Refund of %F %s cancelled by %s - Refund ID: %s"
 msgstr "Återbetalning på %F %s avbruten av %s - Återbetalnings-ID: %s"
 
-#: classes/refund-processor.php:191
+#: classes/refund-processor.php:189
 #, php-format
 msgid "Refund of %F %s completed - Refund ID: %s"
 msgstr "Återbetalning på %F %s färdig - Återbetalnings-ID: %s"
 
-#: classes/refund-processor.php:170
+#: classes/refund-processor.php:168
 #, php-format
 msgid ""
 "Refund of %F %s initialized by %s with the description \"%s\". Refund ID: %s"
@@ -127,19 +131,19 @@ msgstr ""
 "Återbetalning på %F %s initierad av %s med beskrivningen \"%s\" - "
 "Återbetalnings-ID: %s"
 
-#: classes/refund-processor.php:173
+#: classes/refund-processor.php:171
 #, php-format
 msgid "Refund of %F %s initialized with the description \"%s\". Refund ID: %s"
 msgstr ""
 "Återbetalning på %F %s initierad med beskrivningen \"%s\" - Återbetalnings-"
 "ID: %s"
 
-#: classes/refund-processor.php:83
+#: classes/refund-processor.php:81
 #, php-format
 msgid "Requested a refund of %F %s - refund ID: %s"
 msgstr "Begäran av återbetalning på %F %s - Återbetalnings-ID: %s"
 
-#: woocommerce-zaver-checkout.php:102
+#: woocommerce-zaver-checkout.php:103
 msgid "Settings"
 msgstr "Inställningar"
 
@@ -176,17 +180,17 @@ msgstr "Det här styr vad användaren ser i kassan"
 msgid "Title"
 msgstr "Titel"
 
-#. Name of the plugin
-msgid "WooCommerce Zaver Checkout"
-msgstr ""
-
 #. Author of the plugin
 msgid "Zaver"
-msgstr ""
+msgstr "Zaver"
 
 #: classes/checkout-gateway.php:18 classes/checkout-gateway.php:43
 msgid "Zaver Checkout"
-msgstr ""
+msgstr "Zaver Checkout"
+
+#. Name of the plugin
+msgid "Zaver Checkout for WooCommerce"
+msgstr "Zaver Checkout for WooCommerce"
 
 #: classes/payment-processor.php:202
 msgid "Zaver payment was cancelled - cancelling order"

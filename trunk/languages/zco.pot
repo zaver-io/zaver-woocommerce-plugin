@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Zaver Checkout\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-07 13:47+0000\n"
+"POT-Creation-Date: 2022-04-04 15:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "An error occured - please try again, or contact site support"
 msgstr ""
 
-#: classes/hooks.php:95
+#: classes/hooks.php:100
 msgid ""
 "An error occured with your Zaver payment - please try again, or contact the "
 "site support."
@@ -34,11 +34,11 @@ msgstr ""
 msgid "Callback Token"
 msgstr ""
 
-#: classes/hooks.php:139
+#: classes/hooks.php:144
 msgid "Cancelled Zaver payment"
 msgstr ""
 
-#: classes/hooks.php:149
+#: classes/hooks.php:154
 msgid "Change payment method"
 msgstr ""
 
@@ -58,14 +58,18 @@ msgstr ""
 msgid "Enable/Disable"
 msgstr ""
 
-#: classes/hooks.php:143
+#: classes/hooks.php:148
 #, php-format
 msgid "Failed to cancel Zaver payment: %s"
 msgstr ""
 
-#: classes/hooks.php:65 classes/hooks.php:92 classes/hooks.php:121
+#: classes/hooks.php:66 classes/hooks.php:97 classes/hooks.php:126
 #, php-format
 msgid "Failed with Zaver payment: %s"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/zaver-checkout-for-woocommerce/"
 msgstr ""
 
 #. Author URI of the plugin
@@ -91,48 +95,48 @@ msgstr ""
 msgid "Primary color"
 msgstr ""
 
-#: classes/refund-processor.php:184
+#: classes/refund-processor.php:182
 #, php-format
 msgid "Refund of %F %s approved - Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:181
+#: classes/refund-processor.php:179
 #, php-format
 msgid "Refund of %F %s approved by %s - Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:200
+#: classes/refund-processor.php:198
 #, php-format
 msgid "Refund of %F %s cancelled - Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:197
+#: classes/refund-processor.php:195
 #, php-format
 msgid "Refund of %F %s cancelled by %s - Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:191
+#: classes/refund-processor.php:189
 #, php-format
 msgid "Refund of %F %s completed - Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:170
+#: classes/refund-processor.php:168
 #, php-format
 msgid ""
 "Refund of %F %s initialized by %s with the description \"%s\". Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:173
+#: classes/refund-processor.php:171
 #, php-format
 msgid "Refund of %F %s initialized with the description \"%s\". Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:83
+#: classes/refund-processor.php:81
 #, php-format
 msgid "Requested a refund of %F %s - refund ID: %s"
 msgstr ""
 
-#: woocommerce-zaver-checkout.php:102
+#: woocommerce-zaver-checkout.php:103
 msgid "Settings"
 msgstr ""
 
@@ -169,16 +173,16 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#. Name of the plugin
-msgid "WooCommerce Zaver Checkout"
-msgstr ""
-
 #. Author of the plugin
 msgid "Zaver"
 msgstr ""
 
 #: classes/checkout-gateway.php:18 classes/checkout-gateway.php:43
 msgid "Zaver Checkout"
+msgstr ""
+
+#. Name of the plugin
+msgid "Zaver Checkout for WooCommerce"
 msgstr ""
 
 #: classes/payment-processor.php:202

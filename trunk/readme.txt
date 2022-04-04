@@ -16,6 +16,9 @@ WooCommerce plugin for Zaver Checkout.
 
 == Changelog ==
 
+= 1.0.12 =
+* Updated Swedish translations.
+
 = 1.0.2 - 1.0.11 =
 * CI/CD with WordPress SVN repo.
 
