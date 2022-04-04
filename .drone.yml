@@ -33,7 +33,7 @@ steps:
       - rsync -ar --delete assets/ svn-repo/assets
       - rsync -ar --delete trunk/ svn-repo/trunk
       - cd svn-repo
-      - svn add assets/* trunk/*
+      - svn add --parents --force assets/* trunk/*
       - svn cp trunk tags/${DRONE_TAG}
       - svn ci -m 'Version ${DRONE_TAG}' --username $SVN_USERNAME --password $SVN_PASSWORD
       
