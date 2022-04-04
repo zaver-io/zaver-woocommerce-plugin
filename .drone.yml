@@ -47,10 +47,13 @@ steps:
       SVN_PASSWORD:
         from_secret: svn_password
     commands:
+      - apk add rsync
       - mkdir svn-repo
       - svn co https://plugins.svn.wordpress.org/zaver-checkout-for-woocommerce svn-repo --depth empty
-      - svn mkdir --parents svn-repo/tags
-      - svn cp assets svn-repo/assets
-      - svn cp trunk svn-repo/trunk
-      - svn cp trunk svn-repo/tags/${DRONE_TAG}
+      - svn mkdir --parents svn-repo/assets svn-repo/trunk svn-repo/tags
+      - rsync -ar --delete assets svn-repo/assets
+      - rsync -ar --delete trunk svn-repo/trunk
+      - cd svn-repo
+      - svn add assets/* trunk/*
+      - svn cp trunk tags/${DRONE_TAG}
       - svn ci -m 'Version ${DRONE_TAG}' --username ${SVN_USERNAME} --password ${SVN_PASSWORD}
