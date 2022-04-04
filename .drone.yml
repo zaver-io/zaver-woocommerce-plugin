@@ -51,6 +51,7 @@ steps:
       - mkdir svn-repo
       - svn co https://plugins.svn.wordpress.org/zaver-checkout-for-woocommerce svn-repo --depth empty
       - svn mkdir --parents svn-repo/assets svn-repo/trunk svn-repo/tags
+      - ls -la
       - rsync -ar --delete assets svn-repo/assets
       - rsync -ar --delete trunk svn-repo/trunk
       - cd svn-repo
