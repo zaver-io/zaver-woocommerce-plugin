@@ -16,6 +16,9 @@ WooCommerce plugin for Zaver Checkout.
 
 == Changelog ==
 
+= 1.0.4 =
+* Adjusted internal deploy.
+
 = 1.0.3 =
 * Updated plugin URL.
 
