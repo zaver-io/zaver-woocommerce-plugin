@@ -28,8 +28,8 @@ steps:
         from_secret: svn_password
     commands:
       - mkdir svn-repo
-      - svn co https://plugins.svn.wordpress.org/zaver-checkout-for-woocommerce svn-repo --depth empty
-      - svn mkdir --parents svn-repo/assets svn-repo/trunk svn-repo/tags
+      - svn co https://plugins.svn.wordpress.org/zaver-checkout-for-woocommerce svn-repo
+      - rm -rf svn-repo/assets/* svn-repo/trunk/*
       - cp -rp assets/* svn-repo/assets/
       - cp -rp trunk/* svn-repo/trunk/
       - cd svn-repo
