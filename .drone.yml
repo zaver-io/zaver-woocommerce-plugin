@@ -35,7 +35,7 @@ steps:
       - cd svn-repo
       - svn add assets/* trunk/*
       - svn cp trunk tags/${DRONE_TAG}
-      - svn ci -m 'Version ${DRONE_TAG}' --username ${SVN_USERNAME} --password ${SVN_PASSWORD}
+      - svn ci -m 'Version ${DRONE_TAG}' --username $SVN_USERNAME --password $SVN_PASSWORD
       
   - name: create-zip
     image: javieraviles/zip
