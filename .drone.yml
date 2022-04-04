@@ -50,10 +50,9 @@ steps:
       - mkdir svn-repo
       - svn co https://plugins.svn.wordpress.org/zaver-checkout-for-woocommerce svn-repo --depth empty
       - cd svn-repo
-      - svn mkdir --parents trunk assets tags
-      - cd ..
-      - cp -rp trunk/* svn-repo/trunk/
-      - cp -rp assets/* svn-repo/assets/
-      - cd svn-repo
+      - svn mkdir --parents assets trunk tags
+      - cp -rp ../assets/* assets/
+      - cp -rp ../trunk/* trunk/
+      - svn add assets/* trunk/*
       - svn cp trunk tags/${DRONE_TAG}
       - svn ci -m 'Version ${DRONE_TAG}' --username ${SVN_USERNAME} --password ${SVN_PASSWORD}
