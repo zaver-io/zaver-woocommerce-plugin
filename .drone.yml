@@ -18,7 +18,25 @@ steps:
     image: composer
     commands:
       - composer install --ignore-platform-reqs
-
+  
+  - name: publish-to-wordpress-org
+    image: profiprog/svn
+    environment:
+      SVN_USERNAME:
+        from_secret: svn_username
+      SVN_PASSWORD:
+        from_secret: svn_password
+    commands:
+      - mkdir svn-repo
+      - svn co https://plugins.svn.wordpress.org/zaver-checkout-for-woocommerce svn-repo --depth empty
+      - svn mkdir --parents svn-repo/assets svn-repo/trunk svn-repo/tags
+      - cp -rp assets/* svn-repo/assets/
+      - cp -rp trunk/* svn-repo/trunk/
+      - cd svn-repo
+      - svn add assets/* trunk/*
+      - svn cp trunk tags/${DRONE_TAG}
+      - svn ci -m 'Version ${DRONE_TAG}' --username ${SVN_USERNAME} --password ${SVN_PASSWORD}
+      
   - name: create-zip
     image: javieraviles/zip
     commands:
@@ -38,23 +56,3 @@ steps:
       target: /zaver/woocommerce-zaver-checkout
       endpoint: https://fra1.digitaloceanspaces.com
       acl: public-read
-  
-  - name: publish-to-wordpress-org
-    image: profiprog/svn
-    environment:
-      SVN_USERNAME:
-        from_secret: svn_username
-      SVN_PASSWORD:
-        from_secret: svn_password
-    commands:
-      - apk add rsync
-      - mkdir svn-repo
-      - svn co https://plugins.svn.wordpress.org/zaver-checkout-for-woocommerce svn-repo --depth empty
-      - svn mkdir --parents svn-repo/assets svn-repo/trunk svn-repo/tags
-      - ls -la
-      - rsync -ar --delete assets svn-repo/assets
-      - rsync -ar --delete trunk svn-repo/trunk
-      - cd svn-repo
-      - svn add assets/* trunk/*
-      - svn cp trunk tags/${DRONE_TAG}
-      - svn ci -m 'Version ${DRONE_TAG}' --username ${SVN_USERNAME} --password ${SVN_PASSWORD}
