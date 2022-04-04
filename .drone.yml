@@ -30,8 +30,8 @@ steps:
       - apk add rsync
       - mkdir svn-repo
       - svn co https://plugins.svn.wordpress.org/zaver-checkout-for-woocommerce svn-repo
-      - rsync -ar --delete assets svn-repo/assets
-      - rsync -ar --delete trunk svn-repo/trunk
+      - rsync -ar --delete assets/ svn-repo/assets
+      - rsync -ar --delete trunk/ svn-repo/trunk
       - cd svn-repo
       - svn add assets/* trunk/*
       - svn cp trunk tags/${DRONE_TAG}
