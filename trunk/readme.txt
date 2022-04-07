@@ -50,10 +50,7 @@ To get started with Zaver you need to sign up for an account. Once you have gone
 
 == Changelog ==
 
-= 1.0.17 =
-* Fixed typo.
-
-= 1.0.16 =
+= 1.0.16 - 1.0.18 =
 * Updated plugin description.
 * Changed author domain to zaver.com.
 
