@@ -52,15 +52,21 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 			],
 			'api_key' => [
 				'type'        => 'text',
-				'desc_tip'    => true,
+				'class'       => 'code',
+				'desc_tip'    => false,
 				'title'       => __('API Key', 'zco'),
-				'description' => __('The API key you got from Zaver.', 'zco'),
+				'description' => sprintf(
+					__('%s if you don\'t have any account, or %s if you miss your API key / callback token.', 'zco'),
+					'<a target="_blank" href="https://zaver.com/woocommerce">' . __('Sign up', 'zco') . '</a>',
+					'<a target="_blank" href="' . esc_attr(__('https://zaver.com/en/contact', 'zco')) . '">' . __('contact Zaver', 'zco') . '</a>',
+				),
 			],
 			'callback_token' => [
 				'type'        => 'text',
+				'class'       => 'code',
 				'desc_tip'    => true,
 				'title'       => __('Callback Token', 'zco'),
-				'description' => __('The callback token you got from Zaver.', 'zco'),
+				'description' => __('The callback token is optional but recommended - it is used to validate requests from Zaver.', 'zco'),
 			],
 			'primary_color' => [
 				'type'        => 'color',

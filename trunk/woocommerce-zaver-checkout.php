@@ -5,7 +5,7 @@
  * Description: The official Zaver Checkout payment gateway for WooCommerce.
  * Version: 0.0.0-dev
  * Author: Zaver
- * Author URI: https://www.zaver.io/
+ * Author URI: https://zaver.com/woocommerce
  * Developer: Webbmaffian
  * Developer URI: https://www.webbmaffian.se/
  * Text Domain: zco

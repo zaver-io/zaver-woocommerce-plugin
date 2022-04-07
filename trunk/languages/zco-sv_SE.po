@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: WooCommerce Zaver Checkout\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-07 11:35+0000\n"
-"PO-Revision-Date: 2022-04-04 15:10+0000\n"
+"PO-Revision-Date: 2022-04-07 16:35+0000\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -15,7 +15,16 @@ msgstr ""
 "X-Loco-Version: 2.5.8; wp-5.9.2\n"
 "X-Domain: zco"
 
-#: classes/checkout-gateway.php:93
+#: classes/checkout-gateway.php:59
+#, php-format
+msgid ""
+"%s if you don't have any account, or %s if you miss your API key / callback "
+"token."
+msgstr ""
+"%s om du inte har något konto, eller %s om du saknar din API-nyckel / "
+"callback-token."
+
+#: classes/checkout-gateway.php:99
 msgid "An error occured - please try again, or contact site support"
 msgstr "Ett fel inträffade - vänligen prova igen, eller kontakta supporten"
 
@@ -27,11 +36,11 @@ msgstr ""
 "Ett fel inträffade med din Zaver-betalning - vänligen prova igen, eller "
 "kontakta supporten."
 
-#: classes/checkout-gateway.php:56
+#: classes/checkout-gateway.php:57
 msgid "API Key"
 msgstr "API-nyckel"
 
-#: classes/checkout-gateway.php:62
+#: classes/checkout-gateway.php:68
 msgid "Callback Token"
 msgstr "Callback-token"
 
@@ -43,7 +52,11 @@ msgstr "Avbröt Zaver-betalning"
 msgid "Change payment method"
 msgstr "Byt betalningsmetod"
 
-#: classes/checkout-gateway.php:70
+#: classes/checkout-gateway.php:61
+msgid "contact Zaver"
+msgstr "kontakta Zaver"
+
+#: classes/checkout-gateway.php:76
 msgid "Default"
 msgstr "Standard"
 
@@ -73,9 +86,13 @@ msgstr "Misslyckades med Zaver-betalningen: %s"
 msgid "https://wordpress.org/plugins/zaver-checkout-for-woocommerce/"
 msgstr "https://wordpress.org/plugins/zaver-checkout-for-woocommerce/"
 
+#: classes/checkout-gateway.php:61
+msgid "https://zaver.com/en/contact"
+msgstr "https://zaver.com/se/kontakt"
+
 #. Author URI of the plugin
-msgid "https://www.zaver.io/"
-msgstr "https://www.zaver.io/"
+msgid "https://zaver.com/woocommerce"
+msgstr "https://zaver.com/woocommerce"
 
 #: classes/checkout-gateway.php:51
 msgid ""
@@ -85,7 +102,7 @@ msgstr ""
 "Om du har fått testuppgifter från Zaver, så ska denna kryssruta vara "
 "ikryssad."
 
-#: classes/payment-processor.php:97
+#: classes/payment-processor.php:102
 #, php-format
 msgid "Order %s"
 msgstr "Order %s"
@@ -94,36 +111,36 @@ msgstr "Order %s"
 msgid "Pay with Zaver"
 msgstr "Betala med Zaver"
 
-#: classes/checkout-gateway.php:68
+#: classes/checkout-gateway.php:74
 msgid "Primary color"
 msgstr "Primärfärg"
 
-#: classes/refund-processor.php:182
+#: classes/refund-processor.php:190
 #, php-format
 msgid "Refund of %F %s approved - Refund ID: %s"
 msgstr "Återbetalning på %F %s godkänd - Återbetalnings-ID: %s"
 
-#: classes/refund-processor.php:179
+#: classes/refund-processor.php:187
 #, php-format
 msgid "Refund of %F %s approved by %s - Refund ID: %s"
 msgstr "Återbetalning på %F %s godkänd av %s - Återbetalnings-ID: %s"
 
-#: classes/refund-processor.php:198
+#: classes/refund-processor.php:206
 #, php-format
 msgid "Refund of %F %s cancelled - Refund ID: %s"
 msgstr "Återbetalning på %F %s avbruten - Återbetalnings-ID: %s"
 
-#: classes/refund-processor.php:195
+#: classes/refund-processor.php:203
 #, php-format
 msgid "Refund of %F %s cancelled by %s - Refund ID: %s"
 msgstr "Återbetalning på %F %s avbruten av %s - Återbetalnings-ID: %s"
 
-#: classes/refund-processor.php:189
+#: classes/refund-processor.php:197
 #, php-format
 msgid "Refund of %F %s completed - Refund ID: %s"
 msgstr "Återbetalning på %F %s färdig - Återbetalnings-ID: %s"
 
-#: classes/refund-processor.php:168
+#: classes/refund-processor.php:176
 #, php-format
 msgid ""
 "Refund of %F %s initialized by %s with the description \"%s\". Refund ID: %s"
@@ -131,14 +148,14 @@ msgstr ""
 "Återbetalning på %F %s initierad av %s med beskrivningen \"%s\" - "
 "Återbetalnings-ID: %s"
 
-#: classes/refund-processor.php:171
+#: classes/refund-processor.php:179
 #, php-format
 msgid "Refund of %F %s initialized with the description \"%s\". Refund ID: %s"
 msgstr ""
 "Återbetalning på %F %s initierad med beskrivningen \"%s\" - Återbetalnings-"
 "ID: %s"
 
-#: classes/refund-processor.php:81
+#: classes/refund-processor.php:83
 #, php-format
 msgid "Requested a refund of %F %s - refund ID: %s"
 msgstr "Begäran av återbetalning på %F %s - Återbetalnings-ID: %s"
@@ -147,11 +164,15 @@ msgstr "Begäran av återbetalning på %F %s - Återbetalnings-ID: %s"
 msgid "Settings"
 msgstr "Inställningar"
 
-#: classes/checkout-gateway.php:69
+#: classes/checkout-gateway.php:60
+msgid "Sign up"
+msgstr "Registrera dig"
+
+#: classes/checkout-gateway.php:75
 msgid "Some elements in the Zaver Checkout will get this color."
 msgstr "Vissa element i Zaver Checkout kommer få denna färg."
 
-#: classes/payment-processor.php:190
+#: classes/payment-processor.php:209
 #, php-format
 msgid "Successful payment with Zaver - payment ID: %s"
 msgstr "Lyckad betalning med Zaver - Betalnings-ID: %s"
@@ -160,13 +181,13 @@ msgstr "Lyckad betalning med Zaver - Betalnings-ID: %s"
 msgid "Test mode"
 msgstr "Testläge"
 
-#: classes/checkout-gateway.php:57
-msgid "The API key you got from Zaver."
-msgstr "API-nyckeln du fått av Zaver."
-
-#: classes/checkout-gateway.php:63
-msgid "The callback token you got from Zaver."
-msgstr "Callback-tokenet du fått av Zaver."
+#: classes/checkout-gateway.php:69
+msgid ""
+"The callback token is optional but recommended - it is used to validate "
+"requests from Zaver."
+msgstr ""
+"Callback-tokenet är frivilligt men rekommenderat - det används för att "
+"validera anrop från Zaver."
 
 #. Description of the plugin
 msgid "The official Zaver Checkout payment gateway for WooCommerce."
@@ -192,6 +213,6 @@ msgstr "Zaver Checkout"
 msgid "Zaver Checkout for WooCommerce"
 msgstr "Zaver Checkout for WooCommerce"
 
-#: classes/payment-processor.php:202
+#: classes/payment-processor.php:221
 msgid "Zaver payment was cancelled - cancelling order"
 msgstr "Zaver-betalningen avbröts - avbryter order"

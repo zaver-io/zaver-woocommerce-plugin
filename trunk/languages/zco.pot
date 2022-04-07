@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Zaver Checkout\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-04 15:09+0000\n"
+"POT-Creation-Date: 2022-04-07 16:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -16,7 +16,14 @@ msgstr ""
 "X-Loco-Version: 2.5.8; wp-5.9\n"
 "X-Domain: zco"
 
-#: classes/checkout-gateway.php:93
+#: classes/checkout-gateway.php:59
+#, php-format
+msgid ""
+"%s if you don't have any account, or %s if you miss your API key / callback "
+"token."
+msgstr ""
+
+#: classes/checkout-gateway.php:99
 msgid "An error occured - please try again, or contact site support"
 msgstr ""
 
@@ -26,11 +33,11 @@ msgid ""
 "site support."
 msgstr ""
 
-#: classes/checkout-gateway.php:56
+#: classes/checkout-gateway.php:57
 msgid "API Key"
 msgstr ""
 
-#: classes/checkout-gateway.php:62
+#: classes/checkout-gateway.php:68
 msgid "Callback Token"
 msgstr ""
 
@@ -42,7 +49,11 @@ msgstr ""
 msgid "Change payment method"
 msgstr ""
 
-#: classes/checkout-gateway.php:70
+#: classes/checkout-gateway.php:61
+msgid "contact Zaver"
+msgstr ""
+
+#: classes/checkout-gateway.php:76
 msgid "Default"
 msgstr ""
 
@@ -72,8 +83,12 @@ msgstr ""
 msgid "https://wordpress.org/plugins/zaver-checkout-for-woocommerce/"
 msgstr ""
 
+#: classes/checkout-gateway.php:61
+msgid "https://zaver.com/en/contact"
+msgstr ""
+
 #. Author URI of the plugin
-msgid "https://www.zaver.io/"
+msgid "https://zaver.com/woocommerce"
 msgstr ""
 
 #: classes/checkout-gateway.php:51
@@ -82,7 +97,7 @@ msgid ""
 "checked."
 msgstr ""
 
-#: classes/payment-processor.php:97
+#: classes/payment-processor.php:102
 #, php-format
 msgid "Order %s"
 msgstr ""
@@ -91,47 +106,47 @@ msgstr ""
 msgid "Pay with Zaver"
 msgstr ""
 
-#: classes/checkout-gateway.php:68
+#: classes/checkout-gateway.php:74
 msgid "Primary color"
 msgstr ""
 
-#: classes/refund-processor.php:182
+#: classes/refund-processor.php:190
 #, php-format
 msgid "Refund of %F %s approved - Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:179
+#: classes/refund-processor.php:187
 #, php-format
 msgid "Refund of %F %s approved by %s - Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:198
+#: classes/refund-processor.php:206
 #, php-format
 msgid "Refund of %F %s cancelled - Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:195
+#: classes/refund-processor.php:203
 #, php-format
 msgid "Refund of %F %s cancelled by %s - Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:189
+#: classes/refund-processor.php:197
 #, php-format
 msgid "Refund of %F %s completed - Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:168
+#: classes/refund-processor.php:176
 #, php-format
 msgid ""
 "Refund of %F %s initialized by %s with the description \"%s\". Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:171
+#: classes/refund-processor.php:179
 #, php-format
 msgid "Refund of %F %s initialized with the description \"%s\". Refund ID: %s"
 msgstr ""
 
-#: classes/refund-processor.php:81
+#: classes/refund-processor.php:83
 #, php-format
 msgid "Requested a refund of %F %s - refund ID: %s"
 msgstr ""
@@ -140,11 +155,15 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: classes/checkout-gateway.php:69
+#: classes/checkout-gateway.php:60
+msgid "Sign up"
+msgstr ""
+
+#: classes/checkout-gateway.php:75
 msgid "Some elements in the Zaver Checkout will get this color."
 msgstr ""
 
-#: classes/payment-processor.php:190
+#: classes/payment-processor.php:209
 #, php-format
 msgid "Successful payment with Zaver - payment ID: %s"
 msgstr ""
@@ -153,12 +172,10 @@ msgstr ""
 msgid "Test mode"
 msgstr ""
 
-#: classes/checkout-gateway.php:57
-msgid "The API key you got from Zaver."
-msgstr ""
-
-#: classes/checkout-gateway.php:63
-msgid "The callback token you got from Zaver."
+#: classes/checkout-gateway.php:69
+msgid ""
+"The callback token is optional but recommended - it is used to validate "
+"requests from Zaver."
 msgstr ""
 
 #. Description of the plugin
@@ -185,6 +202,6 @@ msgstr ""
 msgid "Zaver Checkout for WooCommerce"
 msgstr ""
 
-#: classes/payment-processor.php:202
+#: classes/payment-processor.php:221
 msgid "Zaver payment was cancelled - cancelling order"
 msgstr ""

@@ -40,9 +40,9 @@ Unlock your customers' purchasing power and help them get what they came for. Ou
 
 To get started with Zaver you need to sign up for an account. Once you have gone through the onboarding process and the account has been approved, you’ll be up and running in no time. 
 
-1. [Sign up](https://zaver.com/woocommerce) for an account.
+1. [Sign up for an account](https://zaver.com/woocommerce).
 2. Wait for the account to be approved.
-3. Install the plugin​ on your site. 
+3. [Install the plugin](https://wordpress.org/plugins/zaver-checkout-for-woocommerce/)​ on your site. 
 4. Go to the payment method settings and add your credentials received from Zaver.
 5. Get paid. ✌️
 
@@ -50,6 +50,7 @@ To get started with Zaver you need to sign up for an account. Once you have gone
 
 = 1.0.16 =
 * Updated plugin description.
+* Changed author domain to zaver.com.
 
 = 1.0.14 - 1.0.15 =
 * Adjusted CI/CD with WordPress SVN repo.
