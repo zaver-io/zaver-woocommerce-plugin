@@ -12,6 +12,8 @@ Fight cart abandonment rates by reducing friction at the point-of-sale, with pro
 
 == Description ==
 
+*Fight cart abandonment rates by reducing friction at the point-of-sale, with probably the world’s first size-agnostic checkout.*
+
 Zaver Checkout is about taking frictionless shopping experiences to the next level - regardless of what items the cart contains. It’s about making it as easy to buy a jacuzzi online, as it is to purchase a pair of shoes. If you’re looking for a Checkout with incredible high conversion rates at both microscopically small, and astronomically large purchases in life, look no further.
 
 Our WooCommerce plugin is easy to install, fully responsive and fits seamlessly on your website, without occupying your beloved checkout. 🦄
@@ -47,6 +49,9 @@ To get started with Zaver you need to sign up for an account. Once you have gone
 5. Get paid. ✌️
 
 == Changelog ==
+
+= 1.0.17 =
+* Fixed typo.
 
 = 1.0.16 =
 * Updated plugin description.
