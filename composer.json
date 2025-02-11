@@ -4,8 +4,7 @@
     "config": {
         "platform": {
             "php": "7.4.0"
-        },
-        "vendor-dir": "trunk/vendor"
+        }
     },
     "require": {
         "zaver/sdk": "^1.0.0"

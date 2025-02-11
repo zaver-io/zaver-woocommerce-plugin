@@ -1,4 +1,4 @@
-/trunk/vendor/
+vendor/
 /svn-repo/
 /**/*.po~
 /**/*.pot~
