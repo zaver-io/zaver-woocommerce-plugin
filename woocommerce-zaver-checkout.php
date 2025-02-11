@@ -11,7 +11,7 @@
  * Text Domain: zco
  * Domain Path: /languages
  *
- * @package zco
+ * @package ZCO
  *
  * WC requires at least: 6.0.0
  * WC tested up to: 6.2.1

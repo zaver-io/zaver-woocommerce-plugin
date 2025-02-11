@@ -1,4 +1,10 @@
 <?php
+/**
+ * The hooks class.
+ *
+ * @package ZCO/Classes
+ */
+
 namespace Zaver;
 
 use Zaver\SDK\Object\PaymentUpdateRequest;

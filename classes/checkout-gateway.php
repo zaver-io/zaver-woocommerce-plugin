@@ -1,4 +1,10 @@
 <?php
+/**
+ * The Zaver Checkout payment gateway.
+ *
+ * @package ZCO/Classes
+ */
+
 namespace Zaver;
 
 use Zaver\SDK\Checkout;
@@ -84,6 +90,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 				'desc_tip'    => false,
 				'title'       => __( 'API Key', 'zco' ),
 				'description' => sprintf(
+					// translators: %1$s: Sign up link, %2$s: Contact link.
 					__( '%1$s if you don\'t have any account, or %2$s if you miss your API key / callback token.', 'zco' ),
 					'<a target="_blank" href="https://zaver.com/woocommerce">' . __( 'Sign up', 'zco' ) . '</a>',
 					'<a target="_blank" href="' . esc_attr( __( 'https://zaver.com/en/contact', 'zco' ) ) . '">' . __( 'contact Zaver', 'zco' ) . '</a>',

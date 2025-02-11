@@ -1,4 +1,10 @@
 <?php
+/**
+ * The helper class.
+ *
+ * @package ZCO/Classes
+ */
+
 namespace Zaver;
 
 use Exception;
