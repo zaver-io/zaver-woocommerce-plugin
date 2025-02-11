@@ -11,6 +11,8 @@
  * Text Domain: zco
  * Domain Path: /languages
  *
+ * @package zco
+ *
  * WC requires at least: 6.0.0
  * WC tested up to: 6.2.1
  *
@@ -27,10 +29,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'ZCO_MAIN_FILE', __FILE__ );
 define( 'ZCO_PLUGIN_PATH', __DIR__ );
 
+/**
+ * Class Plugin
+ *
+ * Handles the plugins initialization.
+ */
 class Plugin {
 	const VERSION        = '0.0.0-dev';
 	const PAYMENT_METHOD = 'zaver_checkout';
 
+	/**
+	 * Get the instance of the plugin.
+	 *
+	 * @return Plugin
+	 */
 	public static function instance(): self {
 		static $instance = null;
 
@@ -41,12 +53,17 @@ class Plugin {
 		return $instance;
 	}
 
-	public static function gateway(): Checkout_Gateway {
+	/**
+	 * Get the gateway instance.
+	 *
+	 * @return Checkout_Gateway
+	 */
+	public static function gateway() {
 		static $instance = null;
 
-		if ( is_null( $instance ) ) {
+		if ( null === $instance ) {
 
-			// If the class already is loaded, it's most likely through WooCommerce
+			// If the class already is loaded, it's most likely through WooCommerce.
 			if ( class_exists( __NAMESPACE__ . '\Checkout_Gateway', false ) ) {
 				$gateways = WC()->payment_gateways()->payment_gateways();
 
@@ -63,6 +80,12 @@ class Plugin {
 
 		return $instance;
 	}
+
+	/**
+	 * Initialize the plugin.
+	 *
+	 * @return void
+	 */
 	private function __construct() {
 		if ( ! $this->init_composer() ) {
 			return;
@@ -90,7 +113,7 @@ class Plugin {
 	/**
 	 * Initialize composers autoloader.
 	 *
-	 * @return bool|mixed
+	 * @return bool
 	 */
 	public function init_composer() {
 		$autoloader = ZCO_PLUGIN_PATH . '/vendor/autoload.php';
@@ -143,14 +166,28 @@ class Plugin {
 		include_once ZCO_PLUGIN_PATH . '/classes/refund-processor.php';
 	}
 
-	public function register_gateway( array $gateways ): array {
+	/**
+	 * Register the gateway.
+	 *
+	 * @param array $gateways List of registered gateways.
+	 *
+	 * @return array
+	 */
+	public function register_gateway( $gateways ) {
 		include_once ZCO_PLUGIN_PATH . '/classes/payment-processor.php';
 		$gateways[] = __NAMESPACE__ . '\Checkout_Gateway';
 
 		return $gateways;
 	}
 
-	public function add_settings_link( array $links ): array {
+	/**
+	 * Add settings link to plugin page.
+	 *
+	 * @param array $links List of links.
+	 *
+	 * @return array
+	 */
+	public function add_settings_link( $links ) {
 		array_unshift(
 			$links,
 			sprintf(
