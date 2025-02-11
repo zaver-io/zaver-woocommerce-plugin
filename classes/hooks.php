@@ -6,17 +6,36 @@ use Zaver\SDK\Config\PaymentStatus;
 use Exception;
 use WC_Order;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Class Hooks
+ *
+ * Registers the hooks for the plugin.
+ */
 final class Hooks {
-	public static function instance(): self {
+
+	/**
+	 * Get the instance of the hooks.
+	 *
+	 * @return Hooks
+	 */
+	public static function instance() {
 		static $instance = null;
 
-		if ( is_null( $instance ) ) {
+		if ( null === $instance ) {
 			$instance = new self();
 		}
 
 		return $instance;
 	}
 
+
+	/**
+	 * Class constructor.
+	 */
 	private function __construct() {
 		add_filter( 'wc_get_template', array( $this, 'get_zaver_checkout_template' ), 10, 3 );
 
@@ -27,23 +46,46 @@ final class Hooks {
 		add_action( 'zco_before_checkout', array( $this, 'add_cancel_link' ) );
 	}
 
-	public function get_zaver_checkout_template( string $template, string $template_name, array $args ): string {
-		if ( $template_name === 'checkout/order-receipt.php' && isset( $args['order'] ) && $args['order'] instanceof WC_Order ) {
-
-			/** @var WC_Order */
-			$order = $args['order'];
-
-			if ( $order->get_payment_method() === Plugin::PAYMENT_METHOD ) {
-				Log::logger()->debug( 'Rendering Zaver Checkout', array( 'orderId' => $order->get_id() ) );
-
-				return Plugin::PATH . '/templates/checkout.php';
-			}
+	/**
+	 * Replace the checkout template with the Zaver Checkout template.
+	 *
+	 * @param string $template The template to replace.
+	 * @param string $template_name The name of the template.
+	 * @param array  $args The arguments passed to the template.
+	 *
+	 * @return string
+	 */
+	public function get_zaver_checkout_template( $template, $template_name, $args ) {
+		if ( 'checkout/order-receipt.php' !== $template_name ) {
+			return $template;
 		}
 
-		return $template;
+		if ( ! ( isset( $args['order'] ) || $args['order'] instanceof WC_Order ) ) {
+			return $template;
+		}
+
+		/**
+		 * The WooCommerce order object.
+		 *
+		 * @var \WC_Order
+		 */
+		$order = $args['order'];
+
+		if ( $order->get_payment_method() !== Plugin::PAYMENT_METHOD ) {
+			return $template;
+		}
+
+		Log::logger()->debug( 'Rendering Zaver Checkout', array( 'orderId' => $order->get_id() ) );
+		return ZCO_PLUGIN_PATH . '/templates/checkout.php';
 	}
 
-	public function handle_payment_callback(): void {
+	/**
+	 * Handle the payment callback from Zaver.
+	 *
+	 * @throws Exception If the order ID is missing or the order is not found.
+	 * @return void
+	 */
+	public function handle_payment_callback() {
 		try {
 			$payment_status = Plugin::gateway()->receive_payment_callback();
 			$meta           = $payment_status->getMerchantMetadata();
@@ -63,6 +105,7 @@ final class Hooks {
 			Payment_Processor::handle_response( $order, $payment_status, false );
 		} catch ( Exception $e ) {
 			if ( $order ) {
+				// translators: %s is the error message.
 				$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
 				Log::logger()->error( 'Failed with Zaver payment: %s', $e->getMessage(), array( 'orderId' => $order->get_id() ) );
 			} else {
@@ -76,36 +119,52 @@ final class Hooks {
 	/**
 	 * As the Zaver payment callback will only be called for sites over HTTPS,
 	 * we need an alternative way for those sites on HTTP. This is it.
+	 *
+	 * @throws Exception If the order ID is missing or the order is not found.
+	 * @return void
 	 */
-	public function check_order_received(): void {
-		/** @var \WP_Query $wp */
+	public function check_order_received() {
+		/**
+		 * The global WP_Query instance.
+		 *
+		 * @var \WP_Query $wp
+		 */
 		global $wp;
 
 		try {
-			// Ensure we're on the correct endpoint
-			if ( ! isset( $wp->query_vars['order-received'] ) ) {
+			// Ensure we're on the correct endpoint.
+			if ( ! is_order_received_page() ) {
 				return;
 			}
 
+			// TODO: This can probably be replaced with get_query_var('order-received').
 			$order = wc_get_order( $wp->query_vars['order-received'] );
 
-			// Don't care about orders with other payment methods
+			// Don't care about orders with other payment methods.
 			if ( ! $order || $order->get_payment_method() !== Plugin::PAYMENT_METHOD ) {
 				return;
 			}
 
 			Payment_Processor::handle_response( $order );
 		} catch ( Exception $e ) {
+			// translators: %s is the error message.
 			$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
 			Log::logger()->error( 'Failed with Zaver payment: %s', $e->getMessage(), array( 'orderId' => $order->get_id() ) );
 
-			wc_add_notice( __( 'An error occured with your Zaver payment - please try again, or contact the site support.', 'zco' ), 'error' );
-			wp_redirect( wc_get_checkout_url() );
+			wc_add_notice( __( 'An error occurred with your Zaver payment - please try again, or contact the site support.', 'zco' ), 'error' );
+
+			wp_safe_redirect( wc_get_checkout_url() );
 			exit;
 		}
 	}
 
-	public function handle_refund_callback(): void {
+	/**
+	 * Handle the refund callback from Zaver.
+	 *
+	 * @throws Exception If the order ID is missing or the order is not found.
+	 * @return void
+	 */
+	public function handle_refund_callback() {
 		try {
 			$refund = Plugin::gateway()->receive_refund_callback();
 			$meta   = $refund->getMerchantMetadata();
@@ -124,6 +183,7 @@ final class Hooks {
 
 			Refund_Processor::handle_response( $order, $refund );
 		} catch ( Exception $e ) {
+			// translators: %s is the error message.
 			$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
 			Log::logger()->error( 'Failed with Zaver payment: %s', $e->getMessage(), array( 'orderId' => $order->get_id() ) );
 
@@ -131,10 +191,19 @@ final class Hooks {
 		}
 	}
 
-	public function cancelled_order( int $order_id, WC_Order $order ): void {
+	/**
+	 * Cancel the Zaver payment when the order is cancelled.
+	 *
+	 * @throws Exception If the payment ID is missing.
+	 *
+	 * @param int      $order_id The WooCommerce order ID.
+	 * @param WC_Order $order The WooCommerce order.
+	 *
+	 * @return void
+	 */
+	public function cancelled_order( $order_id, $order ) {
 		$payment = $order->get_meta( '_zaver_payment' );
-
-		if ( empty( $payment ) || ! is_array( $payment ) || ! isset( $payment['id'] ) ) {
+		if ( ! isset( $payment['id'] ) ) {
 			return;
 		}
 
@@ -153,6 +222,7 @@ final class Hooks {
 				)
 			);
 		} catch ( Exception $e ) {
+			// translators: %s is the error message.
 			$order->add_order_note( sprintf( __( 'Failed to cancel Zaver payment: %s', 'zco' ), $e->getMessage() ) );
 			Log::logger()->error(
 				'Failed to cancel Zaver payment: %s',
@@ -165,7 +235,17 @@ final class Hooks {
 		}
 	}
 
-	public function add_cancel_link( WC_Order $order ): void {
-		printf( '<p class="zco-cancel-order"><a href="%s">&larr; %s</a></p>', $order->get_cancel_order_url( wc_get_checkout_url() ), __( 'Change payment method', 'zco' ) );
+	/**
+	 * Prints a cancel link to the checkout page.
+	 *
+	 * @param WC_Order $order The WooCommerce order.
+	 *
+	 * @return void
+	 */
+	public function add_cancel_link( $order ) {
+		$url  = $order->get_cancel_order_url( wc_get_checkout_url() );
+		$text = __( 'Change payment method', 'zco' );
+
+		printf( '<p class="zco-cancel-order"><a href="%s">&larr; %s</a></p>', esc_url( $url ), esc_textarea( $text ) );
 	}
 }
