@@ -9,6 +9,10 @@ use WC_Order;
 use WC_Payment_Gateway;
 use Exception;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The Zaver Checkout payment gateway.
  */
