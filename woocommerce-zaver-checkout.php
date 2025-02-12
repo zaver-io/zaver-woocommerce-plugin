@@ -23,6 +23,8 @@
 namespace Zaver;
 
 use Krokedil\Support\Support;
+use Krokedil\Support\Logger;
+use Krokedil\Support\SystemReport;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -62,10 +64,20 @@ class Plugin {
 		return $instance;
 	}
 
+	/**
+	 * Get the logger instance.
+	 *
+	 * @return Logger
+	 */
 	public function logger() {
 		return $this->support->logger();
 	}
 
+	/**
+	 * Get the system report.
+	 *
+	 * @return SystemReport
+	 */
 	public function report() {
 		return $this->support->system_report();
 	}
