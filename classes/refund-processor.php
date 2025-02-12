@@ -118,7 +118,7 @@ class Refund_Processor {
 
 		$refund->save();
 
-		Log::logger()->info(
+		ZCO()->logger->info(
 			'Requested a refund of %F %s',
 			$response->getRefundAmount(),
 			$response->getCurrency(),
@@ -271,7 +271,7 @@ class Refund_Processor {
 					$order->add_order_note( sprintf( __( 'Refund of %1$F %2$s initialized with the description "%3$s". Refund ID: %4$s', 'zco' ), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getDescription(), $refund->getRefundId() ) );
 				}
 
-				Log::logger()->info(
+				ZCO()->logger->info(
 					'Refund of %F %s approved',
 					$refund->getRefundAmount(),
 					$refund->getCurrency(),
@@ -292,7 +292,7 @@ class Refund_Processor {
 					$order->add_order_note( sprintf( __( 'Refund of %1$F %2$s approved - Refund ID: %3$s', 'zco' ), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getRefundId() ) );
 				}
 
-				Log::logger()->info(
+				ZCO()->logger->info(
 					'Refund of %F %s approved',
 					$refund->getRefundAmount(),
 					$refund->getCurrency(),
@@ -306,7 +306,7 @@ class Refund_Processor {
 			case RefundStatus::EXECUTED:
 				// translators: 1: Refund amount, 2: Refund currency, 3: Refund ID.
 				$order->add_order_note( sprintf( __( 'Refund of %1$F %2$s completed - Refund ID: %3$s', 'zco' ), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getRefundId() ) );
-				Log::logger()->info(
+				ZCO()->logger->info(
 					'Refund of %F %s completed',
 					$refund->getRefundAmount(),
 					$refund->getCurrency(),
@@ -327,7 +327,7 @@ class Refund_Processor {
 					$order->add_order_note( sprintf( __( 'Refund of %1$F %2$s cancelled - Refund ID: %3$s', 'zco' ), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getRefundId() ) );
 				}
 
-				Log::logger()->info(
+				ZCO()->logger->info(
 					'Refund of %F %s cancelled',
 					$refund->getRefundAmount(),
 					$refund->getCurrency(),

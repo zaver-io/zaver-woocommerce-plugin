@@ -109,7 +109,7 @@ class Payment_Processor {
 			}
 		}
 
-		Log::logger()->debug(
+		ZCO()->logger->debug(
 			'Created Zaver payment request',
 			array(
 				'orderId'   => $order->get_id(),
@@ -290,7 +290,7 @@ class Payment_Processor {
 				// translators: %s is the payment ID.
 				$order->add_order_note( sprintf( __( 'Successful payment with Zaver - payment ID: %s', 'zco' ), $payment_status->getPaymentId() ) );
 				$order->payment_complete( $payment_status->getPaymentId() );
-				Log::logger()->info(
+				ZCO()->logger->info(
 					'Successful payment with Zaver',
 					array(
 						'orderId'   => $order->get_id(),
@@ -300,7 +300,7 @@ class Payment_Processor {
 				break;
 
 			case PaymentStatus::CANCELLED:
-				Log::logger()->info(
+				ZCO()->logger->info(
 					'Zaver Payment was cancelled',
 					array(
 						'orderId'   => $order->get_id(),
@@ -317,7 +317,7 @@ class Payment_Processor {
 				break;
 
 			case PaymentStatus::CREATED:
-				Log::logger()->debug(
+				ZCO()->logger->debug(
 					'Zaver Payment is still in CREATED state',
 					array(
 						'orderId'   => $order->get_id(),

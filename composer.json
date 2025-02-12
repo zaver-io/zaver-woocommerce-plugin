@@ -7,6 +7,15 @@
         }
     },
     "require": {
-        "zaver/sdk": "^1.0.0"
-    }
+        "zaver/sdk": "^1.0.0",
+        "krokedil/support": "dev-develop-logging"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:krokedil/support.git"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

@@ -22,6 +22,8 @@
 
 namespace Zaver;
 
+use Krokedil\Support\Support;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -39,6 +41,13 @@ class Plugin {
 	const PAYMENT_METHOD = 'zaver_checkout';
 
 	/**
+	 * Logger instance.
+	 *
+	 * @var Support
+	 */
+	private $support = null;
+
+	/**
 	 * Get the instance of the plugin.
 	 *
 	 * @return Plugin
@@ -51,6 +60,14 @@ class Plugin {
 		}
 
 		return $instance;
+	}
+
+	public function logger() {
+		return $this->support->logger();
+	}
+
+	public function report() {
+		return $this->support->system_report();
 	}
 
 	/**
@@ -98,6 +115,7 @@ class Plugin {
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
+		$this->support = new Support( 'zaver_checkout', 'Zaver Checkout' );
 		Hooks::instance();
 	}
 
@@ -161,7 +179,6 @@ class Plugin {
 		include_once ZCO_PLUGIN_PATH . '/classes/checkout-gateway.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/helper.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/hooks.php';
-		include_once ZCO_PLUGIN_PATH . '/classes/log.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/payment-processor.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/refund-processor.php';
 	}
@@ -210,4 +227,16 @@ class Plugin {
 	}
 }
 
-Plugin::instance();
+
+// phpcs:disable -- This is a global function.
+
+/**
+ * Get the instance of the plugin.
+ *
+ * @return Plugin
+ */
+function ZCO() {
+	return Plugin::instance();
+}
+
+ZCO();

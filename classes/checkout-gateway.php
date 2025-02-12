@@ -63,20 +63,20 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	 */
 	public function init_form_fields() {
 		$this->form_fields = array(
-			'enabled'        => array(
+			'enabled'          => array(
 				'type'    => 'checkbox',
 				'default' => 'yes',
 				'title'   => __( 'Enable/Disable', 'zco' ),
 				'label'   => __( 'Enable Zaver Checkout', 'zco' ),
 			),
-			'title'          => array(
+			'title'            => array(
 				'type'        => 'text',
 				'desc_tip'    => true,
 				'title'       => __( 'Title', 'zco' ),
 				'description' => __( 'This controls the title which the user sees during checkout.', 'zco' ),
 				'default'     => __( 'Zaver Checkout', 'zco' ),
 			),
-			'test_mode'      => array(
+			'test_mode'        => array(
 				'type'        => 'checkbox',
 				'default'     => 'no',
 				'desc_tip'    => true,
@@ -84,7 +84,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 				'label'       => __( 'Enable test mode', 'zco' ),
 				'description' => __( 'If you received any test credentials from Zaver, this checkbox should be checked.', 'zco' ),
 			),
-			'api_key'        => array(
+			'api_key'          => array(
 				'type'        => 'text',
 				'class'       => 'code',
 				'desc_tip'    => false,
@@ -96,14 +96,14 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 					'<a target="_blank" href="' . esc_attr( __( 'https://zaver.com/en/contact', 'zco' ) ) . '">' . __( 'contact Zaver', 'zco' ) . '</a>',
 				),
 			),
-			'callback_token' => array(
+			'callback_token'   => array(
 				'type'        => 'text',
 				'class'       => 'code',
 				'desc_tip'    => true,
 				'title'       => __( 'Callback Token', 'zco' ),
 				'description' => __( 'The callback token is optional but recommended - it is used to validate requests from Zaver.', 'zco' ),
 			),
-			'primary_color'  => array(
+			'primary_color'    => array(
 				'type'        => 'color',
 				'desc_tip'    => true,
 				'title'       => __( 'Primary color', 'zco' ),
@@ -139,7 +139,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 				)
 			);
 		} catch ( Exception $e ) {
-			Log::logger()->error( 'Zaver error during payment process: %s', $e->getMessage(), array( 'orderId' => $order_id ) );
+			ZCO()->logger()->error( 'Zaver error during payment process: %s', $e->getMessage(), array( 'orderId' => $order_id ) );
 
 			$message = __( 'An error occurred - please try again, or contact site support', 'zco' );
 			wc_add_notice( $message, 'error' );
@@ -175,7 +175,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 
 			return true;
 		} catch ( Exception $e ) {
-			Log::logger()->error(
+			ZCO()->logger->error(
 				'Zaver error during refund process: %s',
 				$e->getMessage(),
 				array(

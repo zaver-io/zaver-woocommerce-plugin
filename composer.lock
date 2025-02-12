@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0516d75c73172d75529df8ac5a61658e",
+    "content-hash": "9733a1971e468d780505e2fe64575df4",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -330,6 +330,62 @@
                 }
             ],
             "time": "2024-07-18T11:15:46+00:00"
+        },
+        {
+            "name": "krokedil/support",
+            "version": "dev-develop-logging",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/krokedil/support.git",
+                "reference": "04a924bd0d6d13dcb64b2f2c192a9149cecf9b2b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/krokedil/support/zipball/04a924bd0d6d13dcb64b2f2c192a9149cecf9b2b",
+                "reference": "04a924bd0d6d13dcb64b2f2c192a9149cecf9b2b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~7.4 || ~8.0"
+            },
+            "require-dev": {
+                "php-stubs/woocommerce-stubs": "^8.1",
+                "phpcompatibility/php-compatibility": "^9.3",
+                "phpunit/phpunit": "^9.6",
+                "wp-coding-standards/wpcs": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Krokedil\\Support\\": "src/"
+                }
+            },
+            "scripts": {
+                "phpcs": [
+                    "phpcs --extensions=php -s -p"
+                ],
+                "phpcbf": [
+                    "phpcbf -p"
+                ],
+                "phpunit": [
+                    "phpunit --configuration phpunit.xml"
+                ]
+            },
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Krokedil AB",
+                    "email": "info@krokedil.se"
+                }
+            ],
+            "description": "The support library allows you to extend your plugin with features that will help you troubleshooting support related issues.",
+            "support": {
+                "source": "https://github.com/krokedil/support/tree/develop-logging",
+                "issues": "https://github.com/krokedil/support/issues"
+            },
+            "time": "2025-02-12T00:16:16+00:00"
         },
         {
             "name": "psr/http-client",
@@ -667,9 +723,11 @@
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": {},
-    "prefer-stable": false,
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "krokedil/support": 20
+    },
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {},
     "platform-dev": {},
