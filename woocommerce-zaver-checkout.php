@@ -22,9 +22,9 @@
 
 namespace Zaver;
 
-use Krokedil\Support\Support;
-use Krokedil\Support\Logger;
-use Krokedil\Support\SystemReport;
+use KrokedilZCODeps\Krokedil\Support\Support;
+use KrokedilZCODeps\Krokedil\Support\Logger;
+use KrokedilZCODeps\Krokedil\Support\SystemReport;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -146,15 +146,18 @@ class Plugin {
 	 * @return bool
 	 */
 	public function init_composer() {
-		$autoloader = ZCO_PLUGIN_PATH . '/vendor/autoload.php';
+		$autoloader              = ZCO_PLUGIN_PATH . '/vendor/autoload.php';
+		$autoloader_dependencies = ZCO_PLUGIN_PATH . '/dependencies/scoper-autoload.php';
 
-		if ( ! is_readable( $autoloader ) ) {
+		$autoloader_result              = is_readable( $autoloader ) && require $autoloader;
+		$autoloader_dependencies_result = is_readable( $autoloader_dependencies ) && require $autoloader_dependencies;
+
+		if ( ! $autoloader_result || ! $autoloader_dependencies_result ) {
 			self::missing_autoloader();
 			return false;
 		}
 
-		$autoloader_result = require $autoloader;
-		return $autoloader_result ? true : false;
+		return true;
 	}
 
 	/**
