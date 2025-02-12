@@ -66,7 +66,7 @@ final class Hooks {
 			return $template;
 		}
 
-		if ( ! ( isset( $args['order'] ) || $args['order'] instanceof WC_Order ) ) {
+		if ( ! isset( $args['order'] ) || ! $args['order'] instanceof WC_Order ) {
 			return $template;
 		}
 
