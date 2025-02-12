@@ -119,9 +119,11 @@ class Refund_Processor {
 		$refund->save();
 
 		ZCO()->logger()->info(
-			'Requested a refund of %F %s',
-			$response->getRefundAmount(),
-			$response->getCurrency(),
+			sprintf(
+				'Requested a refund of %F %s',
+				$response->getRefundAmount(),
+				$response->getCurrency()
+			),
 			array(
 				'orderId'  => $order->get_id(),
 				'refundId' => $response->getRefundId(),
@@ -272,9 +274,11 @@ class Refund_Processor {
 				}
 
 				ZCO()->logger()->info(
-					'Refund of %F %s approved',
-					$refund->getRefundAmount(),
-					$refund->getCurrency(),
+					sprintf(
+						'Refund of %F %s approved',
+						$refund->getRefundAmount(),
+						$refund->getCurrency()
+					),
 					array(
 						'orderId'  => $order->get_id(),
 						'refundId' => $refund->getRefundId(),
@@ -293,9 +297,11 @@ class Refund_Processor {
 				}
 
 				ZCO()->logger()->info(
-					'Refund of %F %s approved',
-					$refund->getRefundAmount(),
-					$refund->getCurrency(),
+					sprintf(
+						'Refund of %F %s approved',
+						$refund->getRefundAmount(),
+						$refund->getCurrency()
+					),
 					array(
 						'orderId'  => $order->get_id(),
 						'refundId' => $refund->getRefundId(),
@@ -307,9 +313,11 @@ class Refund_Processor {
 				// translators: 1: Refund amount, 2: Refund currency, 3: Refund ID.
 				$order->add_order_note( sprintf( __( 'Refund of %1$F %2$s completed - Refund ID: %3$s', 'zco' ), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getRefundId() ) );
 				ZCO()->logger()->info(
-					'Refund of %F %s completed',
-					$refund->getRefundAmount(),
-					$refund->getCurrency(),
+					sprintf(
+						'Refund of %F %s completed',
+						$refund->getRefundAmount(),
+						$refund->getCurrency()
+					),
 					array(
 						'orderId'  => $order->get_id(),
 						'refundId' => $refund->getRefundId(),
@@ -328,9 +336,11 @@ class Refund_Processor {
 				}
 
 				ZCO()->logger()->info(
-					'Refund of %F %s cancelled',
-					$refund->getRefundAmount(),
-					$refund->getCurrency(),
+					sprintf(
+						'Refund of %F %s cancelled',
+						$refund->getRefundAmount(),
+						$refund->getCurrency()
+					),
 					array(
 						'orderId'  => $order->get_id(),
 						'refundId' => $refund->getRefundId(),

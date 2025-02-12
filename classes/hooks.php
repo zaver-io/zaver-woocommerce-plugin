@@ -113,9 +113,9 @@ final class Hooks {
 			if ( $order ) {
 				// translators: %s is the error message.
 				$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-				ZCO()->logger()->error( 'Failed with Zaver payment: %s', $e->getMessage(), array( 'orderId' => $order->get_id() ) );
+				ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
 			} else {
-				ZCO()->logger()->error( 'Failed with Zaver payment: %s', $e->getMessage() );
+				ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ) );
 			}
 
 			status_header( 400 );
@@ -155,7 +155,7 @@ final class Hooks {
 		} catch ( Exception $e ) {
 			// translators: %s is the error message.
 			$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-			ZCO()->logger()->error( 'Failed with Zaver payment: %s', $e->getMessage(), array( 'orderId' => $order->get_id() ) );
+			ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
 
 			wc_add_notice( __( 'An error occurred with your Zaver payment - please try again, or contact the site support.', 'zco' ), 'error' );
 
@@ -191,7 +191,7 @@ final class Hooks {
 		} catch ( Exception $e ) {
 			// translators: %s is the error message.
 			$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-			ZCO()->logger()->error( 'Failed with Zaver payment: %s', $e->getMessage(), array( 'orderId' => $order->get_id() ) );
+			ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
 
 			status_header( 400 );
 		}
@@ -231,8 +231,10 @@ final class Hooks {
 			// translators: %s is the error message.
 			$order->add_order_note( sprintf( __( 'Failed to cancel Zaver payment: %s', 'zco' ), $e->getMessage() ) );
 			ZCO()->logger()->error(
-				'Failed to cancel Zaver payment: %s',
-				$e->getMessage(),
+				sprintf(
+					'Failed to cancel Zaver payment: %s',
+					$e->getMessage()
+				),
 				array(
 					'orderId'   => $order->get_id(),
 					'paymentId' => $payment['id'],

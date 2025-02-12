@@ -139,7 +139,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 				)
 			);
 		} catch ( Exception $e ) {
-			ZCO()->logger()->error( 'Zaver error during payment process: %s', $e->getMessage(), array( 'orderId' => $order_id ) );
+			ZCO()->logger()->error( sprintf( 'Zaver error during payment process: %s', $e->getMessage() ), array( 'orderId' => $order_id ) );
 
 			$message = __( 'An error occurred - please try again, or contact site support', 'zco' );
 			wc_add_notice( $message, 'error' );
@@ -176,8 +176,10 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 			return true;
 		} catch ( Exception $e ) {
 			ZCO()->logger()->error(
-				'Zaver error during refund process: %s',
-				$e->getMessage(),
+				sprintf(
+					'Zaver error during refund process: %s',
+					$e->getMessage()
+				),
 				array(
 					'orderId' => $order_id,
 					'amount'  => $amount,
