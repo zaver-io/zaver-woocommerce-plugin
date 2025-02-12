@@ -187,7 +187,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 				)
 			);
 
-			return Helper::wp_error( $e );
+			return ZCO()->report()->request( Helper::wp_error( $e ) );
 		}
 	}
 
