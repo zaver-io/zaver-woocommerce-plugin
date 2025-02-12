@@ -14,7 +14,7 @@ if ( ! $payment ) {
 	wp_die( 'Invalid order' );
 }
 
-ZCO()->logger->debug(
+ZCO()->logger()->debug(
 	'Rendered Zaver Checkout',
 	array(
 		'orderId'   => $order->get_id(),
