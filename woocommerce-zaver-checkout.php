@@ -196,6 +196,8 @@ class Plugin {
 		include_once ZCO_PLUGIN_PATH . '/classes/hooks.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/payment-processor.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/refund-processor.php';
+
+		include_once ZCO_PLUGIN_PATH . '/classes/helpers/order.php';
 	}
 
 	/**

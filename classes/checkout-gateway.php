@@ -11,6 +11,7 @@ use Zaver\SDK\Checkout;
 use Zaver\SDK\Refund;
 use Zaver\SDK\Object\PaymentStatusResponse;
 use Zaver\SDK\Object\RefundResponse;
+use Zaver\Classes\Helpers\Order;
 use WC_Order;
 use WC_Payment_Gateway;
 use Exception;
