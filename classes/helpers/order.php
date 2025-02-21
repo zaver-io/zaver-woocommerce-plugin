@@ -19,8 +19,6 @@ use WC_Order_Item_Shipping;
 use Zaver\Plugin;
 use Zaver\Helper;
 
-use function Zaver\ZCO;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -28,12 +26,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Order
  *
- * Handles the payment processing.
+ * Processes a checkout order for payment handling.
  */
 class Order {
 
 	/**
-	 * Process a payment for the given order.
+	 * Create Zaver payment session.
 	 *
 	 * @param WC_Order $order The order to process the payment for.
 	 * @return PaymentCreationRequest
@@ -86,7 +84,6 @@ class Order {
 			$payment->addLineItem( $line_item );
 		}
 
-		do_action( 'zco_before_process_payment', $payment, $order );
 		return $payment;
 	}
 

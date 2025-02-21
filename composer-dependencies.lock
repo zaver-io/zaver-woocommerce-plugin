@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c81c05f5f88376264efd1cf72669e0c0",
+    "content-hash": "cabfd1b3fe39fbd36685cbcdfc39744d",
     "packages": [
         {
             "name": "krokedil/support",
@@ -61,6 +61,53 @@
                 "issues": "https://github.com/krokedil/support/issues"
             },
             "time": "2025-02-12T01:24:28+00:00"
+        },
+        {
+            "name": "krokedil/woocommerce",
+            "version": "1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/krokedil/woocommerce.git",
+                "reference": "bba7b6132b25e4e547aa82246b4d28fc8ebfd8c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/krokedil/woocommerce/zipball/bba7b6132b25e4e547aa82246b4d28fc8ebfd8c5",
+                "reference": "bba7b6132b25e4e547aa82246b4d28fc8ebfd8c5",
+                "shasum": ""
+            },
+            "require-dev": {
+                "10up/wp_mock": "^1.0",
+                "php": "~7.4 || ~8.0",
+                "php-stubs/woocommerce-stubs": "^7.2",
+                "php-stubs/wordpress-stubs": "^6.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Krokedil\\WooCommerce\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Krokedil\\WooCommerce\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "GPL-V2"
+            ],
+            "authors": [
+                {
+                    "name": "Krokedil AB",
+                    "email": "info@krokedil.se"
+                }
+            ],
+            "description": "A library package for Krokedils plugins that contains helper methods when working with WooCommerce.",
+            "support": {
+                "source": "https://github.com/krokedil/woocommerce/tree/1.8.0",
+                "issues": "https://github.com/krokedil/woocommerce/issues"
+            },
+            "time": "2025-02-05T14:02:57+00:00"
         }
     ],
     "packages-dev": [],

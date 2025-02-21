@@ -11,7 +11,6 @@ use Zaver\SDK\Checkout;
 use Zaver\SDK\Refund;
 use Zaver\SDK\Object\PaymentStatusResponse;
 use Zaver\SDK\Object\RefundResponse;
-use Zaver\Classes\Helpers\Order;
 use WC_Order;
 use WC_Payment_Gateway;
 use Exception;
@@ -55,6 +54,28 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 		$this->supports          = array( 'products', 'refunds' );
 
 		add_action( "woocommerce_update_options_payment_gateways_{$this->id}", array( $this, 'process_admin_options' ) );
+
+		add_filter( 'wc_get_template', array( $this, 'payment_categories' ), 10, 3 );
+	}
+
+	/**
+	 * Display the payment categories under the gateway on the checkout page.
+	 *
+	 * @param string $located Target template file location.
+	 * @param string $template_name The name of the template.
+	 * @param array  $args Arguments for the template.
+	 * @return string
+	 */
+	public function payment_categories( $located, $template_name, $args ) {
+		if ( ! is_checkout() ) {
+			return $located;
+		}
+
+		if ( ( 'checkout/payment-method.php' !== $template_name ) || ( Plugin::PAYMENT_METHOD !== $args['gateway']->id ) ) {
+			return $located;
+		}
+
+		return ZCO_PLUGIN_PATH . '/templates/payment-categories.php';
 	}
 
 	/**

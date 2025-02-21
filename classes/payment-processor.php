@@ -8,15 +8,7 @@
 namespace Zaver;
 
 use Exception;
-use Zaver\SDK\Config\ItemType;
-use Zaver\SDK\Object\PaymentCreationRequest;
-use Zaver\SDK\Object\MerchantUrls;
-use Zaver\SDK\Object\LineItem;
 use WC_Order;
-use WC_Order_Item_Coupon;
-use WC_Order_Item_Fee;
-use WC_Order_Item_Product;
-use WC_Order_Item_Shipping;
 use Zaver\SDK\Config\PaymentStatus;
 use Zaver\SDK\Object\PaymentStatusResponse;
 
