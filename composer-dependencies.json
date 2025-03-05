@@ -5,6 +5,9 @@
     "krokedil/woocommerce": "^1.0.0",
     "zaver/sdk": "dev-develop-2.0.0"
   },
+  "require-dev": {
+    "symfony/deprecation-contracts": "^2.2"
+  },
   "config": {
     "platform": {
       "php": "7.4"
