@@ -7,10 +7,10 @@
 
 namespace Zaver\Classes\Helpers;
 
-use Zaver\SDK\Config\ItemType;
-use Zaver\SDK\Object\PaymentCreationRequest;
-use Zaver\SDK\Object\MerchantUrls;
-use Zaver\SDK\Object\LineItem;
+use KrokedilZCODeps\Zaver\SDK\Config\ItemType;
+use KrokedilZCODeps\Zaver\SDK\Object\PaymentCreationRequest;
+use KrokedilZCODeps\Zaver\SDK\Object\MerchantUrls;
+use KrokedilZCODeps\Zaver\SDK\Object\LineItem;
 use WC_Order;
 use Zaver\Plugin;
 use Zaver\Helper;

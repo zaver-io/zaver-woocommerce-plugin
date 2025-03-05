@@ -12,7 +12,7 @@ use WC_Order_Item;
 use WC_Product;
 use WC_Tax;
 use WP_Error;
-use Zaver\SDK\Config\ItemType;
+use KrokedilZCODeps\Zaver\SDK\Config\ItemType;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

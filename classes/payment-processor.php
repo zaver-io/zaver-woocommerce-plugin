@@ -9,8 +9,8 @@ namespace Zaver;
 
 use Exception;
 use WC_Order;
-use Zaver\SDK\Config\PaymentStatus;
-use Zaver\SDK\Object\PaymentStatusResponse;
+use KrokedilZCODeps\Zaver\SDK\Config\PaymentStatus;
+use KrokedilZCODeps\Zaver\SDK\Object\PaymentStatusResponse;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

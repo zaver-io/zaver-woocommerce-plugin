@@ -7,13 +7,13 @@
 
 namespace Zaver;
 
-use Zaver\SDK\Config\RefundStatus;
-use Zaver\SDK\Object\MerchantRepresentative;
-use Zaver\SDK\Object\RefundCreationRequest;
-use Zaver\SDK\Object\RefundUpdateRequest;
-use Zaver\SDK\Object\RefundLineItem;
-use Zaver\SDK\Object\RefundResponse;
-use Zaver\SDK\Object\MerchantUrls;
+use KrokedilZCODeps\Zaver\SDK\Config\RefundStatus;
+use KrokedilZCODeps\Zaver\SDK\Object\MerchantRepresentative;
+use KrokedilZCODeps\Zaver\SDK\Object\RefundCreationRequest;
+use KrokedilZCODeps\Zaver\SDK\Object\RefundUpdateRequest;
+use KrokedilZCODeps\Zaver\SDK\Object\RefundLineItem;
+use KrokedilZCODeps\Zaver\SDK\Object\RefundResponse;
+use KrokedilZCODeps\Zaver\SDK\Object\MerchantUrls;
 use WC_Order;
 use Exception;
 use WC_Order_Item;

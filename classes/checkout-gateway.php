@@ -7,10 +7,10 @@
 
 namespace Zaver;
 
-use Zaver\SDK\Checkout;
-use Zaver\SDK\Refund;
-use Zaver\SDK\Object\PaymentStatusResponse;
-use Zaver\SDK\Object\RefundResponse;
+use KrokedilZCODeps\Zaver\SDK\Checkout;
+use KrokedilZCODeps\Zaver\SDK\Refund;
+use KrokedilZCODeps\Zaver\SDK\Object\PaymentStatusResponse;
+use KrokedilZCODeps\Zaver\SDK\Object\RefundResponse;
 use WC_Order;
 use WC_Payment_Gateway;
 use Exception;
