@@ -2,7 +2,8 @@
   "require": {
     "php": ">=7.4",
     "krokedil/support": "dev-develop-logging",
-    "krokedil/woocommerce": "^1.0.0"
+    "krokedil/woocommerce": "^1.0.0",
+    "zaver/sdk": "dev-develop-2.0.0"
   },
   "config": {
     "platform": {
@@ -17,6 +18,10 @@
     {
       "type": "vcs",
       "url": "git@github.com:krokedil/woocommerce.git"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:krokedil/zaver-php-sdk.git"
     }
   ],
   "minimum-stability": "dev",
