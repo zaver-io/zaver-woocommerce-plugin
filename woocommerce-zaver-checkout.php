@@ -146,13 +146,9 @@ class Plugin {
 	 * @return bool
 	 */
 	public function init_composer() {
-		$autoloader              = ZCO_PLUGIN_PATH . '/vendor/autoload.php';
-		$autoloader_dependencies = ZCO_PLUGIN_PATH . '/dependencies/scoper-autoload.php';
-
-		$autoloader_result              = is_readable( $autoloader ) && require $autoloader;
+		$autoloader_dependencies        = ZCO_PLUGIN_PATH . '/dependencies/scoper-autoload.php';
 		$autoloader_dependencies_result = is_readable( $autoloader_dependencies ) && require $autoloader_dependencies;
-
-		if ( ! $autoloader_result || ! $autoloader_dependencies_result ) {
+		if ( $autoloader_dependencies_result ) {
 			self::missing_autoloader();
 			return false;
 		}
