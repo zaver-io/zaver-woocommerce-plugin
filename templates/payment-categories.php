@@ -17,23 +17,24 @@ $payment_methods = $response->getSpecificPaymentMethodData();
 
 $session = array();
 foreach ( $payment_methods as $payment_method ) {
-	$token = $payment_method->getCheckoutToken();
-	$link  = $payment_method->getPaymentLink();
-	$id    = Plugin::PAYMENT_METHOD . '_' . strtolower( $payment_method->getPaymentMethod() );
+	$token       = $payment_method->getCheckoutToken();
+	$link        = $payment_method->getPaymentLink();
+	$id          = Plugin::PAYMENT_METHOD . '_' . strtolower( $payment_method->getPaymentMethod() );
+	$pretty_name = ucwords( str_replace( '_', ' ', strtolower( $payment_method->getPaymentMethod() ) ) );
 
 	$gateway        = $available_gateways[ Plugin::PAYMENT_METHOD ] ?? $available_gateways[ $id ];
 	$gateway->id    = $id;
-	$gateway->title = $payment_method->getPaymentMethod();
-
-	// For "Linear Checkout for WooCommerce by Cartimize" to work, we cannot output any HTML.
-	if ( did_action( 'cartimize_get_payment_methods_html' ) === 0 ) {
-		wc_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway ) );
-	}
+	$gateway->title = $pretty_name;
 
 	$session[ $id ] = array(
 		'token' => $token,
 		'link'  => $link,
 	);
+
+	// For "Linear Checkout for WooCommerce by Cartimize" to work, we cannot output any HTML.
+	if ( did_action( 'cartimize_get_payment_methods_html' ) === 0 ) {
+		wc_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway ) );
+	}
 }
 
 WC()->session->set( 'zaver_checkout_payment_methods', $session );
