@@ -56,23 +56,47 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 		add_action( "woocommerce_update_options_payment_gateways_{$this->id}", array( $this, 'process_admin_options' ) );
 
 		add_filter( 'wc_get_template', array( $this, 'payment_categories' ), 10, 3 );
+		add_filter(
+			'wc_get_template',
+			function ( $template, $template_name, $args ) {
+				if ( 'checkout/payment-method.php' !== $template_name ) {
+					return $template;
+				}
+
+				if ( ! isset( $args['gateway'] ) || strpos( $args['gateway']->id, Plugin::PAYMENT_METHOD ) === false ) {
+					return $template;
+				}
+
+				$id              = $args['gateway']->id;
+				$payment_methods = WC()->session->get( 'zaver_checkout_payment_methods' );
+				if ( ! isset( $payment_methods[ $id ] ) ) {
+					return $template;
+				}
+
+				$token = $payment_methods[ $id ]['token'];
+				echo $this->get_html_snippet( $token );
+				return $template;
+			},
+			999,
+			3
+		);
 	}
 
 	/**
 	 * Display the payment categories under the gateway on the checkout page.
 	 *
-	 * @param string $located Target template file location.
+	 * @param string $template Target template file location.
 	 * @param string $template_name The name of the template.
 	 * @param array  $args Arguments for the template.
 	 * @return string
 	 */
-	public function payment_categories( $located, $template_name, $args ) {
+	public function payment_categories( $template, $template_name, $args ) {
 		if ( ! is_checkout() ) {
-			return $located;
+			return $template;
 		}
 
 		if ( ( 'checkout/payment-method.php' !== $template_name ) || ( Plugin::PAYMENT_METHOD !== $args['gateway']->id ) ) {
-			return $located;
+			return $template;
 		}
 
 		return ZCO_PLUGIN_PATH . '/templates/payment-categories.php';

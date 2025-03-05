@@ -8,16 +8,32 @@
 use Zaver\Plugin;
 use Zaver\Classes\Helpers\Cart;
 
-$token = WC()->session->get( 'zaver_token' );
-if ( empty( $token ) ) {
-	$payment    = Cart::create();
-	$response   = Plugin::gateway()->api()->createPayment( $payment );
-	$categories = $response->getSpecificPaymentMethodData();
-	$token      = $response->getToken();
+$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+$gateway            = $available_gateways[ Plugin::PAYMENT_METHOD ];
 
-	WC()->session->set( 'zaver_token', $token );
-	WC()->session->set( 'zaver_html_snippet', Plugin::gateway()->get_html_snippet( $token ) );
+$payment         = Cart::create();
+$response        = Plugin::gateway()->api()->createPayment( $payment );
+$payment_methods = $response->getSpecificPaymentMethodData();
+
+$session = array();
+foreach ( $payment_methods as $payment_method ) {
+	$token = $payment_method->getCheckoutToken();
+	$link  = $payment_method->getPaymentLink();
+	$id    = Plugin::PAYMENT_METHOD . '_' . strtolower( $payment_method->getPaymentMethod() );
+
+	$gateway        = $available_gateways[ Plugin::PAYMENT_METHOD ] ?? $available_gateways[ $id ];
+	$gateway->id    = $id;
+	$gateway->title = $payment_method->getPaymentMethod();
+
+	// For "Linear Checkout for WooCommerce by Cartimize" to work, we cannot output any HTML.
+	if ( did_action( 'cartimize_get_payment_methods_html' ) === 0 ) {
+		wc_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway ) );
+	}
+
+	$session[ $id ] = array(
+		'token' => $token,
+		'link'  => $link,
+	);
 }
 
-// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- We need to inject an HTML snippet.
-echo WC()->session->get( 'zaver_html_snippet' );
+WC()->session->set( 'zaver_checkout_payment_methods', $session );
