@@ -42,7 +42,7 @@ class Order {
 			->setAmount( $order->get_total() )
 			->setCurrency( $order->get_currency() )
 			->setMarket( $order->get_billing_country() )
-			->setMerchantMetadata(
+			->setPaymentMetadata(
 				array(
 					'originPlatform' => 'woocommerce',
 					'originWebsite'  => home_url(),
@@ -69,7 +69,7 @@ class Order {
 			$line_item = LineItem::create()
 				->setName( $item->get_name() )
 				->setQuantity( $item->get_quantity() )
-				->setMerchantMetadata( array( 'orderItemId' => $item->get_id() ) );
+				->setLineItemMetadata( array( 'orderItemId' => $item->get_id() ) );
 
 			if ( $item->is_type( 'line_item' ) ) {
 				self::prepare_line_item( $line_item, $item );

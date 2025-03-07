@@ -45,7 +45,7 @@ class Cart {
 		->setAmount( $cart->get_total() )
 		->setCurrency( get_woocommerce_currency() )
 		->setMarket( $cart->customer->get_billing_country() )
-		->setMerchantMetadata(
+		->setPaymentMetadata(
 			array(
 				'originPlatform' => 'woocommerce',
 				'originWebsite'  => home_url(),
