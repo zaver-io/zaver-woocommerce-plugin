@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "77cdc45724046a11a7365e8567e49eb8",
+    "content-hash": "67ab3cec3a5afd9985d028e70274297c",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -333,16 +333,16 @@
         },
         {
             "name": "krokedil/support",
-            "version": "dev-develop-logging",
+            "version": "dev-develop-system-report-settings",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/support.git",
-                "reference": "7c2a4f5a4c8ed3dc477670a581e902ee410f1a51"
+                "reference": "919bcc3283142fe5096a9d256464835bac219234"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/support/zipball/7c2a4f5a4c8ed3dc477670a581e902ee410f1a51",
-                "reference": "7c2a4f5a4c8ed3dc477670a581e902ee410f1a51",
+                "url": "https://api.github.com/repos/krokedil/support/zipball/919bcc3283142fe5096a9d256464835bac219234",
+                "reference": "919bcc3283142fe5096a9d256464835bac219234",
                 "shasum": ""
             },
             "require": {
@@ -382,10 +382,10 @@
             ],
             "description": "The support library allows you to extend your plugin with features that will help you troubleshooting support related issues.",
             "support": {
-                "source": "https://github.com/krokedil/support/tree/develop-logging",
+                "source": "https://github.com/krokedil/support/tree/develop-system-report-settings",
                 "issues": "https://github.com/krokedil/support/issues"
             },
-            "time": "2025-03-04T07:50:37+00:00"
+            "time": "2025-03-06T13:24:18+00:00"
         },
         {
             "name": "krokedil/woocommerce",
@@ -711,12 +711,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/zaver-php-sdk.git",
-                "reference": "e0db97cef779535f81c474ace30bda10aea66608"
+                "reference": "6bc9fb124b24ffb2e5e35ef577628698056ea54f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/zaver-php-sdk/zipball/e0db97cef779535f81c474ace30bda10aea66608",
-                "reference": "e0db97cef779535f81c474ace30bda10aea66608",
+                "url": "https://api.github.com/repos/krokedil/zaver-php-sdk/zipball/6bc9fb124b24ffb2e5e35ef577628698056ea54f",
+                "reference": "6bc9fb124b24ffb2e5e35ef577628698056ea54f",
                 "shasum": ""
             },
             "require": {
@@ -764,7 +764,7 @@
                 "issues": "https://github.com/zaver-io/zaver-php-sdk/issues",
                 "source": "https://github.com/krokedil/zaver-php-sdk/tree/develop-2.0.0"
             },
-            "time": "2025-03-05T09:38:00+00:00"
+            "time": "2025-03-07T08:15:06+00:00"
         }
     ],
     "packages-dev": [],
