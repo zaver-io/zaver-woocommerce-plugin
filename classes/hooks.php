@@ -50,6 +50,25 @@ final class Hooks {
 		add_action( 'woocommerce_order_status_cancelled', array( $this, 'cancelled_order' ), 10, 2 );
 		add_action( 'template_redirect', array( $this, 'check_order_received' ) );
 		add_action( 'zco_before_checkout', array( $this, 'add_cancel_link' ) );
+
+		// Process the checkout before the payment is processed.
+		add_action( 'woocommerce_checkout_process', array( $this, 'override_gateway_id' ) );
+	}
+
+	/**
+	 * Override the gateway ID to match the chosen payment method.
+	 *
+	 * @return void
+	 */
+	public function override_gateway_id() {
+		if ( ! Checkout_Gateway::is_chosen_gateway() ) {
+			return;
+		}
+
+		$payment_method     = filter_input( INPUT_POST, 'payment_method', FILTER_SANITIZE_SPECIAL_CHARS );
+		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+		$chosen_gateway     = $available_gateways[ Plugin::PAYMENT_METHOD ];
+		$chosen_gateway->id = $payment_method;
 	}
 
 	/**

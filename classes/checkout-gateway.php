@@ -51,35 +51,20 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 
 		$this->title             = $this->get_option( 'title' );
 		$this->order_button_text = apply_filters( 'zco_order_button_text', __( 'Pay with Zaver', 'zco' ) );
-		$this->supports          = array( 'products', 'refunds' );
+		$this->supports          = apply_filters(
+			$this->id . '_supports',
+			array(
+				'products',
+				'refunds',
+			)
+		);
 
 		add_action( "woocommerce_update_options_payment_gateways_{$this->id}", array( $this, 'process_admin_options' ) );
 
-		add_filter( 'wc_get_template', array( $this, 'payment_categories' ), 10, 3 );
-		add_filter(
-			'wc_get_template',
-			function ( $template, $template_name, $args ) {
-				if ( 'checkout/payment-method.php' !== $template_name ) {
-					return $template;
-				}
-
-				if ( ! isset( $args['gateway'] ) || strpos( $args['gateway']->id, Plugin::PAYMENT_METHOD ) === false ) {
-					return $template;
-				}
-
-				$id              = $args['gateway']->id;
-				$payment_methods = WC()->session->get( 'zaver_checkout_payment_methods' );
-				if ( ! isset( $payment_methods[ $id ] ) ) {
-					return $template;
-				}
-
-				$token = $payment_methods[ $id ]['token'];
-				echo $this->get_html_snippet( $token );
-				return $template;
-			},
-			999,
-			3
-		);
+		$separate_payment_methods = wc_string_to_bool( $this->get_option( 'separate_methods', false ) );
+		if ( $separate_payment_methods ) {
+			add_filter( 'wc_get_template', array( $this, 'payment_categories' ), 10, 3 );
+		}
 	}
 
 	/**
@@ -103,26 +88,47 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Check if the gateway is the chosen payment method.
+	 *
+	 * Due to inconsistencies in the gateway name (e.g., zaver_checkout vs. zaver_checkout_bank_transfer), we need to check for the presence of 'zaver_checkout'.
+	 *
+	 * @param int|null|\WC_Order $order_id The WooCommerce order or its id.
+	 * @return bool
+	 */
+	public static function is_chosen_gateway( $order_id = null ) {
+		if ( $order_id instanceof \WC_Order ) {
+			$chosen_gateway = $order_id->get_payment_method();
+		} elseif ( ! empty( $order_id ) ) {
+			$order          = wc_get_order( $order_id );
+			$chosen_gateway = empty( $order ) ? '' : $order->get_payment_method();
+		} else {
+			$chosen_gateway = ! isset( WC()->session ) ? '' : WC()->session->get( 'chosen_payment_method' );
+		}
+
+		return strpos( $chosen_gateway, Plugin::PAYMENT_METHOD ) !== false;
+	}
+
+	/**
 	 * Initialize the plugin settings (form fields).
 	 *
 	 * @return void
 	 */
 	public function init_form_fields() {
 		$this->form_fields = array(
-			'enabled'        => array(
+			'enabled'          => array(
 				'type'    => 'checkbox',
 				'default' => 'yes',
 				'title'   => __( 'Enable/Disable', 'zco' ),
 				'label'   => __( 'Enable Zaver Checkout', 'zco' ),
 			),
-			'title'          => array(
+			'title'            => array(
 				'type'        => 'text',
 				'desc_tip'    => true,
 				'title'       => __( 'Title', 'zco' ),
 				'description' => __( 'This controls the title which the user sees during checkout.', 'zco' ),
 				'default'     => __( 'Zaver Checkout', 'zco' ),
 			),
-			'test_mode'      => array(
+			'test_mode'        => array(
 				'type'        => 'checkbox',
 				'default'     => 'no',
 				'desc_tip'    => true,
@@ -130,7 +136,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 				'label'       => __( 'Enable test mode', 'zco' ),
 				'description' => __( 'If you received any test credentials from Zaver, this checkbox should be checked.', 'zco' ),
 			),
-			'api_key'        => array(
+			'api_key'          => array(
 				'type'        => 'text',
 				'class'       => 'code',
 				'desc_tip'    => false,
@@ -142,14 +148,22 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 					'<a target="_blank" href="' . esc_attr( __( 'https://zaver.com/en/contact', 'zco' ) ) . '">' . __( 'contact Zaver', 'zco' ) . '</a>',
 				),
 			),
-			'callback_token' => array(
+			'callback_token'   => array(
 				'type'        => 'text',
 				'class'       => 'code',
 				'desc_tip'    => true,
 				'title'       => __( 'Callback Token', 'zco' ),
 				'description' => __( 'The callback token is optional but recommended - it is used to validate requests from Zaver.', 'zco' ),
 			),
-			'primary_color'  => array(
+			'separate_methods' => array(
+				'type'        => 'checkbox',
+				'default'     => 'no',
+				'desc_tip'    => true,
+				'title'       => __( 'Separate payment methods in the checkout', 'zco' ),
+				'label'       => __( 'Show Zaver as separate payment methods in the checkout.', 'zco' ),
+				'description' => __( 'If you want to show each payment method as a separate gateway, check this box.', 'zco' ),
+			),
+			'primary_color'    => array(
 				'type'        => 'color',
 				'desc_tip'    => true,
 				'title'       => __( 'Primary color', 'zco' ),
@@ -177,11 +191,14 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 
 			Payment_Processor::process( $order );
 
+			$zaver_session = WC()->session->get( 'zaver_checkout_payment_methods' );
+			$redirect_url  = $zaver_session[ $this->id ]['link'] ?? $order->get_checkout_payment_url( true );
+
 			return apply_filters(
 				'zco_process_payment_result',
 				array(
 					'result'   => 'success',
-					'redirect' => $order->get_checkout_payment_url( true ),
+					'redirect' => $redirect_url,
 				)
 			);
 		} catch ( Exception $e ) {
