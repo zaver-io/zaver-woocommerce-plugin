@@ -96,7 +96,7 @@ class Cart {
 			$line_item
 			->setUnitPrice( $item->get_unit_price() + $item->get_unit_tax_amount() )
 			->setTotalAmount( $item->get_total_amount() + $item->get_total_tax_amount() )
-			->setTaxRatePercent( self::normalize( $item->get_tax_rate() ) )
+			->setTaxRatePercent( $item->get_tax_rate() / 100 )
 			->setTaxAmount( $item->get_total_tax_amount() );
 
 			do_action( "zco_process_payment_{$type}", $line_item, $item );
@@ -111,7 +111,7 @@ class Cart {
 			->setItemType( ItemType::SHIPPING )
 			->setUnitPrice( $item->get_unit_price() + $item->get_unit_tax_amount() )
 			->setTotalAmount( $item->get_total_amount() + $item->get_total_tax_amount() )
-			->setTaxRatePercent( self::normalize( $item->get_tax_rate() ) )
+			->setTaxRatePercent( $item->get_tax_rate() / 100 )
 			->setTaxAmount( $item->get_total_tax_amount() );
 
 			do_action( 'zco_process_payment_shipping', $line_item, $item );
@@ -136,18 +136,6 @@ class Cart {
 		$title = count( $items ) === 1 ? reset( $items )->get_name() : sprintf( __( 'Order %s', 'zco' ), $order->get_order_number() );
 
 		return apply_filters( 'zco_payment_purchase_title', $title, $order );
-	}
-
-	/**
-	 * Normalize a minor into a major number.
-	 *
-	 * Workaround until the Krokedil WC SDK supports major numbers properly.
-	 *
-	 * @param numeric $number The number to normalize.
-	 * @return numeric
-	 */
-	private static function normalize( $number ) {
-		return 0 === $number % 100 ? $number / 100 : $number;
 	}
 
 	/**
