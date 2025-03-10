@@ -65,7 +65,10 @@ final class Hooks {
 			return;
 		}
 
-		$payment_method     = filter_input( INPUT_POST, 'payment_method', FILTER_SANITIZE_SPECIAL_CHARS );
+		$payment_method = filter_input( INPUT_POST, 'payment_method', FILTER_SANITIZE_SPECIAL_CHARS );
+		if ( strpos( $payment_method, 'zaver_checkout' ) === false ) {
+			return;
+		}
 		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 		$chosen_gateway     = $available_gateways[ Plugin::PAYMENT_METHOD ];
 		$chosen_gateway->id = $payment_method;
