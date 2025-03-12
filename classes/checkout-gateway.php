@@ -191,8 +191,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 
 			Payment_Processor::process( $order );
 
-			$zaver_session = WC()->session->get( 'zaver_checkout_payment_methods' );
-			$redirect_url  = $zaver_session[ $this->id ]['link'] ?? $order->get_checkout_payment_url( true );
+			$redirect_url = $order->get_checkout_payment_url( true );
 
 			return apply_filters(
 				'zco_process_payment_result',
