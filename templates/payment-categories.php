@@ -7,6 +7,7 @@
 
 use Zaver\Plugin;
 use Zaver\Classes\Helpers\Cart;
+use KrokedilZCODeps\Zaver\SDK\Object\PaymentMethodsRequest;
 
 
 $payment         = Cart::create();
@@ -16,36 +17,18 @@ $payment_methods = $response->getSpecificPaymentMethodData();
 $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 $gateway            = $available_gateways[ Plugin::PAYMENT_METHOD ];
 $chosen_gateway     = $available_gateways[ array_key_first( $available_gateways ) ];
+$site_locale        = str_replace( '_', '-', get_locale() );
 
-$market = WC()->customer->get_billing_country();
-$market = empty( $market ) ? wc_get_base_location()['country'] : $market;
+$market                  = WC()->customer->get_billing_country();
+$market                  = empty( $market ) ? wc_get_base_location()['country'] : $market;
+$payment_methods_request = ( new PaymentMethodsRequest() )
+	->setMarket( $market )
+	->setAmount( WC()->cart->get_total( 'edit' ) )
+	->setCurrency( get_woocommerce_currency() );
+$payment_methods         = Plugin::gateway()->api()->getPaymentMethods( $payment_methods_request )->getPaymentMethods();
 
-$url = add_query_arg(
-	array(
-		'market'   => WC()->customer->get_billing_country(),
-		'amount'   => WC()->cart->get_total( 'edit' ),
-		'currency' => get_woocommerce_currency(),
-	),
-	'https://api.test.zaver.com/payments/link/v2/paymentmethods/'
-);
 
-$request = wp_remote_get(
-	$url,
-	array(
-		'headers' => array(
-			'Authorization' => 'Bearer ' . Plugin::gateway()->get_option( 'api_key' ),
-		),
-	)
-);
-
-if ( is_wp_error( $request ) ) {
-	return;
-}
-
-$payment_methods = json_decode( wp_remote_retrieve_body( $request ), true )['paymentMethods'];
-$site_locale     = str_replace( '_', '-', get_locale() );
-
-foreach ( $payment_methods as $payment_method ) {
+foreach ( array_reverse( $payment_methods ) as $payment_method ) {
 	$gateway_id  = Plugin::PAYMENT_METHOD . '_' . strtolower( $payment_method['paymentMethod'] );
 	$gateway     = $available_gateways[ Plugin::PAYMENT_METHOD ] ?? $available_gateways[ $gateway_id ];
 	$gateway->id = $gateway_id;
