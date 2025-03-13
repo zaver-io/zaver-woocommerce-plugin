@@ -149,24 +149,16 @@ final class Hooks {
 	 * @return void
 	 */
 	public function check_order_received() {
-		/**
-		 * The global WP_Query instance.
-		 *
-		 * @var \WP_Query $wp
-		 */
-		global $wp;
-
 		try {
 			// Ensure we're on the correct endpoint.
 			if ( ! is_order_received_page() ) {
 				return;
 			}
 
-			// TODO: This can probably be replaced with get_query_var('order-received').
-			$order = wc_get_order( $wp->query_vars['order-received'] );
+			$order = wc_get_order( get_query_var( 'order-received' ) );
 
 			// Don't care about orders with other payment methods.
-			if ( ! $order || $order->get_payment_method() !== Plugin::PAYMENT_METHOD ) {
+			if ( ! $order || strpos( $order->get_payment_method(), Plugin::PAYMENT_METHOD ) === false ) {
 				return;
 			}
 

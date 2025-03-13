@@ -34,6 +34,7 @@ class Payment_Processor {
 
 		do_action( 'zco_before_process_payment', $payment, $order );
 		$response = Plugin::gateway()->api()->createPayment( $payment );
+		$token    = $response->getToken();
 
 		$selected_payment_method   = $order->get_payment_method();
 		$available_payment_methods = $response->getSpecificPaymentMethodData();
@@ -42,6 +43,7 @@ class Payment_Processor {
 			if ( strpos( $selected_payment_method, $title ) !== false ) {
 				$order->update_meta_data( '_zaver_payment_method', $payment_method['paymentMethod'] );
 				$order->update_meta_data( '_zaver_payment_link', $payment_method['paymentLink'] );
+				$token = $payment_method['checkoutToken'];
 				break;
 			}
 		}
@@ -50,7 +52,7 @@ class Payment_Processor {
 			'_zaver_payment',
 			array(
 				'id'              => $response->getPaymentId(),
-				'token'           => $response->getToken(),
+				'token'           => $token,
 				'tokenValidUntil' => $response->getValidUntil(),
 			)
 		);
@@ -97,7 +99,7 @@ class Payment_Processor {
 
 		// Ensure that the order key is correct.
 		$key = filter_input( INPUT_GET, 'key', FILTER_SANITIZE_SPECIAL_CHARS );
-		if ( ! empty( $key ) || ! hash_equals( $order->get_order_key(), $key ) ) {
+		if ( empty( $key ) || ! hash_equals( $order->get_order_key(), $key ) ) {
 			throw new Exception( 'Invalid order key' );
 		}
 
