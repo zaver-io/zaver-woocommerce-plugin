@@ -22,7 +22,6 @@
 
 namespace Zaver;
 
-use KrokedilZCODeps\Krokedil\Support\Support;
 use KrokedilZCODeps\Krokedil\Support\Logger;
 use KrokedilZCODeps\Krokedil\Support\SystemReport;
 
