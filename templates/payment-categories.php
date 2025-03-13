@@ -21,7 +21,7 @@ $payment_methods_request = ( new PaymentMethodsRequest() )
 	->setAmount( WC()->cart->get_total( 'edit' ) )
 	->setCurrency( get_woocommerce_currency() );
 $payment_methods         = Plugin::gateway()->api()->getPaymentMethods( $payment_methods_request )->getPaymentMethods();
-$payment_methods         = array_reverse( $payment_methods );
+$payment_methods         = apply_filters( 'zco_available_payment_methods', array_reverse( $payment_methods ) );
 
 foreach ( $payment_methods as $payment_method ) {
 	$gateway_id  = Plugin::PAYMENT_METHOD . '_' . strtolower( $payment_method['paymentMethod'] );
