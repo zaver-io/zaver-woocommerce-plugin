@@ -173,6 +173,10 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 		);
 	}
 
+	public function get_icon() {
+		return "<img src='{$this->icon}' class='zaver-checkout-icon' alt='{$this->title}' />";
+	}
+
 	/**
 	 * Process the payment and return the result.
 	 *

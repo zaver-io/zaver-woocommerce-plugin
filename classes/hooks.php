@@ -111,6 +111,8 @@ final class Hooks {
 	 * @return void
 	 */
 	public function handle_payment_callback() {
+		$order = false;
+
 		try {
 			$payment_status = Plugin::gateway()->receive_payment_callback();
 			$meta           = $payment_status->getMerchantMetadata();
