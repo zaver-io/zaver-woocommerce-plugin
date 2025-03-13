@@ -6,7 +6,6 @@
  */
 
 use Zaver\Plugin;
-use Zaver\Classes\Helpers\Cart;
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentMethodsRequest;
 
 
@@ -22,9 +21,9 @@ $payment_methods_request = ( new PaymentMethodsRequest() )
 	->setAmount( WC()->cart->get_total( 'edit' ) )
 	->setCurrency( get_woocommerce_currency() );
 $payment_methods         = Plugin::gateway()->api()->getPaymentMethods( $payment_methods_request )->getPaymentMethods();
+$payment_methods         = array_reverse( $payment_methods );
 
-
-foreach ( array_reverse( $payment_methods ) as $payment_method ) {
+foreach ( $payment_methods as $payment_method ) {
 	$gateway_id  = Plugin::PAYMENT_METHOD . '_' . strtolower( $payment_method['paymentMethod'] );
 	$gateway     = $available_gateways[ Plugin::PAYMENT_METHOD ] ?? $available_gateways[ $gateway_id ];
 	$gateway->id = $gateway_id;
