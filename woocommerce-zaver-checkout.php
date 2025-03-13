@@ -39,15 +39,22 @@ define( 'ZCO_PLUGIN_PATH', __DIR__ );
  * Handles the plugins initialization.
  */
 class Plugin {
-	const VERSION        = '0.0.0-dev';
-	const PAYMENT_METHOD = 'zaver_checkout';
+	public const VERSION        = '0.0.0-dev';
+	public const PAYMENT_METHOD = 'zaver_checkout';
 
 	/**
-	 * Logger instance.
+	 * The logger instance.
 	 *
-	 * @var Support
+	 * @var Logger
 	 */
-	private $support = null;
+	private $logger;
+
+	/**
+	 * The system report instance.
+	 *
+	 * @var SystemReport
+	 */
+	private $system_report;
 
 	/**
 	 * Get the instance of the plugin.
@@ -70,7 +77,7 @@ class Plugin {
 	 * @return Logger
 	 */
 	public function logger() {
-		return $this->support->logger();
+		return $this->logger;
 	}
 
 	/**
@@ -79,7 +86,7 @@ class Plugin {
 	 * @return SystemReport
 	 */
 	public function report() {
-		return $this->support->system_report();
+		return $this->system_report;
 	}
 
 	/**
@@ -127,7 +134,8 @@ class Plugin {
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
-		$this->support = new Support( 'zaver_checkout', 'Zaver Checkout' );
+		$this->logger        = new Logger( 'zaver_checkout', 'Zaver Checkout' );
+		$this->system_report = new SystemReport( 'zaver_checkout', 'Zaver Checkout' );
 		Hooks::instance();
 	}
 
