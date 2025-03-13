@@ -192,6 +192,9 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 			Payment_Processor::process( $order );
 
 			$redirect_url = $order->get_checkout_payment_url( true );
+			if ( ! empty( $order->get_meta( '_zaver_payment_link' ) ) ) {
+				$redirect_url = $order->get_meta( '_zaver_payment_link' );
+			}
 
 			return apply_filters(
 				'zco_process_payment_result',

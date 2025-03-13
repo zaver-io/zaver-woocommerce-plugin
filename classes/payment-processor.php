@@ -35,6 +35,17 @@ class Payment_Processor {
 		do_action( 'zco_before_process_payment', $payment, $order );
 		$response = Plugin::gateway()->api()->createPayment( $payment );
 
+		$selected_payment_method   = $order->get_payment_method();
+		$available_payment_methods = $response->getSpecificPaymentMethodData();
+		foreach ( $available_payment_methods as $payment_method ) {
+			$title = strtolower( $payment_method['paymentMethod'] );
+			if ( strpos( $selected_payment_method, $title ) !== false ) {
+				$order->update_meta_data( '_zaver_payment_method', $payment_method['paymentMethod'] );
+				$order->update_meta_data( '_zaver_payment_link', $payment_method['paymentLink'] );
+				break;
+			}
+		}
+
 		$order->update_meta_data(
 			'_zaver_payment',
 			array(

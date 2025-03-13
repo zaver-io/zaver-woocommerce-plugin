@@ -10,10 +10,6 @@ use Zaver\Classes\Helpers\Cart;
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentMethodsRequest;
 
 
-$payment         = Cart::create();
-$response        = Plugin::gateway()->api()->createPayment( $payment );
-$payment_methods = $response->getSpecificPaymentMethodData();
-
 $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 $gateway            = $available_gateways[ Plugin::PAYMENT_METHOD ];
 $chosen_gateway     = $available_gateways[ array_key_first( $available_gateways ) ];
