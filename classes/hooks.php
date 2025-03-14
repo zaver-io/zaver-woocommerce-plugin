@@ -57,7 +57,12 @@ final class Hooks {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_checkout_styles' ) );
 	}
 
-	function enqueue_checkout_styles() {
+	/**
+	 * Enqueue the checkout styles.
+	 *
+	 * @return void
+	 */
+	public function enqueue_checkout_styles() {
 		if ( ! is_checkout() ) {
 			return;
 		}
