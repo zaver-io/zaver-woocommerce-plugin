@@ -173,6 +173,26 @@ class Payment_Processor {
 
 				// Do nothing.
 				break;
+			case PaymentStatus::PENDING_CONFIRMATION:
+				$order->update_status( 'on-hold', __( 'Zaver Payment is pending confirmation', 'zco' ) );
+				ZCO()->logger()->info(
+					'Zaver Payment is pending confirmation',
+					array(
+						'orderId'   => $order->get_id(),
+						'paymentId' => $payment_status->getPaymentId(),
+					)
+				);
+				break;
+			default:
+				ZCO()->logger()->error(
+					'Received unhandled payment status from Zaver',
+					array(
+						'orderId'       => $order->get_id(),
+						'paymentId'     => $payment_status->getPaymentId(),
+						'paymentStatus' => $payment_status->getPaymentStatus(),
+					)
+				);
+				break;
 		}
 	}
 }
