@@ -187,7 +187,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	 */
 	public function get_icon() {
 		$icon = plugin_dir_url( ZCO_MAIN_FILE ) . 'assets/img/icon.svg';
-		return "<img src='{$icon}' class='zaver-checkout-icon' alt='{$this->title}' />";
+		return "<img src='{$icon}' style='max-width:120px;' class='zaver-checkout-icon' alt='{$this->title}' />";
 	}
 
 	/**
