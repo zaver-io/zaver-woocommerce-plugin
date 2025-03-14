@@ -191,6 +191,17 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Get the gateway title.
+	 *
+	 * @return string
+	 */
+	public function get_title() {
+		$title    = "<p class='zaver-checkout-title'>{$this->title}</p>";
+		$subtitle = "<p class='zaver-checkout-subtitle'>{$this->subtitle}</p>";
+		return $this->get_icon() . $title . $subtitle;
+	}
+
+	/**
 	 * Process the payment and return the result.
 	 *
 	 * @throws Exception If the order is not found.

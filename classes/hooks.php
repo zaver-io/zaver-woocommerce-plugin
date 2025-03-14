@@ -53,6 +53,17 @@ final class Hooks {
 
 		// Process the checkout before the payment is processed.
 		add_action( 'woocommerce_checkout_process', array( $this, 'override_gateway_id' ) );
+
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_checkout_styles' ) );
+	}
+
+	function enqueue_checkout_styles() {
+		if ( ! is_checkout() ) {
+			return;
+		}
+
+		wp_register_style( 'zco-checkout', plugin_dir_url( ZCO_MAIN_FILE ) . '/assets/css/checkout.css', array(), Plugin::VERSION );
+		wp_enqueue_style( 'zco-checkout' );
 	}
 
 	/**
