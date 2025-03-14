@@ -39,6 +39,13 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	private $refund_instance = null;
 
 	/**
+	 * The gateway subtitle.
+	 *
+	 * @var string
+	 */
+	public $subtitle = '';
+
+	/**
 	 * Class constructor.
 	 */
 	public function __construct() {

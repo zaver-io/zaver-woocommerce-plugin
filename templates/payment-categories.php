@@ -23,21 +23,21 @@ $payment_methods_request = ( new PaymentMethodsRequest() )
 $payment_methods         = Plugin::gateway()->api()->getPaymentMethods( $payment_methods_request )->getPaymentMethods();
 $payment_methods         = apply_filters( 'zco_available_payment_methods', array_reverse( $payment_methods ) );
 
+$i18n = include ZCO_PLUGIN_PATH . '/assets/i18n/payment-methods.php';
+
 foreach ( $payment_methods as $payment_method ) {
-	$gateway_id  = Plugin::PAYMENT_METHOD . '_' . strtolower( $payment_method['paymentMethod'] );
+	$name        = $payment_method['paymentMethod'];
+	$gateway_id  = Plugin::PAYMENT_METHOD . '_' . strtolower( $name );
 	$gateway     = $available_gateways[ Plugin::PAYMENT_METHOD ] ?? $available_gateways[ $gateway_id ];
 	$gateway->id = $gateway_id;
 
-	if ( isset( $payment_method['localizations'][ $site_locale ] ) ) {
-		$i18n                 = $payment_method['localizations'][ $site_locale ];
-		$gateway->title       = $i18n['title'];
-		$gateway->description = $i18n['description'];
-		$gateway->icon        = $i18n['iconSvgSrc'];
-	} else {
-		$gateway->title       = $payment_method['title'];
-		$gateway->description = $payment_method['description'];
-		$gateway->icon        = $payment_method['iconSvgSrc'];
+	if ( ! isset( $i18n[ $name ][ $site_locale ] ) ) {
+		$site_locale = 'sv_SE';
 	}
+
+	$gateway->title       = $i18n[ $name ][ $site_locale ]['title'];
+	$gateway->subtitle    = $i18n[ $name ][ $site_locale ]['subtitle'];
+	$gateway->description = $i18n[ $name ][ $site_locale ]['description'];
 
 	// If Zaver is the chosen payment method...
 	if ( false !== strpos( $chosen_gateway->id, Plugin::PAYMENT_METHOD ) || $gateway->chosen ) {
