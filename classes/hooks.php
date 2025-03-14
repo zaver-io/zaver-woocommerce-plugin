@@ -131,7 +131,7 @@ final class Hooks {
 
 		try {
 			$payment_status = Plugin::gateway()->receive_payment_callback();
-			$meta           = $payment_status->getMerchantMetadata();
+			$meta           = $payment_status->getPaymentMetadata();
 
 			ZCO()->logger()->debug( 'Received Zaver payment callback', (array) $payment_status );
 
