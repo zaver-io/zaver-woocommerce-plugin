@@ -340,7 +340,16 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 			$attributes['zco-primary-color'] = $primary_color;
 		}
 
-		return $this->api()->getHtmlSnippet( $token, apply_filters( 'zco_html_snippet_attributes', $attributes, $this ) );
+		$html_snippet = $this->api()->getHtmlSnippet( $token, apply_filters( 'zco_html_snippet_attributes', $attributes, $this ) );
+		ZCO()->logger()->info(
+			'Generated Zaver Checkout HTML snippet',
+			array(
+				'token'   => $token,
+				'snippet' => esc_html( $html_snippet ),
+			)
+		);
+
+		return $html_snippet;
 	}
 
 	/**
@@ -349,7 +358,9 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	 * @return PaymentStatusResponse
 	 */
 	public function receive_payment_callback() {
-		return $this->api()->receiveCallback( $this->get_option( 'callback_token' ) );
+		$callback = $this->api()->receiveCallback( $this->get_option( 'callback_token' ) );
+		ZCO()->logger()->info( 'Received Zaver payment callback', (array) $callback );
+		return $callback;
 	}
 
 	/**
@@ -358,6 +369,8 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	 * @return RefundResponse
 	 */
 	public function receive_refund_callback() {
-		return $this->refund_api()->receiveCallback( $this->get_option( 'callback_token' ) );
+		$callback = $this->refund_api()->receiveCallback( $this->get_option( 'callback_token' ) );
+		ZCO()->logger()->info( 'Received Zaver refund callback', (array) $callback );
+		return $callback;
 	}
 }

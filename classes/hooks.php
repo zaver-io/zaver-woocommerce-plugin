@@ -246,12 +246,14 @@ final class Hooks {
 			$update = PaymentUpdateRequest::create()
 				->setPaymentStatus( PaymentStatus::CANCELLED );
 
-			Plugin::gateway()->api()->updatePayment( $payment['id'], $update );
-
+			$response = Plugin::gateway()->api()->updatePayment( $payment['id'], $update );
 			$order->add_order_note( __( 'Cancelled Zaver payment', 'zco' ) );
+
 			ZCO()->logger()->info(
 				'Cancelled Zaver payment',
 				array(
+					'payload'   => $update,
+					'response'  => $response,
 					'orderId'   => $order->get_id(),
 					'paymentId' => $payment['id'],
 				)
@@ -265,6 +267,7 @@ final class Hooks {
 					$e->getMessage()
 				),
 				array(
+					'payload'   => $update ?? null,
 					'orderId'   => $order->get_id(),
 					'paymentId' => $payment['id'],
 				)

@@ -21,7 +21,19 @@ $payment_methods_request = ( new PaymentMethodsRequest() )
 	->setAmount( WC()->cart->get_total( 'edit' ) )
 	->setCurrency( get_woocommerce_currency() );
 $payment_methods         = Plugin::gateway()->api()->getPaymentMethods( $payment_methods_request )->getPaymentMethods();
-$payment_methods         = apply_filters( 'zco_available_payment_methods', array_reverse( $payment_methods ) );
+
+Zaver\ZCO()->logger()->info(
+	'Received payment methods',
+	array(
+		'payload'        => wp_json_encode( $payment_methods_request ),
+		'paymentMethods' => $payment_methods,
+	)
+);
+
+if ( ! is_array( $payment_methods ) ) {
+	return;
+}
+$payment_methods = apply_filters( 'zco_available_payment_methods', array_reverse( $payment_methods ) );
 
 $i18n = include ZCO_PLUGIN_PATH . '/assets/i18n/payment-methods.php';
 

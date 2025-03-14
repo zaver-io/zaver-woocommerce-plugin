@@ -125,6 +125,8 @@ class Refund_Processor {
 				$response->getCurrency()
 			),
 			array(
+				'payload'  => $request,
+				'response' => $response,
 				'orderId'  => $order->get_id(),
 				'refundId' => $response->getRefundId(),
 				'amount'   => $amount,

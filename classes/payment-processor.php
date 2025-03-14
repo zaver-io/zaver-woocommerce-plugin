@@ -34,7 +34,17 @@ class Payment_Processor {
 
 		do_action( 'zco_before_process_payment', $payment, $order );
 		$response = Plugin::gateway()->api()->createPayment( $payment );
-		$token    = $response->getToken();
+		ZCO()->logger()->info(
+			'Created Zaver payment request',
+			array(
+				'payload'   => $payment,
+				'response'  => $response,
+				'orderId'   => $order->get_id(),
+				'paymentId' => $response->getPaymentId(),
+			)
+		);
+
+		$token = $response->getToken();
 
 		$selected_payment_method   = $order->get_payment_method();
 		$available_payment_methods = $response->getSpecificPaymentMethodData();
@@ -67,14 +77,6 @@ class Payment_Processor {
 				wc_add_order_item_meta( $meta['orderItemId'], '_zaver_line_item_id', $item->getId(), true );
 			}
 		}
-
-		ZCO()->logger()->debug(
-			'Created Zaver payment request',
-			array(
-				'orderId'   => $order->get_id(),
-				'paymentId' => $response->getPaymentId(),
-			)
-		);
 
 		do_action( 'zco_after_process_payment', $payment, $order, $response );
 	}
@@ -110,6 +112,14 @@ class Payment_Processor {
 
 		if ( null === $payment_status ) {
 			$payment_status = Plugin::gateway()->api()->getPaymentStatus( $payment['id'] );
+			ZCO()->logger()->info(
+				'Fetched payment status from Zaver',
+				array(
+					'payload'  => $payment['id'],
+					'response' => $payment_status,
+					'orderId'  => $order->get_id(),
+				)
+			);
 		} elseif ( $payment_status->getPaymentId() !== $payment['id'] ) {
 			throw new Exception( 'Mismatching payment ID' );
 		}
