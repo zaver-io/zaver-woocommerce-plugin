@@ -196,6 +196,10 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_title() {
+		if ( ! is_checkout() ) {
+			return $this->title;
+		}
+
 		$title    = "<p class='zaver-checkout-title'>{$this->title}</p>";
 		$subtitle = "<p class='zaver-checkout-subtitle'>{$this->subtitle}</p>";
 		return $this->get_icon() . $title . $subtitle;
