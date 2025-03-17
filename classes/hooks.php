@@ -43,8 +43,6 @@ final class Hooks {
 	 * Class constructor.
 	 */
 	private function __construct() {
-		add_filter( 'wc_get_template', array( $this, 'get_zaver_checkout_template' ), 10, 3 );
-
 		add_action( 'woocommerce_api_zaver_payment_callback', array( $this, 'handle_payment_callback' ) );
 		add_action( 'woocommerce_api_zaver_refund_callback', array( $this, 'handle_refund_callback' ) );
 		add_action( 'woocommerce_order_status_cancelled', array( $this, 'cancelled_order' ), 10, 2 );
@@ -85,39 +83,6 @@ final class Hooks {
 		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 		$chosen_gateway     = $available_gateways[ Plugin::PAYMENT_METHOD ];
 		$chosen_gateway->id = $payment_method;
-	}
-
-	/**
-	 * Replace the checkout template with the Zaver Checkout template.
-	 *
-	 * @param string $template The template to replace.
-	 * @param string $template_name The name of the template.
-	 * @param array  $args The arguments passed to the template.
-	 *
-	 * @return string
-	 */
-	public function get_zaver_checkout_template( $template, $template_name, $args ) {
-		if ( 'checkout/order-receipt.php' !== $template_name ) {
-			return $template;
-		}
-
-		if ( ! isset( $args['order'] ) || ! $args['order'] instanceof WC_Order ) {
-			return $template;
-		}
-
-		/**
-		 * The WooCommerce order object.
-		 *
-		 * @var \WC_Order
-		 */
-		$order = $args['order'];
-
-		if ( $order->get_payment_method() !== Plugin::PAYMENT_METHOD ) {
-			return $template;
-		}
-
-		ZCO()->logger()->debug( 'Rendering Zaver Checkout', array( 'orderId' => $order->get_id() ) );
-		return ZCO_PLUGIN_PATH . '/templates/checkout.php';
 	}
 
 	/**

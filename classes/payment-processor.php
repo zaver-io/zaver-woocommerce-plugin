@@ -46,16 +46,22 @@ class Payment_Processor {
 
 		$token = $response->getToken();
 
-		$selected_payment_method   = $order->get_payment_method();
-		$available_payment_methods = $response->getSpecificPaymentMethodData();
-		foreach ( $available_payment_methods as $payment_method ) {
-			$title = strtolower( $payment_method['paymentMethod'] );
-			if ( strpos( $selected_payment_method, $title ) !== false ) {
-				$order->update_meta_data( '_zaver_payment_method', $payment_method['paymentMethod'] );
-				$order->update_meta_data( '_zaver_payment_link', $payment_method['paymentLink'] );
-				$token = $payment_method['checkoutToken'];
-				break;
+		$settings         = get_option( 'woocommerce_zaver_checkout_settings', array() );
+		$separate_methods = wc_string_to_bool( $settings['separate_methods'] ?? 'no' );
+		if ( $separate_methods ) {
+			$selected_payment_method   = $order->get_payment_method();
+			$available_payment_methods = $response->getSpecificPaymentMethodData();
+			foreach ( $available_payment_methods as $payment_method ) {
+				$title = strtolower( $payment_method['paymentMethod'] );
+				if ( strpos( $selected_payment_method, $title ) !== false ) {
+					$order->update_meta_data( '_zaver_payment_method', $payment_method['paymentMethod'] );
+					$order->update_meta_data( '_zaver_payment_link', $payment_method['paymentLink'] );
+					$token = $payment_method['checkoutToken'];
+					break;
+				}
 			}
+		} else {
+			$order->update_meta_data( '_zaver_payment_link', $response->getPaymentLink() );
 		}
 
 		$order->update_meta_data(
