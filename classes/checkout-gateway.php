@@ -68,7 +68,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 
 		add_action( "woocommerce_update_options_payment_gateways_{$this->id}", array( $this, 'process_admin_options' ) );
 
-		$separate_payment_methods = wc_string_to_bool( $this->get_option( 'separate_methods', false ) );
+		$separate_payment_methods = wc_string_to_bool( $this->get_option( 'separate_methods', 'yes' ) );
 		if ( $separate_payment_methods ) {
 			add_filter( 'wc_get_template', array( $this, 'payment_categories' ), 10, 3 );
 		}
@@ -164,7 +164,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 			),
 			'separate_methods' => array(
 				'type'        => 'checkbox',
-				'default'     => 'no',
+				'default'     => 'yes',
 				'desc_tip'    => true,
 				'title'       => __( 'Separate payment methods in the checkout', 'zco' ),
 				'label'       => __( 'Show Zaver as separate payment methods in the checkout.', 'zco' ),

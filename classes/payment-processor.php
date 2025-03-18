@@ -47,7 +47,7 @@ class Payment_Processor {
 		$token = $response->getToken();
 
 		$settings         = get_option( 'woocommerce_zaver_checkout_settings', array() );
-		$separate_methods = wc_string_to_bool( $settings['separate_methods'] ?? 'no' );
+		$separate_methods = wc_string_to_bool( $settings['separate_methods'] ?? 'yes' );
 		if ( $separate_methods ) {
 			$selected_payment_method   = $order->get_payment_method();
 			$available_payment_methods = $response->getSpecificPaymentMethodData();
