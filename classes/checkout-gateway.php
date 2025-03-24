@@ -95,27 +95,6 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Check if the gateway is the chosen payment method.
-	 *
-	 * Due to inconsistencies in the gateway name (e.g., zaver_checkout vs. zaver_checkout_bank_transfer), we need to check for the presence of 'zaver_checkout'.
-	 *
-	 * @param int|null|\WC_Order $order_id The WooCommerce order or its id.
-	 * @return bool
-	 */
-	public static function is_chosen_gateway( $order_id = null ) {
-		if ( $order_id instanceof \WC_Order ) {
-			$chosen_gateway = $order_id->get_payment_method();
-		} elseif ( ! empty( $order_id ) ) {
-			$order          = wc_get_order( $order_id );
-			$chosen_gateway = empty( $order ) ? '' : $order->get_payment_method();
-		} else {
-			$chosen_gateway = ! isset( WC()->session ) ? '' : WC()->session->get( 'chosen_payment_method' );
-		}
-
-		return strpos( $chosen_gateway, Plugin::PAYMENT_METHOD ) !== false;
-	}
-
-	/**
 	 * Initialize the plugin settings (form fields).
 	 *
 	 * @return void
