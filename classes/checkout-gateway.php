@@ -246,32 +246,6 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Returns the HTML snippet for the Zaver Checkout.
-	 *
-	 * @param string $token The token to use.
-	 * @return string
-	 */
-	public function get_html_snippet( $token ) {
-		$attributes = array();
-
-		$primary_color = $this->get_option( 'primary_color' );
-		if ( ! empty( $primary_color ) ) {
-			$attributes['zco-primary-color'] = $primary_color;
-		}
-
-		$html_snippet = $this->api()->getHtmlSnippet( $token, apply_filters( 'zco_html_snippet_attributes', $attributes, $this ) );
-		ZCO()->logger()->info(
-			'Generated Zaver Checkout HTML snippet',
-			array(
-				'token'   => $token,
-				'snippet' => esc_html( $html_snippet ),
-			)
-		);
-
-		return $html_snippet;
-	}
-
-	/**
 	 * Receives the payment callback.
 	 *
 	 * @return PaymentStatusResponse
