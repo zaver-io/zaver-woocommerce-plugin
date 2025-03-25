@@ -94,12 +94,34 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_title() {
-		if ( ! is_checkout() ) {
-			return $this->title;
+		$locale = get_locale();
+
+		switch ( $locale ) {
+			case 'de_DE':
+				$title    = 'Später bezahlen';
+				$subtitle = 'In 14 Tagen bezahlen – 0 €';
+				break;
+			case 'nb_NO':
+				$title    = 'Betale innen 14 dager - 0 kr';
+				$subtitle = 'Betal senere. Helt gratis';
+				break;
+			case 'fi':
+			case 'fi_fi':
+				$title    = 'Maksa 14 päivän sisällä';
+				$subtitle = 'Osta nyt, maksa myöhemmin ilman lisäkuluja';
+				break;
+			case 'sv_SE':
+			default:
+				$title    = 'Betala senare';
+				$subtitle = 'Mer tid, mindre stress.';
 		}
 
-		$title    = "<p class='zaver-checkout-title'>{$this->title}</p>";
-		$subtitle = "<p class='zaver-checkout-subtitle'>{$this->subtitle}</p>";
+		if ( ! is_checkout() ) {
+			return $title;
+		}
+
+		$title    = "<p class='zaver-checkout-title'>{$title}</p>";
+		$subtitle = "<p class='zaver-checkout-subtitle'>{$subtitle}</p>";
 		return $this->get_icon() . $title . $subtitle;
 	}
 
