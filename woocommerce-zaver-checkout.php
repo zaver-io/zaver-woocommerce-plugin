@@ -153,6 +153,15 @@ class Plugin {
 	}
 
 	/**
+	 * Check if separate payment methods are enabled.
+	 *
+	 * @return boolean
+	 */
+	public function separate_payment_methods_enabled() {
+		return $this->separate_payment_methods;
+	}
+
+	/**
 	 * Get the gateway instance.
 	 *
 	 * @return Checkout_Gateway
@@ -222,13 +231,24 @@ class Plugin {
 		}
 
 		$settings                                  = get_option( 'woocommerce_zaver_checkout_settings' );
-		$this->separate_payment_methods            = wc_string_to_bool( $settings['separate_payment_methods'] ?? 'yes' );
 		$this->enable_payment_method_pay_later     = wc_string_to_bool( $settings['enable_payment_method_pay_later'] ?? 'yes' );
 		$this->enable_payment_method_swish         = wc_string_to_bool( $settings['enable_payment_method_swish'] ?? 'yes' );
 		$this->enable_payment_method_bank_transfer = wc_string_to_bool( $settings['enable_payment_method_bank_transfer'] ?? 'yes' );
 		$this->enable_payment_method_installments  = wc_string_to_bool( $settings['enable_payment_method_installments'] ?? 'yes' );
 		$this->enable_payment_method_instant_debit = wc_string_to_bool( $settings['enable_payment_method_instant_debit'] ?? 'yes' );
 		$this->enable_payment_method_vipps         = wc_string_to_bool( $settings['enable_payment_method_vipps'] ?? 'yes' );
+
+		$this->separate_payment_methods = false;
+		foreach ( $settings as $setting => $value ) {
+			if ( strpos( $setting, 'enable_payment_method_' ) === false ) {
+				continue;
+			}
+
+			if ( wc_string_to_bool( $value ) ) {
+				$this->separate_payment_methods = true;
+				break;
+			}
+		}
 
 		$this->include_files();
 

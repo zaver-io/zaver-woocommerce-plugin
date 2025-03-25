@@ -95,9 +95,16 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_title() {
-		if ( ! is_checkout() ) {
-			return $this->title;
-		}
+		return $this->title;
+	}
+
+	/**
+	 * Payment method description for the frontend.
+	 *
+	 * @return string
+	 */
+	public function get_description() {
+		return $this->get_option( 'description' );
 	}
 
 	/**
@@ -117,7 +124,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	 * @return bool
 	 */
 	private function check_availability() {
-		return $this->get_option( 'enabled' ) === 'yes' && $this->get_option( 'separate_payment_methods' ) === 'no';
+		return $this->get_option( 'enabled' ) === 'yes' && ! ZCO()->separate_payment_methods_enabled();
 	}
 
 	/**

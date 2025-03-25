@@ -35,6 +35,12 @@ class Zaver_Checkout_Settings {
 				'description' => __( 'This controls the title which the user sees during checkout.', 'zco' ),
 				'default'     => __( 'Zaver Checkout', 'zco' ),
 			),
+			'description'                         => array(
+				'type'        => 'textarea',
+				'desc_tip'    => true,
+				'title'       => __( 'Description', 'zco' ),
+				'description' => __( 'This controls the description which the user sees during checkout.', 'zco' ),
+			),
 			'test_mode'                           => array(
 				'type'        => 'checkbox',
 				'default'     => 'no',
@@ -64,15 +70,7 @@ class Zaver_Checkout_Settings {
 			),
 			'separate_payment_methods_title'      => array(
 				'type'  => 'title',
-				'title' => __( 'Separate payment methods', 'zco' ),
-			),
-			'separate_payment_methods'            => array(
-				'type'        => 'checkbox',
-				'default'     => 'yes',
-				'desc_tip'    => true,
-				'title'       => __( 'Separate payment methods in the checkout', 'zco' ),
-				'label'       => __( 'Show Zaver as separate payment methods in the checkout', 'zco' ),
-				'description' => __( 'If you want to show each payment method as a separate gateway, check this box', 'zco' ),
+				'title' => __( 'Show as separate payment methods', 'zco' ),
 			),
 			'enable_payment_method_swish'         => array(
 				'title'   => __( 'Swish', 'zco' ),
