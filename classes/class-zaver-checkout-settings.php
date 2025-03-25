@@ -22,20 +22,20 @@ class Zaver_Checkout_Settings {
 	 */
 	public static function setting_fields() {
 		$settings = array(
-			'enabled'                        => array(
+			'enabled'                             => array(
 				'type'    => 'checkbox',
 				'default' => 'yes',
 				'title'   => __( 'Enable/Disable', 'zco' ),
 				'label'   => __( 'Enable Zaver Checkout', 'zco' ),
 			),
-			'title'                          => array(
+			'title'                               => array(
 				'type'        => 'text',
 				'desc_tip'    => true,
 				'title'       => __( 'Title', 'zco' ),
 				'description' => __( 'This controls the title which the user sees during checkout.', 'zco' ),
 				'default'     => __( 'Zaver Checkout', 'zco' ),
 			),
-			'test_mode'                      => array(
+			'test_mode'                           => array(
 				'type'        => 'checkbox',
 				'default'     => 'no',
 				'desc_tip'    => true,
@@ -43,7 +43,7 @@ class Zaver_Checkout_Settings {
 				'label'       => __( 'Enable test mode', 'zco' ),
 				'description' => __( 'If you received any test credentials from Zaver, this checkbox should be checked.', 'zco' ),
 			),
-			'api_key'                        => array(
+			'api_key'                             => array(
 				'type'        => 'text',
 				'class'       => 'code',
 				'desc_tip'    => false,
@@ -55,7 +55,7 @@ class Zaver_Checkout_Settings {
 					'<a target="_blank" href="' . esc_attr( __( 'https://zaver.com/en/contact', 'zco' ) ) . '">' . __( 'contact Zaver', 'zco' ) . '</a>',
 				),
 			),
-			'callback_token'                 => array(
+			'callback_token'                      => array(
 				'type'        => 'text',
 				'class'       => 'code',
 				'desc_tip'    => true,
@@ -63,18 +63,18 @@ class Zaver_Checkout_Settings {
 				'description' => __( 'The callback token is optional but recommended - it is used to validate requests from Zaver.', 'zco' ),
 			),
 
-			'primary_color'                  => array(
+			'primary_color'                       => array(
 				'type'        => 'color',
 				'desc_tip'    => true,
 				'title'       => __( 'Primary color', 'zco' ),
 				'description' => __( 'Some elements in the Zaver Checkout will get this color.', 'zco' ),
 				'placeholder' => __( 'Default', 'zco' ),
 			),
-			'separate_payment_methods_title' => array(
+			'separate_payment_methods_title'      => array(
 				'type'  => 'title',
 				'title' => __( 'Separate payment methods', 'zco' ),
 			),
-			'separate_payment_methods'       => array(
+			'separate_payment_methods'            => array(
 				'type'        => 'checkbox',
 				'default'     => 'yes',
 				'desc_tip'    => true,
@@ -82,10 +82,40 @@ class Zaver_Checkout_Settings {
 				'label'       => __( 'Show Zaver as separate payment methods in the checkout', 'zco' ),
 				'description' => __( 'If you want to show each payment method as a separate gateway, check this box', 'zco' ),
 			),
-			'enable_payment_method_invoice'  => array(
+			'enable_payment_method_swish'         => array(
 				'title'   => __( 'Swish', 'zco' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Enable Swish payment as separate payment method', 'zco' ),
+				'label'   => __( 'Enable "Swish" payment as separate payment method', 'zco' ),
+				'default' => 'yes',
+			),
+			'enable_payment_method_pay_later'     => array(
+				'title'   => __( 'Pay Later', 'zco' ),
+				'type'    => 'checkbox',
+				'label'   => __( 'Enable "Pay Later" payment as separate payment method', 'zco' ),
+				'default' => 'yes',
+			),
+			'enable_payment_method_bank_transfer' => array(
+				'title'   => __( 'Bank Transfer', 'zco' ),
+				'type'    => 'checkbox',
+				'label'   => __( 'Enable "Bank Transfer" payment as separate payment method', 'zco' ),
+				'default' => 'yes',
+			),
+			'enable_payment_method_instant_debit' => array(
+				'title'   => __( 'Instant Debit', 'zco' ),
+				'type'    => 'checkbox',
+				'label'   => __( 'Enable "Instant Debit" payment as separate payment method', 'zco' ),
+				'default' => 'yes',
+			),
+			'enable_payment_method_installments'  => array(
+				'title'   => __( 'Installments', 'zco' ),
+				'type'    => 'checkbox',
+				'label'   => __( 'Enable "Installments" payment as separate payment method', 'zco' ),
+				'default' => 'yes',
+			),
+			'enable_payment_method_vipps'         => array(
+				'title'   => __( 'Vipps', 'zco' ),
+				'type'    => 'checkbox',
+				'label'   => __( 'Enable "Vipps" payment as separate payment method', 'zco' ),
 				'default' => 'yes',
 			),
 		);

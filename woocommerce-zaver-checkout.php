@@ -63,11 +63,45 @@ class Plugin {
 	private $separate_payment_methods = false;
 
 	/**
-	 * Whether invoice should be available.
+	 * Whether "Pay Later" should be available.
 	 *
 	 * @var boolean
 	 */
-	private $enable_payment_method_invoice = false;
+	private $enable_payment_method_pay_later = false;
+	/**
+	 * Whether "Swish" should be available.
+	 *
+	 * @var boolean
+	 */
+	private $enable_payment_method_swish = false;
+
+	/**
+	 * Whether "Bank Transfer" should be available.
+	 *
+	 * @var boolean
+	 */
+	private $enable_payment_method_bank_transfer = false;
+
+	/**
+	 * Whether "Installments" should be available.
+	 *
+	 * @var boolean
+	 */
+	private $enable_payment_method_installments = false;
+
+	/**
+	 * Whether "Instant Debit" should be available.
+	 *
+	 * @var boolean
+	 */
+	private $enable_payment_method_instant_debit = false;
+
+	/**
+	 * Whether "Vipps" should be available.
+	 *
+	 * @var boolean
+	 */
+	private $enable_payment_method_vipps = false;
 
 	/**
 	 * Session management.
@@ -178,9 +212,14 @@ class Plugin {
 			return;
 		}
 
-		$settings                            = get_option( 'woocommerce_zaver_checkout_settings' );
-		$this->separate_payment_methods      = wc_string_to_bool( $settings['separate_payment_methods'] ?? 'yes' );
-		$this->enable_payment_method_invoice = wc_string_to_bool( $settings['enable_payment_method_invoice'] ?? 'yes' );
+		$settings                                  = get_option( 'woocommerce_zaver_checkout_settings' );
+		$this->separate_payment_methods            = wc_string_to_bool( $settings['separate_payment_methods'] ?? 'yes' );
+		$this->enable_payment_method_pay_later     = wc_string_to_bool( $settings['enable_payment_method_pay_later'] ?? 'yes' );
+		$this->enable_payment_method_swish         = wc_string_to_bool( $settings['enable_payment_method_swish'] ?? 'yes' );
+		$this->enable_payment_method_bank_transfer = wc_string_to_bool( $settings['enable_payment_method_bank_transfer'] ?? 'yes' );
+		$this->enable_payment_method_installments  = wc_string_to_bool( $settings['enable_payment_method_installments'] ?? 'yes' );
+		$this->enable_payment_method_instant_debit = wc_string_to_bool( $settings['enable_payment_method_instant_debit'] ?? 'yes' );
+		$this->enable_payment_method_vipps         = wc_string_to_bool( $settings['enable_payment_method_vipps'] ?? 'yes' );
 
 		$this->include_files();
 
@@ -279,13 +318,28 @@ class Plugin {
 
 		if ( $this->separate_payment_methods ) {
 
-			if ( $this->enable_payment_method_invoice ) {
+			if ( $this->enable_payment_method_pay_later ) {
 				$gateways[] = Zaver_Checkout_Pay_Later::class;
+			}
+
+			if ( $this->enable_payment_method_swish ) {
 				$gateways[] = Zaver_Checkout_Swish::class;
-				$gateways[] = Zaver_Checkout_Bank_Transfer::class;
-				$gateways[] = Zaver_Checkout_Vipps::class;
+			}
+
+			if ( $this->enable_payment_method_installments ) {
 				$gateways[] = Zaver_Checkout_Installments::class;
+			}
+
+			if ( $this->enable_payment_method_instant_debit ) {
 				$gateways[] = Zaver_Checkout_Instant_Debit::class;
+			}
+
+			if ( $this->enable_payment_method_bank_transfer ) {
+				$gateways[] = Zaver_Checkout_Bank_Transfer::class;
+			}
+
+			if ( $this->enable_payment_method_vipps ) {
+				$gateways[] = Zaver_Checkout_Vipps::class;
 			}
 		}
 
