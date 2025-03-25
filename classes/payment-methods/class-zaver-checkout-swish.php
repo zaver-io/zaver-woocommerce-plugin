@@ -132,7 +132,11 @@ class Zaver_Checkout_Swish extends WC_Payment_Gateway {
 	 * @return bool
 	 */
 	private function check_availability() {
-		return true;
+		if ( $this->get_option( 'enabled' ) === 'no' ) {
+			return false;
+		}
+
+		return ZCO()->session()->is_available( $this->id );
 	}
 
 	/**

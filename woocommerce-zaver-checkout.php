@@ -106,9 +106,9 @@ class Plugin {
 	/**
 	 * Session management.
 	 *
-	 * @var ZCO\Classes\Session
+	 * @var Classes\Session
 	 */
-	public $session;
+	private $session;
 
 	/**
 	 * Get the instance of the plugin.
@@ -141,6 +141,15 @@ class Plugin {
 	 */
 	public function report() {
 		return $this->system_report;
+	}
+
+	/**
+	 * Get the session instance.
+	 *
+	 * @return Classes\Session
+	 */
+	public function session() {
+		return $this->session;
 	}
 
 	/**
@@ -230,7 +239,7 @@ class Plugin {
 
 		$this->logger        = new Logger( 'zaver_checkout', 'Zaver Checkout' );
 		$this->system_report = new SystemReport( 'zaver_checkout', 'Zaver Checkout' );
-		$this->session       = new \Zaver\Classes\Session();
+		$this->session       = new Classes\Session();
 		Hooks::instance();
 	}
 

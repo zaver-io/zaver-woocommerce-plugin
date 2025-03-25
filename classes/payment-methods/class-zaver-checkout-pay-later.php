@@ -164,13 +164,11 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 	 * @return bool
 	 */
 	private function check_availability() {
-		return true;
-
-		if ( is_checkout() ) {
-			return ZCO()->session->is_available( 'pay_later' );
+		if ( $this->get_option( 'enabled' ) === 'no' ) {
+			return false;
 		}
 
-		return true;
+		return ZCO()->session()->is_available( $this->id );
 	}
 
 	/**

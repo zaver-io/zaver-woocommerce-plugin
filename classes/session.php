@@ -25,6 +25,13 @@ class Session {
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_after_calculate_totals', array( $this, 'get_session' ), 999999 );
+
+		add_action(
+			'woocommerce_thankyou',
+			function () {
+				WC()->session->__unset( 'zaver_checkout_available_payment_methods' );
+			}
+		);
 	}
 
 	/**
@@ -107,11 +114,11 @@ class Session {
 		$market   = $this->get_market();
 		$currency = get_woocommerce_currency();
 
-		$id              = strtolower( $id );
+		$id              = str_replace( 'zaver_checkout_', '', strtolower( $id ) );
 		$payment_methods = WC()->session->get( 'zaver_checkout_available_payment_methods' );
 		foreach ( $payment_methods[ $market ][ $currency ][ $total ] as $payment_method ) {
 			$payment_method_id = strtolower( $payment_method['paymentMethod'] );
-			if ( $id === $payment_method_id ) {
+			if ( $payment_method_id === $id ) {
 				return true;
 			}
 		}
