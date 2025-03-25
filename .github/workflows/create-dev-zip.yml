@@ -73,11 +73,9 @@ jobs:
         aws s3 cp ${{ env.ZIP_FILE_NAME }} s3://krokedil-plugin-dev-zip/${{ env.ZIP_FILE_NAME }}
 
     - name: Add annotation to workflow run with dev zip url
-      if: env.INSTAWP_SITE_ID == ''
       run: echo "::notice::Dev Zip Url available for 30 days, https://krokedil-plugin-dev-zip.s3.eu-north-1.amazonaws.com/${{ env.ZIP_FILE_NAME }}"
 
     - name: Install plugin on InstaWP site
-      if: env.INSTAWP_SITE_ID != ''
       run: |
         curl -X POST "https://app.instawp.io/api/v2/sites/${{ env.INSTAWP_SITE_ID }}/execute-command" \
         -H "Authorization: Bearer ${{ secrets.INSTAWP_API_TOKEN }}" \
@@ -85,11 +83,5 @@ jobs:
         -H "Content-Type: application/json" \
         -d '{"command_id":2114,"commandArguments":[{"dev_zip_public_url":"https://krokedil-plugin-dev-zip.s3.eu-north-1.amazonaws.com/${{ env.ZIP_FILE_NAME }}"}]}'
 
-    - name: Delete uploaded zip from S3
-      if: env.INSTAWP_SITE_ID != ''
-      run: |
-        aws s3 rm s3://krokedil-plugin-dev-zip/${{ env.ZIP_FILE_NAME }}
-
     - name: Add annotation for InstaWP installation
-      if: env.INSTAWP_SITE_ID != ''
       run: echo "::notice::The dev zip plugin has been pushed to the InstaWP site ID ${{ github.event.inputs.INSTAWP_SITE_ID }}"
