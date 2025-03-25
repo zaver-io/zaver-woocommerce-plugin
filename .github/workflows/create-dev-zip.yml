@@ -9,7 +9,7 @@ on:
         default: '1466322'
   push:
     branches:
-      - deploy-payment-methods
+      - develop-payment-methods
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
       PLUGIN_SLUG: zaver-checkout-for-woocommerce
       PLUGIN_MAIN_FILE: woocommerce-zaver-checkout.php
       # Set INSTAWP_SITE_ID based on the event type and branch
-      INSTAWP_SITE_ID: ${{ github.event_name == 'push' && github.ref == 'refs/heads/deploy-payment-methods' && '1466322' || github.event.inputs.INSTAWP_SITE_ID }}
+      INSTAWP_SITE_ID: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop-payment-methods' && '1466322' || github.event.inputs.INSTAWP_SITE_ID }}
 
     steps:
     - name: Checkout repository
