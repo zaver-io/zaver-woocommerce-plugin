@@ -94,13 +94,7 @@ class Zaver_Checkout_Bank_Transfer extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_title() {
-		$locale = get_locale();
-		switch ( $locale ) {
-			case 'de_DE':
-				return 'Direktüberweisung';
-			default:
-				return __( 'Banköverföring', 'zco' );
-		}
+		return $this->get_option( 'title' );
 	}
 
 	/**
@@ -109,7 +103,7 @@ class Zaver_Checkout_Bank_Transfer extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_description() {
-		return __( 'Pengarna dras från din bank', 'zco' );
+		return $this->get_option( 'description' );
 	}
 
 	/**

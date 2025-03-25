@@ -94,17 +94,7 @@ class Zaver_Checkout_Installments extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_title() {
-		$locale = get_locale();
-		switch ( $locale ) {
-			case 'de_DE':
-				return 'Ratenzahlung';
-			case 'nb_NO':
-				return 'Delbetaling';
-			case 'fi':
-				return 'Maksa osissa';
-			default:
-				return __( 'Delbetalning', 'zco' );
-		}
+		return $this->get_option( 'title' );
 	}
 
 	/**
@@ -113,7 +103,7 @@ class Zaver_Checkout_Installments extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_description() {
-		return __( 'Betala över tid', 'zco' );
+		return $this->get_option( 'description' );
 	}
 
 	/**

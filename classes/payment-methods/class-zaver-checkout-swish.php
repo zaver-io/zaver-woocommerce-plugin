@@ -94,7 +94,7 @@ class Zaver_Checkout_Swish extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_title() {
-		return __( 'Swish', 'zco' );
+		return $this->get_option( 'title' );
 	}
 
 	/**
@@ -103,7 +103,7 @@ class Zaver_Checkout_Swish extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_description() {
-		return __( 'Perfekt för mindre belopp', 'zco' );
+		return $this->get_option( 'description' );
 	}
 
 	/**

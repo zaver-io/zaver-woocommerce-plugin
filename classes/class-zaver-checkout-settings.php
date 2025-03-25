@@ -62,14 +62,6 @@ class Zaver_Checkout_Settings {
 				'title'       => __( 'Callback Token', 'zco' ),
 				'description' => __( 'The callback token is optional but recommended - it is used to validate requests from Zaver.', 'zco' ),
 			),
-
-			'primary_color'                       => array(
-				'type'        => 'color',
-				'desc_tip'    => true,
-				'title'       => __( 'Primary color', 'zco' ),
-				'description' => __( 'Some elements in the Zaver Checkout will get this color.', 'zco' ),
-				'placeholder' => __( 'Default', 'zco' ),
-			),
 			'separate_payment_methods_title'      => array(
 				'type'  => 'title',
 				'title' => __( 'Separate payment methods', 'zco' ),

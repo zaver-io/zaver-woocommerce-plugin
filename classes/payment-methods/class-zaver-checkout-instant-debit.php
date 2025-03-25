@@ -94,7 +94,7 @@ class Zaver_Checkout_Instant_Debit extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_title() {
-		return __( 'Betala nu', 'zco' );
+		return $this->get_option( 'title' );
 	}
 
 	/**
@@ -103,7 +103,7 @@ class Zaver_Checkout_Instant_Debit extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_description() {
-		return __( 'Extra smidigt vid större köp', 'zco' );
+		return $this->get_option( 'description' );
 	}
 
 	/**

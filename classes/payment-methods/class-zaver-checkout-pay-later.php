@@ -94,19 +94,7 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_title() {
-		$locale = get_locale();
-
-		switch ( $locale ) {
-			case 'de_DE':
-				return 'Rechnung';
-			case 'nb_NO':
-				return 'Faktura';
-			case 'fi':
-				return 'Lasku';
-			case 'sv_SE':
-			default:
-				return __( 'Faktura', 'zco' );
-		}
+		return $this->get_option( 'title' );
 	}
 
 	/**
@@ -115,7 +103,7 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_description() {
-		return __( 'Betala senare', 'zco' );
+		return $this->get_option( 'description' );
 	}
 
 	/**

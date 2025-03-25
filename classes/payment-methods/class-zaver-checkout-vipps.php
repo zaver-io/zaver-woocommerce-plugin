@@ -94,16 +94,7 @@ class Zaver_Checkout_Vipps extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_title() {
-		return __( 'Vipps', 'zco' );
-	}
-
-	/**
-	 * Payment method description for the frontend.
-	 *
-	 * @return string
-	 */
-	public function get_description() {
-		return parent::get_description();
+		return $this->get_option( 'title' );
 	}
 
 	/**
