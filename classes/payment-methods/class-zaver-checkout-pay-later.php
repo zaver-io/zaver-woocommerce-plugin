@@ -14,7 +14,6 @@ use KrokedilZCODeps\Zaver\SDK\Object\RefundResponse;
 use WC_Order;
 use WC_Payment_Gateway;
 use Exception;
-use Zaver_Checkout_Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -23,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * The Zaver Checkout payment gateway.
  */
-class Checkout_Gateway extends WC_Payment_Gateway {
+class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 
 	/**
 	 * The Checkout API instance.
@@ -50,14 +49,14 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->id           = Plugin::PAYMENT_METHOD;
+		$this->id           = 'zaver_checkout_pay_later';
 		$this->has_fields   = false;
-		$this->method_title = __( 'Zaver Checkout', 'zco' );
+		$this->method_title = __( 'Zaver Checkout Pay Later', 'zco' );
 
 		$this->init_form_fields();
 		$this->init_settings();
 
-		$this->title             = $this->get_option( 'title' );
+		$this->title             = $this->get_option( 'title', $this->method_title );
 		$this->order_button_text = apply_filters( 'zco_order_button_text', __( 'Pay with Zaver', 'zco' ) );
 		$this->supports          = apply_filters(
 			$this->id . '_supports',
@@ -68,31 +67,6 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 		);
 
 		add_action( "woocommerce_update_options_payment_gateways_{$this->id}", array( $this, 'process_admin_options' ) );
-
-		$separate_payment_methods = wc_string_to_bool( $this->get_option( 'separate_payment_methods', 'yes' ) );
-		if ( $separate_payment_methods ) {
-			add_filter( 'wc_get_template', array( $this, 'payment_categories' ), 10, 3 );
-		}
-	}
-
-	/**
-	 * Display the payment categories under the gateway on the checkout page.
-	 *
-	 * @param string $template Target template file location.
-	 * @param string $template_name The name of the template.
-	 * @param array  $args Arguments for the template.
-	 * @return string
-	 */
-	public function payment_categories( $template, $template_name, $args ) {
-		if ( ! is_checkout() ) {
-			return $template;
-		}
-
-		if ( ( 'checkout/payment-method.php' !== $template_name ) || ( Plugin::PAYMENT_METHOD !== $args['gateway']->id ) ) {
-			return $template;
-		}
-
-		return ZCO_PLUGIN_PATH . '/templates/payment-categories.php';
 	}
 
 	/**
@@ -101,7 +75,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	 * @return void
 	 */
 	public function init_form_fields() {
-		$this->form_fields = Zaver_Checkout_Settings::setting_fields();
+		$this->form_fields = include ZCO_PLUGIN_PATH . '/includes/zaver-checkout-pay-later-settings.php';
 	}
 
 	/**
@@ -127,6 +101,52 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 		$title    = "<p class='zaver-checkout-title'>{$this->title}</p>";
 		$subtitle = "<p class='zaver-checkout-subtitle'>{$this->subtitle}</p>";
 		return $this->get_icon() . $title . $subtitle;
+	}
+
+	/**
+	 * Payment method description for the frontend.
+	 *
+	 * @return string
+	 */
+	public function get_description() {
+		$locale = get_locale();
+
+		switch ( $locale ) {
+			case 'de_DE':
+				return 'Zahlen Sie in Ihrem Tempo';
+			case 'nb_NO':
+				return 'Betale i din egen takt';
+			case 'fi':
+			case 'fi_fi':
+				return 'Maksa omaan tahtiisi';
+			case 'sv_SE':
+			default:
+				return 'Betala över tid';
+		}
+	}
+
+	/**
+	 * Check if payment method should be available.
+	 *
+	 * @return boolean
+	 */
+	public function is_available() {
+		return apply_filters( 'zaver_checkout_pay_later_is_available', $this->check_availability(), $this );
+	}
+
+	/**
+	 * Check if the gateway should be available.
+	 *
+	 * This function is extracted to create the 'zaver_checkout_pay_later_is_available' filter.
+	 *
+	 * @return bool
+	 */
+	private function check_availability() {
+		if ( is_checkout() ) {
+			return ZCO()->session->is_available( 'pay_later' );
+		}
+
+		return true;
 	}
 
 	/**
@@ -252,32 +272,6 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 		}
 
 		return $this->refund_instance;
-	}
-
-	/**
-	 * Returns the HTML snippet for the Zaver Checkout.
-	 *
-	 * @param string $token The token to use.
-	 * @return string
-	 */
-	public function get_html_snippet( $token ) {
-		$attributes = array();
-
-		$primary_color = $this->get_option( 'primary_color' );
-		if ( ! empty( $primary_color ) ) {
-			$attributes['zco-primary-color'] = $primary_color;
-		}
-
-		$html_snippet = $this->api()->getHtmlSnippet( $token, apply_filters( 'zco_html_snippet_attributes', $attributes, $this ) );
-		ZCO()->logger()->info(
-			'Generated Zaver Checkout HTML snippet',
-			array(
-				'token'   => $token,
-				'snippet' => esc_html( $html_snippet ),
-			)
-		);
-
-		return $html_snippet;
 	}
 
 	/**

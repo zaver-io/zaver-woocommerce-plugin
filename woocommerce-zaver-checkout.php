@@ -56,6 +56,22 @@ class Plugin {
 	private $system_report;
 
 	/**
+	 * Whether payment methods are displayed as individual gateways.
+	 *
+	 * @var boolean
+	 */
+	private $separate_payment_methods = false;
+
+	/**
+	 * Whether invoice should be available.
+	 *
+	 * @var boolean
+	 */
+	private $enable_payment_method_invoice = false;
+
+	public $session;
+
+	/**
 	 * Get the instance of the plugin.
 	 *
 	 * @return Plugin
@@ -116,6 +132,22 @@ class Plugin {
 		return $instance;
 	}
 
+
+	/**
+	 * Includes the class files for the separate payment methods.
+	 *
+	 * @return void
+	 */
+	private function include_gateways() {
+		if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
+			return;
+		}
+
+		// Invoice.
+		include_once plugin_basename( 'classes/payment-methods/class-zaver-checkout-pay-later.php' );
+		include_once plugin_basename( 'includes/zaver-checkout-pay-later-settings.php' );
+	}
+
 	/**
 	 * Initialize the plugin.
 	 *
@@ -126,6 +158,10 @@ class Plugin {
 			return;
 		}
 
+		$settings                            = get_option( 'woocommerce_zaver_checkout_settings' );
+		$this->separate_payment_methods      = wc_string_to_bool( $settings['separate_payment_methods'] ?? 'yes' );
+		$this->enable_payment_method_invoice = wc_string_to_bool( $settings['enable_payment_method_invoice'] ?? 'yes' );
+
 		$this->include_files();
 
 		add_filter( 'woocommerce_payment_gateways', array( $this, 'register_gateway' ) );
@@ -135,6 +171,7 @@ class Plugin {
 
 		$this->logger        = new Logger( 'zaver_checkout', 'Zaver Checkout' );
 		$this->system_report = new SystemReport( 'zaver_checkout', 'Zaver Checkout' );
+		$this->session       = new \Zaver\Classes\Session();
 		Hooks::instance();
 	}
 
@@ -194,13 +231,19 @@ class Plugin {
 	public function include_files() {
 
 		// Classes.
+		include_once ZCO_PLUGIN_PATH . '/classes/class-zaver-checkout-settings.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/checkout-gateway.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/helper.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/hooks.php';
+		include_once ZCO_PLUGIN_PATH . '/classes/session.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/payment-processor.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/refund-processor.php';
 
 		include_once ZCO_PLUGIN_PATH . '/classes/helpers/order.php';
+
+		if ( $this->separate_payment_methods ) {
+			$this->include_gateways();
+		}
 	}
 
 	/**
@@ -213,6 +256,13 @@ class Plugin {
 	public function register_gateway( $gateways ) {
 		include_once ZCO_PLUGIN_PATH . '/classes/payment-processor.php';
 		$gateways[] = __NAMESPACE__ . '\Checkout_Gateway';
+
+		if ( $this->separate_payment_methods ) {
+
+			if ( $this->enable_payment_method_invoice ) {
+				$gateways[] = Zaver_Checkout_Pay_Later::class;
+			}
+		}
 
 		return $gateways;
 	}
