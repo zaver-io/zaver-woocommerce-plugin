@@ -98,10 +98,26 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 		if ( ! is_checkout() ) {
 			return $this->title;
 		}
+	}
 
-		$title    = "<p class='zaver-checkout-title'>{$this->title}</p>";
-		$subtitle = "<p class='zaver-checkout-subtitle'>{$this->subtitle}</p>";
-		return $this->get_icon() . $title . $subtitle;
+	/**
+	 * Check if payment method should be available.
+	 *
+	 * @return boolean
+	 */
+	public function is_available() {
+		return apply_filters( 'zaver_checkout_is_available', $this->check_availability(), $this );
+	}
+
+	/**
+	 * Check if the gateway should be available.
+	 *
+	 * This function is extracted to create the 'zaver_checkout_is_available' filter.
+	 *
+	 * @return bool
+	 */
+	private function check_availability() {
+		return $this->get_option( 'enabled' ) === 'yes' && $this->get_option( 'separate_payment_methods' ) === 'no';
 	}
 
 	/**
