@@ -53,7 +53,7 @@ class Payment_Processor {
 			$available_payment_methods = $response->getSpecificPaymentMethodData();
 			foreach ( $available_payment_methods as $payment_method ) {
 				$title = strtolower( $payment_method['paymentMethod'] );
-				if ( strpos( $selected_payment_method, $title ) !== false ) {
+				if ( strpos( $selected_payment_method, $title, strlen( 'zaver_checkout_' ) ) !== false ) {
 					$order->update_meta_data( '_zaver_payment_method', $payment_method['paymentMethod'] );
 					$order->update_meta_data( '_zaver_payment_link', $payment_method['paymentLink'] );
 					$token = $payment_method['checkoutToken'];
