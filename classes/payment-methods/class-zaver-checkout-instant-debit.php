@@ -94,16 +94,7 @@ class Zaver_Checkout_Instant_Debit extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_title() {
-		$title    = 'Instant Debit';
-		$subtitle = 'Perfekt för mindre belopp';
-
-		if ( ! is_checkout() ) {
-			return $title;
-		}
-
-		$title    = "<p class='zaver-checkout-title'>{$title}</p>";
-		$subtitle = "<p class='zaver-checkout-subtitle'>{$subtitle}</p>";
-		return $this->get_icon() . $title . $subtitle;
+		return __( 'Betala nu', 'zco' );
 	}
 
 	/**
@@ -112,7 +103,7 @@ class Zaver_Checkout_Instant_Debit extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_description() {
-		return 'Pengarna dras från ditt bankkonto';
+		return __( 'Extra smidigt vid större köp', 'zco' );
 	}
 
 	/**

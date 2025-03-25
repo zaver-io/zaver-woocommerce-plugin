@@ -94,16 +94,13 @@ class Zaver_Checkout_Bank_Transfer extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_title() {
-		$title    = 'Banköverföring';
-		$subtitle = 'Perfekt för mindre belopp';
-
-		if ( ! is_checkout() ) {
-			return $title;
+		$locale = get_locale();
+		switch ( $locale ) {
+			case 'de_DE':
+				return 'Direktüberweisung';
+			default:
+				return __( 'Banköverföring', 'zco' );
 		}
-
-		$title    = "<p class='zaver-checkout-title'>{$title}</p>";
-		$subtitle = "<p class='zaver-checkout-subtitle'>{$subtitle}</p>";
-		return $this->get_icon() . $title . $subtitle;
 	}
 
 	/**
@@ -112,7 +109,7 @@ class Zaver_Checkout_Bank_Transfer extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_description() {
-		return 'Pengarna dras från ditt bankkonto';
+		return __( 'Pengarna dras från din bank', 'zco' );
 	}
 
 	/**

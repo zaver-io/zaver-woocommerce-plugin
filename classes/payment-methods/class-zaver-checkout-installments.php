@@ -94,16 +94,17 @@ class Zaver_Checkout_Installments extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_title() {
-		$title    = 'Installments';
-		$subtitle = 'Perfekt för mindre belopp';
-
-		if ( ! is_checkout() ) {
-			return $title;
+		$locale = get_locale();
+		switch ( $locale ) {
+			case 'de_DE':
+				return 'Ratenzahlung';
+			case 'nb_NO':
+				return 'Delbetaling';
+			case 'fi':
+				return 'Maksa osissa';
+			default:
+				return __( 'Delbetalning', 'zco' );
 		}
-
-		$title    = "<p class='zaver-checkout-title'>{$title}</p>";
-		$subtitle = "<p class='zaver-checkout-subtitle'>{$subtitle}</p>";
-		return $this->get_icon() . $title . $subtitle;
 	}
 
 	/**
@@ -112,7 +113,7 @@ class Zaver_Checkout_Installments extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_description() {
-		return 'Pengarna dras från ditt bankkonto';
+		return __( 'Betala över tid', 'zco' );
 	}
 
 	/**

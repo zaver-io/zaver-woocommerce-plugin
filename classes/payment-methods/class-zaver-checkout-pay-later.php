@@ -98,31 +98,15 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 
 		switch ( $locale ) {
 			case 'de_DE':
-				$title    = 'Rechnung';
-				$subtitle = 'Später bezahlen';
-				break;
+				return 'Rechnung';
 			case 'nb_NO':
-				$title    = 'Faktura';
-				$subtitle = 'Betale innen 14 dager - 0 kr';
-				break;
+				return 'Faktura';
 			case 'fi':
-			case 'fi_fi':
-				$title    = 'Lasku';
-				$subtitle = 'Maksa 14 päivän sisällä';
-				break;
+				return 'Lasku';
 			case 'sv_SE':
 			default:
-				$title    = 'Faktura';
-				$subtitle = 'Betala senare';
+				return __( 'Faktura', 'zco' );
 		}
-
-		if ( ! is_checkout() ) {
-			return $title;
-		}
-
-		$title    = "<p class='zaver-checkout-title'>{$title}</p>";
-		$subtitle = "<p class='zaver-checkout-subtitle'>{$subtitle}</p>";
-		return $this->get_icon() . $title . $subtitle;
 	}
 
 	/**
@@ -131,20 +115,7 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_description() {
-		$locale = get_locale();
-
-		switch ( $locale ) {
-			case 'de_DE':
-				return 'In 14 Tagen bezahlen – 0 €';
-			case 'nb_NO':
-				return 'Betal senere. Helt gratis';
-			case 'fi':
-			case 'fi_fi':
-				return 'Osta nyt, maksa myöhemmin ilman lisäkuluja';
-			case 'sv_SE':
-			default:
-				return 'Mer tid, mindre stress.';
-		}
+		return __( 'Betala senare', 'zco' );
 	}
 
 	/**

@@ -26,7 +26,7 @@ return apply_filters(
 			'desc_tip'    => true,
 			'title'       => __( 'Title', 'zco' ),
 			'description' => __( 'This controls the title which the user sees during checkout.', 'zco' ),
-			'default'     => __( 'Zaver Checkout', 'zco' ),
+			'default'     => __( 'Banköverföring', 'zco' ),
 		),
 		'primary_color' => array(
 			'type'        => 'color',
