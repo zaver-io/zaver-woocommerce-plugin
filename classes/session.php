@@ -54,30 +54,46 @@ class Session {
 	 * @return void
 	 */
 	private function update_available_payment_methods_from_cart() {
-		$total  = WC()->cart->get_total( 'edit' );
-		$market = $this->get_market();
+		$total    = WC()->cart->get_total( 'edit' );
+		$market   = $this->get_market();
+		$currency = get_woocommerce_currency();
 
 		$available_payment_methods = WC()->session->get( 'zaver_checkout_available_payment_methods' );
-		if ( isset( $available_payment_methods[ $total ][ $market ] ) ) {
+		if ( isset( $available_payment_methods[ $market ][ $currency ][ $total ] ) ) {
 			return;
 		}
 
-		$payment_methods_request = ( new PaymentMethodsRequest() )
+		try {
+			$payment_methods_request = ( new PaymentMethodsRequest() )
 			->setMarket( $market )
 			->setAmount( $total )
-			->setCurrency( get_woocommerce_currency() );
-		$payment_methods         = \Zaver\Plugin::gateway()->api()->getPaymentMethods( $payment_methods_request )->getPaymentMethods();
+			->setCurrency( $currency );
+			$payment_methods         = \Zaver\Plugin::gateway()->api()->getPaymentMethods( $payment_methods_request )->getPaymentMethods();
+			\Zaver\ZCO()->logger()->info(
+				'Received payment methods',
+				array(
+					'payload'        => wp_json_encode( $payment_methods_request ),
+					'paymentMethods' => $payment_methods,
+				)
+			);
 
-		\Zaver\ZCO()->logger()->info(
-			'Received payment methods',
-			array(
-				'payload'        => wp_json_encode( $payment_methods_request ),
-				'paymentMethods' => $payment_methods,
-			)
-		);
-
-		$available_payment_methods[ $total ][ $market ] = $payment_methods;
-		WC()->session->set( 'zaver_checkout_available_payment_methods', $available_payment_methods );
+			$available_payment_methods[ $market ][ $currency ][ $total ] = $payment_methods;
+			WC()->session->set( 'zaver_checkout_available_payment_methods', $available_payment_methods );
+		} catch ( \Exception $e ) {
+			\Zaver\ZCO()->logger()->critical(
+				'Failed to retrieve payment methods',
+				array(
+					'payload' => array(
+						'total'    => $total,
+						'market'   => $market,
+						'currency' => $currency,
+					),
+					'code'    => $e->getCode(),
+					'message' => $e->getMessage(),
+					'trace'   => $e->getTraceAsString(),
+				)
+			);
+		}
 	}
 
 	/**
@@ -87,13 +103,13 @@ class Session {
 	 * @return bool Whether it should be available.
 	 */
 	public function is_available( $id ) {
-		$total  = WC()->cart->get_total( 'edit' );
-		$market = WC()->customer->get_billing_country();
-		$market = empty( $market ) ? wc_get_base_location()['country'] : $market;
+		$total    = WC()->cart->get_total( 'edit' );
+		$market   = $this->get_market();
+		$currency = get_woocommerce_currency();
 
 		$id              = strtolower( $id );
 		$payment_methods = WC()->session->get( 'zaver_checkout_available_payment_methods' );
-		foreach ( $payment_methods[ $total ][ $market ] as $payment_method ) {
+		foreach ( $payment_methods[ $market ][ $currency ][ $total ] as $payment_method ) {
 			$payment_method_id = strtolower( $payment_method['paymentMethod'] );
 			if ( $id === $payment_method_id ) {
 				return true;
