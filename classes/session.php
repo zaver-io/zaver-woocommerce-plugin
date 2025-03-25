@@ -110,6 +110,10 @@ class Session {
 	 * @return bool Whether it should be available.
 	 */
 	public function is_available( $id ) {
+		if ( ! isset( WC()->cart ) ) {
+			return false;
+		}
+
 		$total    = WC()->cart->get_total( 'edit' );
 		$market   = $this->get_market();
 		$currency = get_woocommerce_currency();

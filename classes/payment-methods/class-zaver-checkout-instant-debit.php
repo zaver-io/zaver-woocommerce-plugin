@@ -136,8 +136,13 @@ class Zaver_Checkout_Instant_Debit extends WC_Payment_Gateway {
 			return false;
 		}
 
-		return ZCO()->session()->is_available( $this->id );
+		if ( is_checkout() ) {
+			return ZCO()->session()->is_available( $this->id );
+		}
+
+		return true;
 	}
+
 	/**
 	 * Process the payment and return the result.
 	 *

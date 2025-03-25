@@ -136,7 +136,11 @@ class Zaver_Checkout_Vipps extends WC_Payment_Gateway {
 			return false;
 		}
 
-		return ZCO()->session()->is_available( $this->id );
+		if ( is_checkout() ) {
+			return ZCO()->session()->is_available( $this->id );
+		}
+
+		return true;
 	}
 
 	/**
