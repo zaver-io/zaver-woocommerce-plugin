@@ -1,6 +1,6 @@
 <?php
 /**
- * Zaver Checkout Pay Later settings.
+ * Zaver Checkout Vipps settings.
  *
  * @package ZCO/Includes
  */
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Settings for Zaver Checkout
  */
 return apply_filters(
-	'zaver_checkout_pay_later_settings',
+	'zaver_checkout_vipps_settings',
 	array(
 		'enabled'       => array(
 			'type'    => 'checkbox',

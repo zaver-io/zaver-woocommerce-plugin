@@ -69,6 +69,11 @@ class Plugin {
 	 */
 	private $enable_payment_method_invoice = false;
 
+	/**
+	 * Session management.
+	 *
+	 * @var ZCO\Classes\Session
+	 */
 	public $session;
 
 	/**
@@ -146,6 +151,21 @@ class Plugin {
 		// Invoice.
 		include_once plugin_basename( 'classes/payment-methods/class-zaver-checkout-pay-later.php' );
 		include_once plugin_basename( 'includes/zaver-checkout-pay-later-settings.php' );
+		// Swish.
+		include_once plugin_basename( 'classes/payment-methods/class-zaver-checkout-swish.php' );
+		include_once plugin_basename( 'includes/zaver-checkout-swish-settings.php' );
+		// Bank transfer.
+		include_once plugin_basename( 'classes/payment-methods/class-zaver-checkout-bank-transfer.php' );
+		include_once plugin_basename( 'includes/zaver-checkout-bank-transfer-settings.php' );
+		// Vipps.
+		include_once plugin_basename( 'classes/payment-methods/class-zaver-checkout-vipps.php' );
+		include_once plugin_basename( 'includes/zaver-checkout-vipps-settings.php' );
+		// Installments.
+		include_once plugin_basename( 'classes/payment-methods/class-zaver-checkout-installments.php' );
+		include_once plugin_basename( 'includes/zaver-checkout-installments-settings.php' );
+		// Instant debit.
+		include_once plugin_basename( 'classes/payment-methods/class-zaver-checkout-instant-debit.php' );
+		include_once plugin_basename( 'includes/zaver-checkout-instant-debit-settings.php' );
 	}
 
 	/**
@@ -261,6 +281,11 @@ class Plugin {
 
 			if ( $this->enable_payment_method_invoice ) {
 				$gateways[] = Zaver_Checkout_Pay_Later::class;
+				$gateways[] = Zaver_Checkout_Swish::class;
+				$gateways[] = Zaver_Checkout_Bank_Transfer::class;
+				$gateways[] = Zaver_Checkout_Vipps::class;
+				$gateways[] = Zaver_Checkout_Installments::class;
+				$gateways[] = Zaver_Checkout_Instant_Debit::class;
 			}
 		}
 
