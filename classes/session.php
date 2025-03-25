@@ -62,8 +62,6 @@ class Session {
 			return;
 		}
 
-		return;
-
 		$payment_methods_request = ( new PaymentMethodsRequest() )
 			->setMarket( $market )
 			->setAmount( $total )
