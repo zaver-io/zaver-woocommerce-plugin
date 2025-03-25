@@ -37,8 +37,10 @@ class Order {
 	 * @return PaymentCreationRequest
 	 */
 	public static function create( $order ) {
+		$store_id = preg_replace( '/(https?:\/\/|www.|\/\s*$)/i', '', get_home_url() );
+
 		$payment = PaymentCreationRequest::create()
-			->setMerchantPaymentReference( $order->get_order_number() )
+			->setMerchantPaymentReference( "{$store_id} - {$order->get_order_number()}" )
 			->setAmount( $order->get_total() )
 			->setCurrency( $order->get_currency() )
 			->setMarket( $order->get_billing_country() )
