@@ -132,9 +132,6 @@ class Payment_Processor {
 
 		switch ( $payment_status->getPaymentStatus() ) {
 			case PaymentStatus::SETTLED:
-				// translators: %s is the payment ID.
-				$order->add_order_note( sprintf( __( 'Successful payment with Zaver - payment ID: %s.', 'zco' ), $payment_status->getPaymentId() ) );
-				$order->payment_complete( $payment_status->getPaymentId() );
 				ZCO()->logger()->info(
 					'Successful payment with Zaver',
 					array(
@@ -142,6 +139,10 @@ class Payment_Processor {
 						'paymentId' => $payment_status->getPaymentId(),
 					)
 				);
+				// translators: %s is the payment ID.
+				$order->add_order_note( sprintf( __( 'Successful payment with Zaver - payment ID: %s.', 'zco' ), $payment_status->getPaymentId() ) );
+				$order->payment_complete( $payment_status->getPaymentId() );
+
 				break;
 
 			case PaymentStatus::CANCELLED:
