@@ -162,9 +162,25 @@ class Payment_Processor {
 				$order->update_status( 'cancelled', __( 'Zaver payment was cancelled - cancelling order.', 'zco' ) );
 				break;
 
+			case PaymentStatus::PENDING:
+				ZCO()->logger()->info(
+					'Zaver payment is pending merchant capture',
+					array(
+						'orderId'   => $order->get_id(),
+						'paymentId' => $payment_status->getPaymentId(),
+					)
+				);
+
+				$order->payment_complete( $payment_status->getPaymentId() );
+				// translators: %s is the payment ID.
+				$order->add_order_note( sprintf( __( 'Successful payment with Zaver - payment ID: %s.', 'zco' ), $payment_status->getPaymentId() ) );
+				$order->add_order_note( sprintf( __( 'Zaver payment is pending capture.', 'zco' ), $payment_status->getPaymentId() ) );
+				$order->save();
+				break;
+
 			case PaymentStatus::PENDING_CONFIRMATION:
 				ZCO()->logger()->info(
-					'Zaver Payment is pending confirmation',
+					'Zaver payment is pending confirmation',
 					array(
 						'orderId'   => $order->get_id(),
 						'paymentId' => $payment_status->getPaymentId(),
@@ -174,6 +190,7 @@ class Payment_Processor {
 				$order->set_transaction_id( $payment_status->getPaymentId() );
 				$order->update_status( 'on-hold', __( 'Zaver Payment is pending confirmation.', 'zco' ) );
 				break;
+
 			default:
 				ZCO()->logger()->error(
 					'Received unhandled payment status from Zaver',
