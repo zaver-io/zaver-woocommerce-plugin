@@ -161,22 +161,6 @@ class Payment_Processor {
 				$order->update_status( 'cancelled', __( 'Zaver payment was cancelled - cancelling order.', 'zco' ) );
 				break;
 
-			case PaymentStatus::CREATED:
-				ZCO()->logger()->debug(
-					'Zaver Payment is still in CREATED state',
-					array(
-						'orderId'   => $order->get_id(),
-						'paymentId' => $payment_status->getPaymentId(),
-					)
-				);
-
-				if ( $redirect ) {
-					wp_safe_redirect( $order->get_checkout_payment_url( true ) );
-					exit;
-				}
-
-				// Do nothing.
-				break;
 			case PaymentStatus::PENDING_CONFIRMATION:
 				ZCO()->logger()->info(
 					'Zaver Payment is pending confirmation',
