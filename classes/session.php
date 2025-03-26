@@ -120,10 +120,12 @@ class Session {
 
 		$id              = str_replace( 'zaver_checkout_', '', strtolower( $id ) );
 		$payment_methods = WC()->session->get( 'zaver_checkout_available_payment_methods' );
-		foreach ( $payment_methods[ $market ][ $currency ][ $total ] as $payment_method ) {
-			$payment_method_id = strtolower( $payment_method['paymentMethod'] );
-			if ( $payment_method_id === $id ) {
-				return true;
+		if ( ! empty( $payment_methods ) ) {
+			foreach ( $payment_methods[ $market ][ $currency ][ $total ] as $payment_method ) {
+				$payment_method_id = strtolower( $payment_method['paymentMethod'] );
+				if ( $payment_method_id === $id ) {
+					return true;
+				}
 			}
 		}
 
