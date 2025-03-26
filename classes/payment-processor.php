@@ -133,7 +133,7 @@ class Payment_Processor {
 		switch ( $payment_status->getPaymentStatus() ) {
 			case PaymentStatus::SETTLED:
 				// translators: %s is the payment ID.
-				$order->add_order_note( sprintf( __( 'Successful payment with Zaver - payment ID: %s', 'zco' ), $payment_status->getPaymentId() ) );
+				$order->add_order_note( sprintf( __( 'Successful payment with Zaver - payment ID: %s.', 'zco' ), $payment_status->getPaymentId() ) );
 				$order->payment_complete( $payment_status->getPaymentId() );
 				ZCO()->logger()->info(
 					'Successful payment with Zaver',
@@ -158,7 +158,7 @@ class Payment_Processor {
 					exit;
 				}
 
-				$order->update_status( 'cancelled', __( 'Zaver payment was cancelled - cancelling order', 'zco' ) );
+				$order->update_status( 'cancelled', __( 'Zaver payment was cancelled - cancelling order.', 'zco' ) );
 				break;
 
 			case PaymentStatus::CREATED:
@@ -178,7 +178,6 @@ class Payment_Processor {
 				// Do nothing.
 				break;
 			case PaymentStatus::PENDING_CONFIRMATION:
-				$order->update_status( 'on-hold', __( 'Zaver Payment is pending confirmation', 'zco' ) );
 				ZCO()->logger()->info(
 					'Zaver Payment is pending confirmation',
 					array(
@@ -186,6 +185,9 @@ class Payment_Processor {
 						'paymentId' => $payment_status->getPaymentId(),
 					)
 				);
+
+				$order->set_transaction_id( $payment_status->getPaymentId() );
+				$order->update_status( 'on-hold', __( 'Zaver Payment is pending confirmation.', 'zco' ) );
 				break;
 			default:
 				ZCO()->logger()->error(
