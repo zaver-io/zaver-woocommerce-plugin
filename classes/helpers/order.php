@@ -8,6 +8,8 @@
 namespace Zaver\Classes\Helpers;
 
 use KrokedilZCODeps\Zaver\SDK\Config\ItemType;
+use KrokedilZCODeps\Zaver\SDK\Object\Address;
+use KrokedilZCODeps\Zaver\SDK\Object\PayerData;
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentCreationRequest;
 use KrokedilZCODeps\Zaver\SDK\Object\MerchantUrls;
 use KrokedilZCODeps\Zaver\SDK\Object\LineItem;
@@ -39,6 +41,21 @@ class Order {
 	public static function create( $order ) {
 		$store_id = preg_replace( '/(https?:\/\/|www.|\/\s*$)/i', '', get_home_url() );
 
+		$billing_address = ( new Address() )
+		->setAddressLine1( $order->get_billing_address_1() )
+		->setAddressLine2( $order->get_billing_address_2() )
+		->setCity( $order->get_billing_city() )
+		->setRegion( $order->get_billing_state() )
+		->setPostalCode( $order->get_billing_postcode() )
+		->setCountry( $order->get_billing_country() );
+
+		$shipping_address = ( new Address() )
+		->setAddressLine1( $order->get_shipping_address_1() )
+		->setAddressLine2( $order->get_shipping_address_2() )
+		->setPostalCode( $order->get_shipping_postcode() )
+		->setCity( $order->get_shipping_city() )
+		->setCountry( $order->get_shipping_country() );
+
 		$payment = PaymentCreationRequest::create()
 			->setMerchantPaymentReference( "{$store_id} - {$order->get_order_number()}" )
 			->setAmount( $order->get_total() )
@@ -53,7 +70,16 @@ class Order {
 					'orderId'        => (string) $order->get_id(),
 				)
 			)
-			->setTitle( self::get_purchase_title( $order ) );
+			->setTitle( self::get_purchase_title( $order ) )
+			->setPayerData(
+				( new PayerData() )
+					->setEmail( $order->get_billing_email() )
+					->setPhoneNumber( $order->get_billing_phone() )
+					->setGivenName( $order->get_billing_first_name() )
+					->setFamilyName( $order->get_billing_last_name() )
+					->setBillingAddress( $billing_address )
+					->setShippingAddress( $shipping_address )
+			);
 
 		$merchant_urls = MerchantUrls::create()
 			->setSuccessUrl( Plugin::gateway()->get_return_url( $order ) );
