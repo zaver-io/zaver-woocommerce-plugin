@@ -49,6 +49,13 @@ class Plugin {
 	private $logger;
 
 	/**
+	 * The system report instance.
+	 *
+	 * @var SystemReport
+	 */
+	private $system_report;
+
+	/**
 	 * Whether payment methods are displayed as individual gateways.
 	 *
 	 * @var boolean
@@ -125,6 +132,15 @@ class Plugin {
 	 */
 	public function logger() {
 		return $this->logger;
+	}
+
+	/**
+	 * Get the system report.
+	 *
+	 * @return SystemReport
+	 */
+	public function report() {
+		return $this->system_report;
 	}
 
 	/**
@@ -241,10 +257,9 @@ class Plugin {
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
-		$this->logger  = new Logger( 'zaver_checkout', wc_string_to_bool( $settings['logging'] ?? false ) );
-		$this->session = new Classes\Session();
-
-		new SystemReport( 'zaver_checkout', 'Zaver Checkout', array() );
+		$this->system_report = new SystemReport( 'zaver_checkout', 'Zaver Checkout', array() );
+		$this->logger        = new Logger( 'zaver_checkout', wc_string_to_bool( $settings['logging'] ?? false ) );
+		$this->session       = new Classes\Session();
 
 		Hooks::instance();
 	}
