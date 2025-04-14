@@ -187,13 +187,7 @@ class Refund_Processor {
 			return null;
 		}
 
-		return add_query_arg(
-			array(
-				'wc-api' => 'zaver_refund_callback',
-				'key'    => $order->get_order_key(),
-			),
-			home_url()
-		);
+		return add_query_arg( 'key', $order->get_order_key(), home_url( '/wc-api/zaver_refund_callback/' ) );
 	}
 
 	/**
