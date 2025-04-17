@@ -18,6 +18,7 @@ use WC_Order_Item_Coupon;
 use WC_Order_Item_Fee;
 use WC_Order_Item_Product;
 use WC_Order_Item_Shipping;
+use WC_Order_Refund;
 use Zaver\Plugin;
 use Zaver\Helper;
 
@@ -91,9 +92,23 @@ class Order {
 
 		$payment->setMerchantUrls( $merchant_urls );
 
-		$types = array( 'line_item', 'shipping', 'fee', 'coupon' );
+		foreach ( self::get_line_items( $order ) as $line_item ) {
+			$payment->addLineItem( $line_item );
+		}
 
-		foreach ( $order->get_items( $types ) as $item ) {
+		return $payment;
+	}
+
+	/**
+	 * Get the line items for the order.
+	 *
+	 * @param WC_Order|WC_Order_Refund $order The order to get the line items for.
+	 * @return array<LineItem>
+	 */
+	public static function get_line_items( $order ) {
+		$line_items = array();
+
+		foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee', 'coupon' ) ) as $item ) {
 			$line_item = LineItem::create()
 				->setName( $item->get_name() )
 				->setQuantity( $item->get_quantity() )
@@ -109,10 +124,10 @@ class Order {
 				self::prepare_coupon( $line_item, $item );
 			}
 
-			$payment->addLineItem( $line_item );
+			$line_items[] = $line_item;
 		}
 
-		return $payment;
+		return $line_items;
 	}
 
 	/**

@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class for Dintero settings
+ * Class for plugin settings.
  */
 class Zaver_Checkout_Settings {
 
