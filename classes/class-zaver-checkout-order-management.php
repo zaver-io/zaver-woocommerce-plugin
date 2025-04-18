@@ -23,7 +23,7 @@ use Zaver\Plugin;
 /**
  * Handle order management in WooCommerce.
  */
-class Zaver_Checkout_Order_Management {
+class Order_Management {
 
 	/** The order has been captured. */
 	public const CAPTURED = '_zaver_captured';
@@ -39,7 +39,7 @@ class Zaver_Checkout_Order_Management {
 	/**
 	 * The reference the *Singleton* instance of this class.
 	 *
-	 * @var Zaver_Checkout_Order_Management $instance
+	 * @var Order_Management $instance
 	 */
 	private static $instance;
 
@@ -47,7 +47,7 @@ class Zaver_Checkout_Order_Management {
 	 * Returns the *Singleton* instance of this class.
 	 *
 	 * @static
-	 * @return Zaver_Checkout_Order_Management The *Singleton* instance.
+	 * @return Order_Management The *Singleton* instance.
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
@@ -227,4 +227,4 @@ class Zaver_Checkout_Order_Management {
 	}
 }
 
-Zaver_Checkout_Order_Management::get_instance();
+Order_Management::get_instance();
