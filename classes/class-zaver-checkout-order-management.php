@@ -1,16 +1,18 @@
 <?php
+/**
+ * Zaver Checkout Order Management Class
+ *
+ * This file contains the class responsible for handling order management
+ * requests from within WooCommerce for the Zaver payment gateway.
+ *
+ * @package ZCO/Classes
+ */
 
 use KrokedilZCODeps\Zaver\SDK\Config\PaymentStatus;
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentCaptureRequest;//phpcs:ignore
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentStatusResponse;
 use KrokedilZCODeps\Zaver\SDK\Utils\Error;
 use Zaver\Classes\Helpers\Order;
-
-/**
- * Class for handling for handling order management request from within WooCommerce.
- *
- * @package ZCO/Classes
- */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -122,10 +124,9 @@ class Zaver_Checkout_Order_Management {
 		$response = Plugin::gateway()->api()->capturePayment( $order->get_transaction_id(), $request );
 
 		$note = sprintf(
-			// translators: the amount, the currency.
-			__( 'The Zaver order has been captured. Captured amount: %1$.2f %2$s.', 'zco' ),
-			substr_replace( $response->getCapturedAmount(), wc_get_price_decimal_separator(), -2, 0 ),
-			$response->getCurrency()
+			// translators: the amount including currency.
+			__( 'The Zaver order has been captured. Captured amount: %1$.2f.', 'zco' ),
+			self::format_price( $response->getCapturedAmount(), $response->getCurrency() )
 		);
 
 		$order->update_meta_data( self::CAPTURED, current_time( ' Y-m-d H:i:s' ) );
@@ -212,6 +213,17 @@ class Zaver_Checkout_Order_Management {
 	 */
 	public function can_refund( $payment_status ) {
 		return $payment_status->getAllowedPaymentOperations()->getCanRefund();
+	}
+
+	/**
+	 * Format the price for display.
+	 *
+	 * @param string $amount The amount to format.
+	 * @param string $currency The currency.
+	 * @return string The formatted price.
+	 */
+	public static function format_price( $amount, $currency ) {
+		return substr_replace( $amount, wc_get_price_decimal_separator(), -2, 0 ) . ' ' . $currency;
 	}
 }
 
