@@ -110,6 +110,7 @@ class Zaver_Checkout_Order_Management {
 			return;
 		}
 
+		// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will revert the transition, write an order note about it, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
 		$request  = new PaymentCaptureRequest(
 			array(
 				'captureIdempotencyKey' => wp_generate_uuid4(),
@@ -175,6 +176,7 @@ class Zaver_Checkout_Order_Management {
 			return;
 		}
 
+		// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will revert the transition, write an order note about it, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
 		Plugin::gateway()->api()->cancelPayment( $order->get_transaction_id() );
 
 		$order->add_order_note( __( 'The Zaver order has been canceled.', 'zco' ) );
