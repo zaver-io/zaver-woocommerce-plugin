@@ -137,13 +137,8 @@ class Order {
 	 * @return string
 	 */
 	private static function get_purchase_title( $order ) {
-		$items = $order->get_items();
-
-		// If there's only one order item, return it as title.
-		// If there's multiple order items, return a generic title.
-		// translators: %s is the order number.
-		$title = count( $items ) === 1 ? reset( $items )->get_name() : sprintf( __( 'Order %s', 'zco' ), $order->get_order_number() );
-
+		// translators: %s: Order number.
+		$title = sprintf( __( 'Order %s', 'zco' ), $order->get_order_number() );
 		return apply_filters( 'zco_payment_purchase_title', $title, $order );
 	}
 
