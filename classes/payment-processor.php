@@ -11,6 +11,8 @@ use Exception;
 use WC_Order;
 use KrokedilZCODeps\Zaver\SDK\Config\PaymentStatus;
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentStatusResponse;
+use Zaver\Classes\Helpers\Order;
+use Zaver_Checkout_Order_Management as OM;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -30,7 +32,7 @@ class Payment_Processor {
 	 * @return void
 	 */
 	public static function process( $order ) {
-		$payment = Classes\Helpers\Order::create( $order );
+		$payment = Order::create( $order );
 
 		do_action( 'zco_before_process_payment', $payment, $order );
 		$response = Plugin::gateway()->api()->createPayment( $payment );
@@ -97,7 +99,6 @@ class Payment_Processor {
 	 */
 	public static function handle_response( $order, $payment_status = null, $redirect = true ) {
 
-		// TODO: I believe what they meant here is to check for if $order->get_date_paid() is not null.
 		// Ignore orders that are already paid.
 		if ( ! $order->needs_payment() ) {
 			return;
@@ -132,16 +133,34 @@ class Payment_Processor {
 
 		switch ( $payment_status->getPaymentStatus() ) {
 			case PaymentStatus::SETTLED:
-				ZCO()->logger()->info(
-					'Successful payment with Zaver',
-					array(
-						'orderId'   => $order->get_id(),
-						'paymentId' => $payment_status->getPaymentId(),
-					)
-				);
-				// translators: %s is the payment ID.
-				$order->add_order_note( sprintf( __( 'Successful payment with Zaver - payment ID: %s.', 'zco' ), $payment_status->getPaymentId() ) );
-				$order->payment_complete( $payment_status->getPaymentId() );
+				// When the order is initially created, the captured amount is zero.
+				if ( 0 >= ( $payment_status->getCapturedAmount() * 100 ) ) {
+					ZCO()->logger()->info(
+						'Successful payment with Zaver',
+						array(
+							'orderId'   => $order->get_id(),
+							'paymentId' => $payment_status->getPaymentId(),
+						)
+					);
+					// translators: %s is the payment ID.
+					$order->add_order_note( sprintf( __( 'Successful payment with Zaver - payment ID: %s.', 'zco' ), $payment_status->getPaymentId() ) );
+					$order->payment_complete( $payment_status->getPaymentId() );
+				} else {
+					$currency  = $payment_status->getCurrency();
+					$captured  = OM::format_price( $payment_status->getCapturedAmount(), $currency );
+					$remaining = OM::format_price( $payment_status->getAmount() - $captured, $currency );
+					ZCO()->logger()->info(
+						'Zaver payment was captured',
+						array(
+							'orderId'         => $order->get_id(),
+							'paymentId'       => $payment_status->getPaymentId(),
+							'capturedAmount'  => $captured,
+							'remainingAmount' => $remaining,
+						)
+					);
+					// translators: %1$s is the payment ID, %2$s is the captured amount, %3$s is the remaining amount to capture.
+					$order->add_order_note( sprintf( __( 'Zaver payment was captured - payment ID: %1$s. Captured amount: %2$s. Remaining amount to capture: %3$s.', 'zco' ), $payment_status->getPaymentId(), $captured, $remaining ) );
+				}
 
 				break;
 
