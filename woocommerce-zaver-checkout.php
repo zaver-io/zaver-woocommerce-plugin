@@ -327,8 +327,8 @@ class Plugin {
 	public function include_files() {
 
 		// Classes.
-		include_once ZCO_PLUGIN_PATH . '/classes/class-zaver-checkout-settings.php';
-		include_once ZCO_PLUGIN_PATH . '/classes/class-zaver-checkout-order-management.php';
+		include_once ZCO_PLUGIN_PATH . '/classes/settings.php';
+		include_once ZCO_PLUGIN_PATH . '/classes/order-management.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/checkout-gateway.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/helper.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/hooks.php';

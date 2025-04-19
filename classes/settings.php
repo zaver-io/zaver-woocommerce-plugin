@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class for plugin settings.
  */
-class Zaver_Checkout_Settings {
+class Settings {
 
 	/**
 	 * Returns the settings fields.

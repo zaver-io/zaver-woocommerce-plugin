@@ -1,4 +1,4 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName.NotHyphenatedLowercase -- Allowing custom file naming convention for this class.
 /**
  * Zaver Checkout Order Management Class
  *
@@ -9,7 +9,7 @@
  */
 
 use KrokedilZCODeps\Zaver\SDK\Config\PaymentStatus;
-use KrokedilZCODeps\Zaver\SDK\Object\PaymentCaptureRequest;//phpcs:ignore
+use KrokedilZCODeps\Zaver\SDK\Object\PaymentCaptureRequest;
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentStatusResponse;
 use KrokedilZCODeps\Zaver\SDK\Utils\Error;
 use Zaver\Classes\Helpers\Order;
@@ -112,7 +112,7 @@ class Order_Management {
 			return;
 		}
 
-		// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will revert the transition, write an order note about it, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
+		// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will still complete the status transition, but write an order note about the error, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
 		$request  = new PaymentCaptureRequest(
 			array(
 				'captureIdempotencyKey' => wp_generate_uuid4(),
@@ -177,7 +177,7 @@ class Order_Management {
 			return;
 		}
 
-		// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will revert the transition, write an order note about it, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
+		// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will still complete the status transition, but write an order note about the error, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
 		Plugin::gateway()->api()->cancelPayment( $order->get_transaction_id() );
 
 		$order->add_order_note( __( 'The Zaver order has been canceled.', 'zco' ) );

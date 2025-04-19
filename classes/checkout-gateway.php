@@ -14,7 +14,7 @@ use KrokedilZCODeps\Zaver\SDK\Object\RefundResponse;
 use WC_Order;
 use WC_Payment_Gateway;
 use Exception;
-use Zaver_Checkout_Settings;
+use Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -76,7 +76,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	 * @return void
 	 */
 	public function init_form_fields() {
-		$this->form_fields = Zaver_Checkout_Settings::setting_fields();
+		$this->form_fields = Settings::setting_fields();
 	}
 
 	/**
