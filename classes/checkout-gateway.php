@@ -108,6 +108,15 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * If order management is enabled or not.
+	 *
+	 * @return bool
+	 */
+	public function is_order_management_enabled() {
+		return $this->get_option( 'order_management_enabled' ) === 'yes';
+	}
+
+	/**
 	 * Check if payment method should be available.
 	 *
 	 * @return boolean
