@@ -121,10 +121,9 @@ class Zaver_Checkout_Order_Management {
 			);
 			$response = Plugin::gateway()->api()->capturePayment( $order->get_transaction_id(), $request );
 			$note = sprintf(
-				// translators: the amount, the currency.
-				__( 'The Zaver order has been captured. Captured amount: %1$.2f %2$s.', 'zco' ),
-				substr_replace( $response->getCapturedAmount(), wc_get_price_decimal_separator(), -2, 0 ),
-				$response->getCurrency()
+				// translators: the capture amount
+				__( 'The Zaver order has been captured. Captured amount: %1$s.', 'zco' ),
+				wc_price( $response->getCapturedAmount(), array( 'currency' => $response->getCurrency() ) ),
 			);
 			$order->add_order_note( $note );
 			$order->update_meta_data( self::CAPTURED, current_time( ' Y-m-d H:i:s' ) );
