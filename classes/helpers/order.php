@@ -109,7 +109,7 @@ class Order {
 	public static function get_line_items( $order ) {
 		$line_items = array();
 
-		foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee', 'coupon' ) ) as $item ) {
+		foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $item ) {
 			$line_item = LineItem::create()
 				->setName( $item->get_name() )
 				->setQuantity( $item->get_quantity() )
@@ -121,8 +121,6 @@ class Order {
 				self::prepare_shipping( $line_item, $item );
 			} elseif ( $item->is_type( 'fee' ) ) {
 				self::prepare_fee( $line_item, $item );
-			} elseif ( $item->is_type( 'coupon' ) ) {
-				self::prepare_coupon( $line_item, $item );
 			}
 
 			$line_items[] = $line_item;
