@@ -5,6 +5,7 @@ use KrokedilZCODeps\Zaver\SDK\Object\PaymentCaptureRequest;//phpcs:ignore
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentStatusResponse;
 use KrokedilZCODeps\Zaver\SDK\Utils\Error;
 use Zaver\Classes\Helpers\Order;
+use function Zaver\ZCO;
 
 /**
  * Class for handling for handling order management request from within WooCommerce.
@@ -73,62 +74,75 @@ class Zaver_Checkout_Order_Management {
 	 * @return void
 	 */
 	public function capture_order( $order_id, $order ) {
-		if ( ! Plugin::gateway()->is_chosen_gateway( $order ) ) {
-			return;
-		}
-
-		if ( $order->get_meta( self::CAPTURED ) ) {
-			$order->add_order_note( __( 'The Zaver order has already been captured.', 'zco' ) );
-			return;
-		}
-
-		if ( empty( $order->get_transaction_id() ) ) {
-			$note = __( 'The order is missing a transaction ID.', 'zco' );
-			$order->update_status( 'on-hold', $note );
-			return;
-		}
-
-		if ( $order->get_meta( self::CANCELED ) ) {
-			$order->add_order_note( __( 'The Zaver order was canceled and can no longer be captured.', 'zco' ) );
-			return;
-		}
-
-		if ( $order->get_meta( self::REFUNDED ) ) {
-			$order->add_order_note( __( 'The Zaver order has been refunded and can no longer be captured.', 'zco' ) );
-			return;
-		}
-
-		$payment_status = Plugin::gateway()->api()->getPaymentStatus( $order->get_transaction_id() );
-		if ( false && ! $this->can_capture( $payment_status ) ) {
-			if ( PaymentStatus::PENDING_CONFIRMATION === $payment_status->getPaymentStatus() ) {
-				$additional_note = __( ' while pending confirmation.', 'zco' );
+		try{
+			if ( ! Plugin::gateway()->is_chosen_gateway( $order ) || ! Plugin::gateway()->is_order_management_enabled() ) {
+				return;
 			}
 
-			// translators: %s is the additional note.
-			$note = sprintf( __( 'The Zaver order cannot be captured%s', 'zco' ), empty( $additional_note ) ? '.' : $additional_note );
-			$order->add_order_note( $note );
-			return;
-		}
+			if ( $order->get_meta( self::CAPTURED ) ) {
+				$order->add_order_note( __( 'The Zaver order has already been captured.', 'zco' ) );
+				return;
+			}
 
-		// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will revert the transition, write an order note about it, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
-		$request  = new PaymentCaptureRequest(
-			array(
-				'captureIdempotencyKey' => wp_generate_uuid4(),
-				'amount'                => $order->get_total(),
-				'currency'              => $order->get_currency(),
-				'lineItems'             => Order::get_line_items( $order ),
-			)
-		);
-		$response = Plugin::gateway()->api()->capturePayment( $order->get_transaction_id(), $request );
-		$note = sprintf(
-			// translators: the amount, the currency.
-			__( 'The Zaver order has been captured. Captured amount: %1$.2f %2$s.', 'zco' ),
-			substr_replace( $response->getCapturedAmount(), wc_get_price_decimal_separator(), -2, 0 ),
-			$response->getCurrency()
-		);
-		$order->add_order_note( $note );
-		$order->update_meta_data( self::CAPTURED, current_time( ' Y-m-d H:i:s' ) );
-		$order->save();
+			if ( empty( $order->get_transaction_id() ) ) {
+				$order->update_status( 'on-hold', __( 'The order is missing a transaction ID.', 'zco' ) );
+				return;
+			}
+
+			if ( $order->get_meta( self::CANCELED ) ) {
+				$order->add_order_note( __( 'The Zaver order was canceled and can no longer be captured.', 'zco' ) );
+				return;
+			}
+
+			if ( $order->get_meta( self::REFUNDED ) ) {
+				$order->add_order_note( __( 'The Zaver order has been refunded and can no longer be captured.', 'zco' ) );
+				return;
+			}
+
+			$payment_status = Plugin::gateway()->api()->getPaymentStatus( $order->get_transaction_id() );
+
+			if ( ! $this->can_capture( $payment_status ) ) {
+				// If the payment status is pending confirmation, print a order note saying why we cant capture. Otherwise we just ignore it.
+				if ( PaymentStatus::PENDING_CONFIRMATION === $payment_status->getPaymentStatus() ) {
+					$order->update_status( 'on-hold', __( 'The Zaver order cannot be captured while pending confirmation.', 'zco' ) );
+				}
+
+				return;
+			}
+
+			// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will revert the transition, write an order note about it, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
+			$request  = new PaymentCaptureRequest(
+				array(
+					'captureIdempotencyKey' => wp_generate_uuid4(),
+					'amount'                => $order->get_total(),
+					'currency'              => $order->get_currency(),
+					'lineItems'             => Order::get_line_items( $order ),
+				)
+			);
+			$response = Plugin::gateway()->api()->capturePayment( $order->get_transaction_id(), $request );
+			$note = sprintf(
+				// translators: the amount, the currency.
+				__( 'The Zaver order has been captured. Captured amount: %1$.2f %2$s.', 'zco' ),
+				substr_replace( $response->getCapturedAmount(), wc_get_price_decimal_separator(), -2, 0 ),
+				$response->getCurrency()
+			);
+			$order->add_order_note( $note );
+			$order->update_meta_data( self::CAPTURED, current_time( ' Y-m-d H:i:s' ) );
+			$order->save();
+		} catch (Error $e) {
+			$order->update_status( 'on-hold', $e->getMessage() );
+			ZCO()->logger()->error(
+				sprintf(
+					'Failed to capture Zaver payment: %s',
+					$e->getMessage()
+				),
+				array(
+					'orderId'   => $order->get_id(),
+					'paymentId' => $order->get_transaction_id(),
+				)
+			);
+			$order->save();
+		}
 	}
 
 	/**
@@ -139,48 +153,62 @@ class Zaver_Checkout_Order_Management {
 	 * @return void
 	 */
 	public function cancel_order( $order_id, $order ) {
-		if ( ! Plugin::gateway()->is_chosen_gateway( $order ) ) {
-			return;
+		try{
+			if ( ! Plugin::gateway()->is_chosen_gateway( $order ) || ! Plugin::gateway()->is_order_management_enabled() ) {
+				return;
+			}
+
+			if ( $order->get_meta( self::CANCELED ) ) {
+				$order->add_order_note( __( 'The Zaver order has already been canceled.', 'zco' ) );
+				return;
+			}
+
+			// The order has not yet been processed.
+			if ( empty( $order->get_date_paid() ) ) {
+				return;
+			}
+
+			if ( empty( $order->get_transaction_id() ) ) {
+				error_log(__( 'The order is missing a transaction ID.', 'zco' ) );
+				$order->update_status( 'on-hold', __( 'The order is missing a transaction ID.', 'zco' ) );
+				return;
+			}
+
+			if ( $order->get_meta( self::CAPTURED ) ) {
+				$order->add_order_note( __( 'The Zaver order has been captured, and can therefore no longer be canceled.', 'zco' ) );
+				return;
+			}
+
+			if ( $order->get_meta( self::REFUNDED ) ) {
+				$order->add_order_note( __( 'The Zaver order has been refunded and can no longer be canceled.', 'zco' ) );
+				return;
+			}
+
+			$payment_status = Plugin::gateway()->api()->getPaymentStatus( $order->get_transaction_id() );
+			if ( ! $this->can_cancel( $payment_status ) ) {
+				return;
+			}
+
+			// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will revert the transition, write an order note about it, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
+			Plugin::gateway()->api()->cancelPayment( $order->get_transaction_id() );
+
+			$order->add_order_note( __( 'The Zaver order has been canceled.', 'zco' ) );
+			$order->update_meta_data( self::CANCELED, current_time( ' Y-m-d H:i:s' ) );
+			$order->save();
+		} catch (Error $e) {
+			$order->update_status( 'on-hold', $e->getMessage() );
+			ZCO()->logger()->error(
+				sprintf(
+					'Failed to cancel Zaver payment: %s',
+					$e->getMessage()
+				),
+				array(
+					'orderId'   => $order->get_id(),
+					'paymentId' => $order->get_transaction_id(),
+				)
+			);
+			$order->save();
 		}
-
-		if ( $order->get_meta( self::CANCELED ) ) {
-			$order->add_order_note( __( 'The Zaver order has already been canceled.', 'zco' ) );
-			return;
-		}
-
-		// The order has not yet been processed.
-		if ( empty( $order->get_date_paid() ) ) {
-			return;
-		}
-
-		if ( empty( $order->get_transaction_id() ) ) {
-			$order->add_order_note( __( 'The order is missing a transaction ID.', 'zco' ) );
-			$order->update_status( 'on-hold' );
-			return;
-		}
-
-		if ( $order->get_meta( self::CAPTURED ) ) {
-			$order->add_order_note( __( 'The Zaver order has been captured, and can therefore no longer be canceled.', 'zco' ) );
-			return;
-		}
-
-		if ( $order->get_meta( self::REFUNDED ) ) {
-			$order->add_order_note( __( 'The Zaver order has been refunded and can no longer be canceled.', 'zco' ) );
-			return;
-		}
-
-		$payment_status = Plugin::gateway()->api()->getPaymentStatus( $order->get_transaction_id() );
-		if ( ! $this->can_cancel( $payment_status ) ) {
-			$order->add_order_note( __( 'The Zaver order cannot be canceled.', 'zco' ) );
-			return;
-		}
-
-		// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will revert the transition, write an order note about it, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
-		Plugin::gateway()->api()->cancelPayment( $order->get_transaction_id() );
-
-		$order->add_order_note( __( 'The Zaver order has been canceled.', 'zco' ) );
-		$order->update_meta_data( self::CANCELED, current_time( ' Y-m-d H:i:s' ) );
-		$order->save();
 	}
 
 	/**
