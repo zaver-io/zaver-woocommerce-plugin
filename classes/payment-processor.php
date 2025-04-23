@@ -131,6 +131,8 @@ class Payment_Processor {
 		do_action( 'zco_process_payment_handle_response', $order, $payment_status, $redirect );
 
 		switch ( $payment_status->getPaymentStatus() ) {
+			case PaymentStatus::CREATED:
+				break;
 			case PaymentStatus::SETTLED:
 				ZCO()->logger()->info(
 					'Successful payment with Zaver',
