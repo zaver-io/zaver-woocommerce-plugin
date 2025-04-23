@@ -168,7 +168,6 @@ class Zaver_Checkout_Order_Management {
 			}
 
 			if ( empty( $order->get_transaction_id() ) ) {
-				error_log(__( 'The order is missing a transaction ID.', 'zco' ) );
 				$order->update_status( 'on-hold', __( 'The order is missing a transaction ID.', 'zco' ) );
 				return;
 			}
