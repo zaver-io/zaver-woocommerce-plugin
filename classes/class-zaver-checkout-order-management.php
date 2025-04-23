@@ -214,5 +214,3 @@ class Zaver_Checkout_Order_Management {
 		return $payment_status->getAllowedPaymentOperations()->getCanRefund();
 	}
 }
-
-Zaver_Checkout_Order_Management::get_instance();

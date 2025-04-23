@@ -24,6 +24,7 @@ namespace Zaver;
 
 use KrokedilZCODeps\Krokedil\Support\Logger;
 use KrokedilZCODeps\Krokedil\Support\SystemReport;
+use Zaver_Checkout_Order_Management;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -111,6 +112,13 @@ class Plugin {
 	private $session;
 
 	/**
+	 * Order management.
+	 *
+	 * @var Zaver_Checkout_Order_Management
+	 */
+	private $order_management;
+
+	/**
 	 * Get the instance of the plugin.
 	 *
 	 * @return Plugin
@@ -150,6 +158,15 @@ class Plugin {
 	 */
 	public function session() {
 		return $this->session;
+	}
+
+	/**
+	 * Get the order management instance.
+	 *
+	 * @return Zaver_Checkout_Order_Management
+	 */
+	public function order_management() {
+		return $this->order_management;
 	}
 
 	/**
@@ -267,6 +284,8 @@ class Plugin {
 		$this->system_report = new SystemReport( 'zaver_checkout', 'Zaver Checkout', $included_settings );
 		$this->logger        = new Logger( 'zaver_checkout', wc_string_to_bool( $settings['logging'] ?? false ) );
 		$this->session       = new Classes\Session();
+		$this->order_management = Zaver_Checkout_Order_Management::get_instance();
+
 
 		Hooks::instance();
 	}
