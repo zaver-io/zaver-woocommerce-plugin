@@ -252,7 +252,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 		}
 
 		$payment = $order->get_meta( '_zaver_payment' );
-		return ! isset( $payment['id'] );
+		return isset( $payment['id'] );
 	}
 
 

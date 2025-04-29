@@ -229,7 +229,7 @@ class Zaver_Checkout_Instant_Debit extends WC_Payment_Gateway {
 		}
 
 		$payment = $order->get_meta( '_zaver_payment' );
-		return ! isset( $payment['id'] );
+		return isset( $payment['id'] );
 	}
 
 
