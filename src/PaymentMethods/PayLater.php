@@ -2,7 +2,7 @@
 /**
  * The Zaver Checkout payment gateway.
  *
- * @package ZCO/Classes/PaymentMethods
+ * @package ZCO/PaymentMethods
  */
 
 namespace Zaver\PaymentMethods;
