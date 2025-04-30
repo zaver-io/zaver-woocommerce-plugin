@@ -1,12 +1,13 @@
 <?php
 /**
- * The Zaver Checkout payment gateway.
+ * This class serves as the foundation for all the Zaver Checkout payment methods.
  *
- * @package ZCO/Classes
+ * @package ZCO/Classes/PaymentMethods
  */
 
-namespace Zaver;
+namespace Zaver\PaymentMethods;
 
+use Zaver\Payment_Processor;
 use KrokedilZCODeps\Zaver\SDK\Checkout;
 use KrokedilZCODeps\Zaver\SDK\Refund;
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentStatusResponse;
@@ -20,38 +21,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * The Zaver Checkout payment gateway.
+ * The Base Zaver Checkout gateway.
  */
-class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
+abstract class BaseGateway extends WC_Payment_Gateway {
 
 	/**
 	 * The Checkout API instance.
 	 *
 	 * @var Checkout
 	 */
-	private $api_instance = null;
+	protected $api_instance = null;
 
 	/**
 	 * The Refund API instance.
 	 *
 	 * @var Refund
 	 */
-	private $refund_instance = null;
-
-	/**
-	 * The gateway subtitle.
-	 *
-	 * @var string
-	 */
-	public $subtitle = '';
+	protected $refund_instance = null;
 
 	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->id           = 'zaver_checkout_pay_later';
+		$this->id           = 'zaver_checkout_bank_transfer';
 		$this->has_fields   = false;
-		$this->method_title = __( 'Zaver Checkout Pay Later', 'zco' );
+		$this->method_title = __( 'Zaver Checkout Bank Transfer', 'zco' );
 
 		$this->init_form_fields();
 		$this->init_settings();
@@ -75,7 +69,8 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 	 * @return void
 	 */
 	public function init_form_fields() {
-		$this->form_fields = include ZCO_PLUGIN_PATH . '/includes/zaver-checkout-pay-later-settings.php';
+		$dashed_id         = str_replace( '_', '-', $this->id );
+		$this->form_fields = include ZCO_PLUGIN_PATH . "/includes/{$dashed_id}-settings.php";
 	}
 
 	/**
@@ -112,13 +107,13 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 	 * @return boolean
 	 */
 	public function is_available() {
-		return apply_filters( 'zaver_checkout_pay_later_is_available', $this->check_availability(), $this );
+		return apply_filters( "{$this->id}_is_available", $this->check_availability(), $this );
 	}
 
 	/**
 	 * Check if the gateway should be available.
 	 *
-	 * This function is extracted to create the 'zaver_checkout_pay_later_is_available' filter.
+	 * This function is extracted to create the '{$this->id}_is_available' filter.
 	 *
 	 * @return bool
 	 */
@@ -128,7 +123,7 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 		}
 
 		if ( is_checkout() ) {
-			return ZCO()->session()->is_available( $this->id );
+			return \Zaver\ZCO()->session()->is_available( $this->id );
 		}
 
 		return true;
@@ -165,7 +160,7 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 				)
 			);
 		} catch ( Exception $e ) {
-			ZCO()->logger()->error( sprintf( 'Zaver error during payment process: %s', $e->getMessage() ), array( 'orderId' => $order_id ) );
+			\Zaver\ZCO()->logger()->error( sprintf( 'Zaver error during payment process: %s', $e->getMessage() ), array( 'orderId' => $order_id ) );
 
 			$message = __( 'An error occurred - please try again, or contact site support', 'zco' );
 			wc_add_notice( $message, 'error' );
@@ -197,11 +192,11 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 				throw new Exception( 'Order not found' );
 			}
 
-			Refund_Processor::process( $order, (float) $amount );
+			\Zaver\Refund_Processor::process( $order, (float) $amount );
 
 			return true;
 		} catch ( Exception $e ) {
-			ZCO()->logger()->error(
+			\Zaver\ZCO()->logger()->error(
 				sprintf(
 					'Zaver error during refund process: %s',
 					$e->getMessage()
@@ -213,7 +208,7 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 				)
 			);
 
-			return ZCO()->report()->request( Helper::wp_error( $e ) );
+			return \Zaver\ZCO()->report()->request( \Zaver\Helper::wp_error( $e ) );
 		}
 	}
 
@@ -266,7 +261,7 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 	 */
 	public function receive_payment_callback() {
 		$callback = $this->api()->receiveCallback( $this->get_option( 'callback_token' ) );
-		ZCO()->logger()->info( 'Received Zaver payment callback', (array) $callback );
+		\Zaver\ZCO()->logger()->info( 'Received Zaver payment callback', (array) $callback );
 		return $callback;
 	}
 
@@ -277,7 +272,7 @@ class Zaver_Checkout_Pay_Later extends WC_Payment_Gateway {
 	 */
 	public function receive_refund_callback() {
 		$callback = $this->refund_api()->receiveCallback( $this->get_option( 'callback_token' ) );
-		ZCO()->logger()->info( 'Received Zaver refund callback', (array) $callback );
+		\Zaver\ZCO()->logger()->info( 'Received Zaver refund callback', (array) $callback );
 		return $callback;
 	}
 }
