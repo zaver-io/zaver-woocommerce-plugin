@@ -20,9 +20,11 @@ class Swish extends BaseGateway {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->id           = 'zaver_checkout_swish';
-		$this->has_fields   = false;
-		$this->method_title = __( 'Zaver Checkout Swish', 'zco' );
+		$this->id                  = 'zaver_checkout_swish';
+		$this->has_fields          = false;
+		$this->method_title        = __( 'Zaver Checkout Swish', 'zco' );
+		$this->default_title       = __( 'Swish', 'zco' );
+		$this->default_description = __( 'Perfekt för mindre belopp', 'zco' );
 
 		$this->init_form_fields();
 		$this->init_settings();

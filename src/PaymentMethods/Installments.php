@@ -20,9 +20,11 @@ class Installments extends BaseGateway {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->id           = 'zaver_checkout_installments';
-		$this->has_fields   = false;
-		$this->method_title = __( 'Zaver Checkout Installments', 'zco' );
+		$this->id                  = 'zaver_checkout_installments';
+		$this->has_fields          = false;
+		$this->method_title        = __( 'Zaver Checkout Installments', 'zco' );
+		$this->default_title       = __( 'Delbetalning', 'zco' );
+		$this->default_description = __( 'Betala över tid', 'zco' );
 
 		$this->init_form_fields();
 		$this->init_settings();

@@ -20,9 +20,11 @@ class BankTransfer extends BaseGateway {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->id           = 'zaver_checkout_bank_transfer';
-		$this->has_fields   = false;
-		$this->method_title = __( 'Zaver Checkout Bank Transfer', 'zco' );
+		$this->id                  = 'zaver_checkout_bank_transfer';
+		$this->has_fields          = false;
+		$this->method_title        = __( 'Zaver Checkout Bank Transfer', 'zco' );
+		$this->default_title       = __( 'Banköverföring', 'zco' );
+		$this->default_description = __( 'Pengarna dras från din bank', 'zco' );
 
 		$this->init_form_fields();
 		$this->init_settings();

@@ -20,9 +20,11 @@ class PayLater extends BaseGateway {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->id           = 'zaver_checkout_pay_later';
-		$this->has_fields   = false;
-		$this->method_title = __( 'Zaver Checkout Pay Later', 'zco' );
+		$this->id                  = 'zaver_checkout_pay_later';
+		$this->has_fields          = false;
+		$this->method_title        = __( 'Zaver Checkout Pay Later', 'zco' );
+		$this->default_title       = __( 'Faktura', 'zco' );
+		$this->default_description = __( 'Betala senare', 'zco' );
 
 		$this->init_form_fields();
 		$this->init_settings();

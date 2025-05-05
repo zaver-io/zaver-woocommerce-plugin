@@ -40,6 +40,20 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 	protected $refund_instance = null;
 
 	/**
+	 * The default title for the payment method.
+	 *
+	 * @var string
+	 */
+	protected $default_title;
+
+	/**
+	 * The default description for the payment method.
+	 *
+	 * @var string
+	 */
+	protected $default_description;
+
+	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
@@ -69,8 +83,9 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 	 * @return void
 	 */
 	public function init_form_fields() {
-		$dashed_id         = str_replace( '_', '-', $this->id );
-		$this->form_fields = include ZCO_PLUGIN_PATH . "/includes/{$dashed_id}-settings.php";
+		$default_title       = $this->default_title;
+		$default_description = $this->default_description;
+		$this->form_fields   = apply_filters( "{$this->id}_settings", include ZCO_PLUGIN_PATH . '/includes/zaver-checkout-settings.php' );
 	}
 
 	/**

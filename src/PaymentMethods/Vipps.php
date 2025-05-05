@@ -21,9 +21,10 @@ class Vipps extends BaseGateway {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->id           = 'zaver_checkout_vipps';
-		$this->has_fields   = false;
-		$this->method_title = __( 'Zaver Checkout Vipps', 'zco' );
+		$this->id            = 'zaver_checkout_vipps';
+		$this->has_fields    = false;
+		$this->method_title  = __( 'Zaver Checkout Vipps', 'zco' );
+		$this->default_title = __( 'Vipps', 'zco' );
 
 		$this->init_form_fields();
 		$this->init_settings();
