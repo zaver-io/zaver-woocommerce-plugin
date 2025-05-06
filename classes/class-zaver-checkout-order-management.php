@@ -1,12 +1,4 @@
 <?php
-
-use KrokedilZCODeps\Zaver\SDK\Config\PaymentStatus;
-use KrokedilZCODeps\Zaver\SDK\Object\PaymentCaptureRequest;//phpcs:ignore
-use KrokedilZCODeps\Zaver\SDK\Object\PaymentStatusResponse;
-use KrokedilZCODeps\Zaver\SDK\Utils\Error;
-use Zaver\Classes\Helpers\Order;
-use function Zaver\ZCO;
-
 /**
  * Class for handling for handling order management request from within WooCommerce.
  *
@@ -17,7 +9,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use KrokedilZCODeps\Zaver\SDK\Config\PaymentStatus;
+use KrokedilZCODeps\Zaver\SDK\Object\PaymentCaptureRequest;//phpcs:ignore
+use KrokedilZCODeps\Zaver\SDK\Object\PaymentStatusResponse;
+use KrokedilZCODeps\Zaver\SDK\Utils\Error;
+use Zaver\Classes\Helpers\Order;
+use Zaver\Helper;
 use Zaver\Plugin;
+use function Zaver\ZCO;
+
 
 /**
  * Handle order management in WooCommerce.
@@ -71,10 +71,10 @@ class Zaver_Checkout_Order_Management {
 	 *
 	 * @param int      $order_id The WooCommerce order id.
 	 * @param WC_Order $order The WooCommerce order object.
-	 * @return void
+	 * @return void|WP_Error
 	 */
 	public function capture_order( $order_id, $order ) {
-		try{
+		try {
 			if ( ! Plugin::gateway()->is_chosen_gateway( $order ) || ! Plugin::gateway()->is_order_management_enabled() ) {
 				return;
 			}
@@ -110,7 +110,6 @@ class Zaver_Checkout_Order_Management {
 				return;
 			}
 
-			// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will revert the transition, write an order note about it, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
 			$request  = new PaymentCaptureRequest(
 				array(
 					'captureIdempotencyKey' => wp_generate_uuid4(),
@@ -120,28 +119,32 @@ class Zaver_Checkout_Order_Management {
 				)
 			);
 			$response = Plugin::gateway()->api()->capturePayment( $order->get_transaction_id(), $request );
-			$note = sprintf(
-				// translators: the capture amount
+			$note     = sprintf(
+				// translators: the capture amount.
 				__( 'The Zaver order has been captured. Captured amount: %1$s.', 'zco' ),
 				wc_price( $response->getCapturedAmount(), array( 'currency' => $response->getCurrency() ) ),
 			);
 			$order->add_order_note( $note );
 			$order->update_meta_data( self::CAPTURED, current_time( ' Y-m-d H:i:s' ) );
-			$order->save();
-		} catch (Error $e) {
+		} catch ( Error $e ) {
 			$order->update_status( 'on-hold', $e->getMessage() );
 			ZCO()->logger()->error(
 				sprintf(
-					'Failed to capture Zaver payment: %s',
+					'[OM]: Failed to capture Zaver payment: %s',
 					$e->getMessage()
 				),
 				array(
 					'orderId'   => $order->get_id(),
 					'paymentId' => $order->get_transaction_id(),
+					'request'   => $e->getRequestBody(),
+					'response'  => $e->getResponseBody(),
 				)
 			);
-			$order->save();
+
+			return Helper::wp_error( $e );
 		}
+
+		$order->save();
 	}
 
 	/**
@@ -149,10 +152,10 @@ class Zaver_Checkout_Order_Management {
 	 *
 	 * @param int      $order_id The WooCommerce order id.
 	 * @param WC_Order $order The WooCommerce order object.
-	 * @return void
+	 * @return void|WP_Error
 	 */
 	public function cancel_order( $order_id, $order ) {
-		try{
+		try {
 			if ( ! Plugin::gateway()->is_chosen_gateway( $order ) || ! Plugin::gateway()->is_order_management_enabled() ) {
 				return;
 			}
@@ -187,26 +190,29 @@ class Zaver_Checkout_Order_Management {
 				return;
 			}
 
-			// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will revert the transition, write an order note about it, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
 			Plugin::gateway()->api()->cancelPayment( $order->get_transaction_id() );
 
 			$order->add_order_note( __( 'The Zaver order has been canceled.', 'zco' ) );
 			$order->update_meta_data( self::CANCELED, current_time( ' Y-m-d H:i:s' ) );
-			$order->save();
-		} catch (Error $e) {
+		} catch ( Error $e ) {
 			$order->update_status( 'on-hold', $e->getMessage() );
 			ZCO()->logger()->error(
 				sprintf(
-					'Failed to cancel Zaver payment: %s',
+					'[OM]: Failed to cancel Zaver payment: %s',
 					$e->getMessage()
 				),
 				array(
 					'orderId'   => $order->get_id(),
 					'paymentId' => $order->get_transaction_id(),
+					'request'   => $e->getRequestBody(),
+					'response'  => $e->getResponseBody(),
 				)
 			);
-			$order->save();
+
+			return Helper::wp_error( $e );
 		}
+
+		$order->save();
 	}
 
 	/**
