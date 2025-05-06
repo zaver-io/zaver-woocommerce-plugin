@@ -128,7 +128,7 @@ class Refund_Processor {
 
 		ZCO()->logger()->info(
 			sprintf(
-				'Requested a refund of %F %s',
+				'[PROCESS REFUND]: Requested a refund of %F %s',
 				$response->getRefundAmount(),
 				$response->getCurrency()
 			),
@@ -279,7 +279,7 @@ class Refund_Processor {
 
 				ZCO()->logger()->info(
 					sprintf(
-						'Refund of %F %s approved',
+						'[REFUND CALLBACK]: Refund of %F %s approved',
 						$refund->getRefundAmount(),
 						$refund->getCurrency()
 					),
@@ -302,7 +302,7 @@ class Refund_Processor {
 
 				ZCO()->logger()->info(
 					sprintf(
-						'Refund of %F %s approved',
+						'[REFUND CALLBACK]: Refund of %F %s approved',
 						$refund->getRefundAmount(),
 						$refund->getCurrency()
 					),
@@ -318,7 +318,7 @@ class Refund_Processor {
 				$order->add_order_note( sprintf( __( 'Refund of %1$F %2$s completed - Refund ID: %3$s', 'zco' ), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getRefundId() ) );
 				ZCO()->logger()->info(
 					sprintf(
-						'Refund of %F %s completed',
+						'[REFUND CALLBACK]: Refund of %F %s completed',
 						$refund->getRefundAmount(),
 						$refund->getCurrency()
 					),
@@ -341,7 +341,7 @@ class Refund_Processor {
 
 				ZCO()->logger()->info(
 					sprintf(
-						'Refund of %F %s cancelled',
+						'[REFUND CALLBACK]: Refund of %F %s cancelled',
 						$refund->getRefundAmount(),
 						$refund->getCurrency()
 					),

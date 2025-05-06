@@ -76,7 +76,7 @@ final class Hooks {
 			$payment_status = Plugin::gateway()->receive_payment_callback();
 			$meta           = $payment_status->getPaymentMetadata();
 
-			ZCO()->logger()->debug( 'Received Zaver payment callback', (array) $payment_status );
+			ZCO()->logger()->debug( '[CALLBACK]: Received Zaver payment callback', (array) $payment_status );
 
 			if ( ! isset( $meta['orderId'] ) ) {
 				throw new Exception( 'Missing order ID' );
@@ -93,9 +93,9 @@ final class Hooks {
 			if ( $order ) {
 				// translators: %s is the error message.
 				$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-				ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
+				ZCO()->logger()->error( sprintf( '[CALLBACK]: Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
 			} else {
-				ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ) );
+				ZCO()->logger()->error( sprintf( '[CALLBACK]: Failed with Zaver payment: %s', $e->getMessage() ) );
 			}
 
 			status_header( 400 );
@@ -127,7 +127,7 @@ final class Hooks {
 		} catch ( Exception $e ) {
 			// translators: %s is the error message.
 			$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-			ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
+			ZCO()->logger()->error( sprintf( '[ORDER PAY]: Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
 
 			wc_add_notice( __( 'An error occurred with your Zaver payment - please try again, or contact the site support.', 'zco' ), 'error' );
 
@@ -147,7 +147,7 @@ final class Hooks {
 			$refund = Plugin::gateway()->receive_refund_callback();
 			$meta   = $refund->getMerchantMetadata();
 
-			ZCO()->logger()->debug( 'Received Zaver refund callback', (array) $refund );
+			ZCO()->logger()->debug( '[CALLBACK]: Received Zaver refund callback', (array) $refund );
 
 			if ( ! isset( $meta['orderId'] ) ) {
 				throw new Exception( 'Missing order ID' );
@@ -163,7 +163,7 @@ final class Hooks {
 		} catch ( Exception $e ) {
 			// translators: %s is the error message.
 			$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-			ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
+			ZCO()->logger()->error( sprintf( '[CALLBACK]: Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
 
 			status_header( 400 );
 		}

@@ -175,7 +175,7 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 				)
 			);
 		} catch ( Exception $e ) {
-			\Zaver\ZCO()->logger()->error( sprintf( 'Zaver error during payment process: %s', $e->getMessage() ), array( 'orderId' => $order_id ) );
+			\Zaver\ZCO()->logger()->error( sprintf( '[PROCESS PAYMENT]: Zaver error during payment process: %s', $e->getMessage() ), array( 'orderId' => $order_id ) );
 
 			$message = __( 'An error occurred - please try again, or contact site support', 'zco' );
 			wc_add_notice( $message, 'error' );
@@ -213,7 +213,7 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 		} catch ( Exception $e ) {
 			\Zaver\ZCO()->logger()->error(
 				sprintf(
-					'Zaver error during refund process: %s',
+					'[PROCESS REFUND]: Zaver error during refund process: %s',
 					$e->getMessage()
 				),
 				array(
@@ -276,7 +276,7 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 	 */
 	public function receive_payment_callback() {
 		$callback = $this->api()->receiveCallback( $this->get_option( 'callback_token' ) );
-		\Zaver\ZCO()->logger()->info( 'Received Zaver payment callback', (array) $callback );
+		\Zaver\ZCO()->logger()->info( '[CALLBACK]: Received Zaver payment callback', (array) $callback );
 		return $callback;
 	}
 
@@ -287,7 +287,7 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 	 */
 	public function receive_refund_callback() {
 		$callback = $this->refund_api()->receiveCallback( $this->get_option( 'callback_token' ) );
-		\Zaver\ZCO()->logger()->info( 'Received Zaver refund callback', (array) $callback );
+		\Zaver\ZCO()->logger()->info( '[REFUND CALLBACK]: Received Zaver refund callback', (array) $callback );
 		return $callback;
 	}
 }

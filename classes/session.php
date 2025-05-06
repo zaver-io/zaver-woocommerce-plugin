@@ -77,7 +77,7 @@ class Session {
 			->setCurrency( $currency );
 			$payment_methods         = \Zaver\Plugin::gateway()->api()->getPaymentMethods( $payment_methods_request )->getPaymentMethods();
 			\Zaver\ZCO()->logger()->info(
-				'Received payment methods',
+				'[SESSION]: Received payment methods',
 				array(
 					'payload'        => wp_json_encode( $payment_methods_request ),
 					'paymentMethods' => $payment_methods,
@@ -88,7 +88,7 @@ class Session {
 			WC()->session->set( 'zaver_checkout_available_payment_methods', $available_payment_methods );
 		} catch ( \Exception $e ) {
 			\Zaver\ZCO()->logger()->critical(
-				'Failed to retrieve payment methods',
+				'[SESSION]: Failed to retrieve payment methods',
 				array(
 					'payload' => array(
 						'total'    => $total,
