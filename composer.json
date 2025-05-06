@@ -24,5 +24,10 @@
             ]
         }
     },
+    "autoload": {
+        "psr-4": {
+            "Zaver\\": "src/"
+        }
+    },
     "minimum-stability": "dev"
 }

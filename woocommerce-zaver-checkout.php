@@ -22,6 +22,7 @@
 
 namespace Zaver;
 
+use Zaver\PaymentMethods;
 use KrokedilZCODeps\Krokedil\Support\Logger;
 use KrokedilZCODeps\Krokedil\Support\SystemReport;
 use Zaver_Checkout_Order_Management;
@@ -208,36 +209,6 @@ class Plugin {
 
 
 	/**
-	 * Includes the class files for the separate payment methods.
-	 *
-	 * @return void
-	 */
-	private function include_gateways() {
-		if ( ! class_exists( 'WC_Payment_Gateway' ) ) {
-			return;
-		}
-
-		// Invoice.
-		include_once plugin_basename( 'classes/payment-methods/class-zaver-checkout-pay-later.php' );
-		include_once plugin_basename( 'includes/zaver-checkout-pay-later-settings.php' );
-		// Swish.
-		include_once plugin_basename( 'classes/payment-methods/class-zaver-checkout-swish.php' );
-		include_once plugin_basename( 'includes/zaver-checkout-swish-settings.php' );
-		// Bank transfer.
-		include_once plugin_basename( 'classes/payment-methods/class-zaver-checkout-bank-transfer.php' );
-		include_once plugin_basename( 'includes/zaver-checkout-bank-transfer-settings.php' );
-		// Vipps.
-		include_once plugin_basename( 'classes/payment-methods/class-zaver-checkout-vipps.php' );
-		include_once plugin_basename( 'includes/zaver-checkout-vipps-settings.php' );
-		// Installments.
-		include_once plugin_basename( 'classes/payment-methods/class-zaver-checkout-installments.php' );
-		include_once plugin_basename( 'includes/zaver-checkout-installments-settings.php' );
-		// Instant debit.
-		include_once plugin_basename( 'classes/payment-methods/class-zaver-checkout-instant-debit.php' );
-		include_once plugin_basename( 'includes/zaver-checkout-instant-debit-settings.php' );
-	}
-
-	/**
 	 * Initialize the plugin.
 	 *
 	 * @return void
@@ -305,9 +276,14 @@ class Plugin {
 	 * @return bool
 	 */
 	public function init_composer() {
+		// Autoload the /src directory classes.
+		$autoloader        = ZCO_PLUGIN_PATH . '/vendor/autoload.php';
+		$autoloader_result = is_readable( $autoloader ) && require $autoloader;
+
+		// Autoload the /dependencies directory classes.
 		$autoloader_dependencies        = ZCO_PLUGIN_PATH . '/dependencies/scoper-autoload.php';
 		$autoloader_dependencies_result = is_readable( $autoloader_dependencies ) && require $autoloader_dependencies;
-		if ( ! $autoloader_dependencies_result ) {
+		if ( ! $autoloader_dependencies_result || ! $autoloader_result ) {
 			self::missing_autoloader();
 			return false;
 		}
@@ -355,11 +331,8 @@ class Plugin {
 		include_once ZCO_PLUGIN_PATH . '/classes/payment-processor.php';
 		include_once ZCO_PLUGIN_PATH . '/classes/refund-processor.php';
 
+		// Helpers.
 		include_once ZCO_PLUGIN_PATH . '/classes/helpers/order.php';
-
-		if ( $this->separate_payment_methods ) {
-			$this->include_gateways();
-		}
 	}
 
 	/**
@@ -376,27 +349,27 @@ class Plugin {
 		if ( $this->separate_payment_methods ) {
 
 			if ( $this->enable_payment_method_pay_later ) {
-				$gateways[] = Zaver_Checkout_Pay_Later::class;
+				$gateways[] = PaymentMethods\PayLater::class;
 			}
 
 			if ( $this->enable_payment_method_swish ) {
-				$gateways[] = Zaver_Checkout_Swish::class;
+				$gateways[] = PaymentMethods\Swish::class;
 			}
 
 			if ( $this->enable_payment_method_installments ) {
-				$gateways[] = Zaver_Checkout_Installments::class;
+				$gateways[] = PaymentMethods\Installments::class;
 			}
 
 			if ( $this->enable_payment_method_instant_debit ) {
-				$gateways[] = Zaver_Checkout_Instant_Debit::class;
+				$gateways[] = PaymentMethods\InstantDebit::class;
 			}
 
 			if ( $this->enable_payment_method_bank_transfer ) {
-				$gateways[] = Zaver_Checkout_Bank_Transfer::class;
+				$gateways[] = PaymentMethods\BankTransfer::class;
 			}
 
 			if ( $this->enable_payment_method_vipps ) {
-				$gateways[] = Zaver_Checkout_Vipps::class;
+				$gateways[] = PaymentMethods\Vipps::class;
 			}
 		}
 
