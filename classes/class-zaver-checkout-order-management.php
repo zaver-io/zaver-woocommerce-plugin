@@ -126,25 +126,26 @@ class Zaver_Checkout_Order_Management {
 			);
 			$order->add_order_note( $note );
 			$order->update_meta_data( self::CAPTURED, current_time( ' Y-m-d H:i:s' ) );
-		} catch ( Error $e ) {
+		} catch ( Exception | Error $e ) {
 			$order->update_status( 'on-hold', $e->getMessage() );
 			ZCO()->logger()->error(
 				sprintf(
 					'[OM]: Failed to capture Zaver payment: %s',
 					$e->getMessage()
 				),
-				array(
-					'orderId'   => $order->get_id(),
-					'paymentId' => $order->get_transaction_id(),
-					'request'   => $e->getRequestBody(),
-					'response'  => $e->getResponseBody(),
+				Helper::extra_logging(
+					$e,
+					array(
+						'orderId'   => $order->get_id(),
+						'paymentId' => $order->get_transaction_id(),
+					)
 				)
 			);
 
-			return Helper::wp_error( $e );
+			throw $e;
+		} finally {
+			$order->save();
 		}
-
-		$order->save();
 	}
 
 	/**
@@ -194,25 +195,26 @@ class Zaver_Checkout_Order_Management {
 
 			$order->add_order_note( __( 'The Zaver order has been canceled.', 'zco' ) );
 			$order->update_meta_data( self::CANCELED, current_time( ' Y-m-d H:i:s' ) );
-		} catch ( Error $e ) {
+		} catch ( Exception | Error $e ) {
 			$order->update_status( 'on-hold', $e->getMessage() );
 			ZCO()->logger()->error(
 				sprintf(
 					'[OM]: Failed to cancel Zaver payment: %s',
 					$e->getMessage()
 				),
-				array(
-					'orderId'   => $order->get_id(),
-					'paymentId' => $order->get_transaction_id(),
-					'request'   => $e->getRequestBody(),
-					'response'  => $e->getResponseBody(),
+				Helper::extra_logging(
+					$e,
+					array(
+						'orderId'   => $order->get_id(),
+						'paymentId' => $order->get_transaction_id(),
+					)
 				)
 			);
 
-			return Helper::wp_error( $e );
+			throw $e;
+		} finally {
+			$order->save();
 		}
-
-		$order->save();
 	}
 
 	/**

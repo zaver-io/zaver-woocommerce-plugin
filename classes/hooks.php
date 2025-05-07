@@ -7,10 +7,8 @@
 
 namespace Zaver;
 
-use KrokedilZCODeps\Zaver\SDK\Object\PaymentUpdateRequest;
-use KrokedilZCODeps\Zaver\SDK\Config\PaymentStatus;
 use Exception;
-use WC_Order;
+use KrokedilZCODeps\Zaver\SDK\Utils\Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -89,14 +87,13 @@ final class Hooks {
 			}
 
 			Payment_Processor::handle_response( $order, $payment_status, false );
-		} catch ( Exception $e ) {
+		} catch ( Exception | Error $e ) {
 			if ( $order ) {
 				// translators: %s is the error message.
 				$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-				ZCO()->logger()->error( sprintf( '[CALLBACK]: Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
-			} else {
-				ZCO()->logger()->error( sprintf( '[CALLBACK]: Failed with Zaver payment: %s', $e->getMessage() ) );
 			}
+
+			ZCO()->logger()->error( sprintf( '[CALLBACK]: Failed with Zaver payment: %s', $e->getMessage() ), Helper::extra_logging( $e, array( 'orderId' => $order ? $order->get_id() : null ) ) );
 
 			status_header( 400 );
 		}
@@ -124,10 +121,10 @@ final class Hooks {
 			}
 
 			Payment_Processor::handle_response( $order );
-		} catch ( Exception $e ) {
+		} catch ( Exception | Error $e ) {
 			// translators: %s is the error message.
 			$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-			ZCO()->logger()->error( sprintf( '[ORDER PAY]: Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
+			ZCO()->logger()->error( sprintf( '[ORDER PAY]: Failed with Zaver payment: %s', $e->getMessage() ), Helper::extra_logging( $e, array( 'orderId' => $order->get_id() ) ) );
 
 			wc_add_notice( __( 'An error occurred with your Zaver payment - please try again, or contact the site support.', 'zco' ), 'error' );
 
@@ -160,10 +157,10 @@ final class Hooks {
 			}
 
 			Refund_Processor::handle_response( $order, $refund );
-		} catch ( Exception $e ) {
+		} catch ( Exception | Error $e ) {
 			// translators: %s is the error message.
 			$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-			ZCO()->logger()->error( sprintf( '[CALLBACK]: Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
+			ZCO()->logger()->error( sprintf( '[CALLBACK]: Failed with Zaver payment: %s', $e->getMessage() ), Helper::extra_logging( $e, array( 'orderId' => $order->get_id() ) ) );
 
 			status_header( 400 );
 		}

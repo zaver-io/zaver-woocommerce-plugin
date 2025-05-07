@@ -15,6 +15,8 @@ use KrokedilZCODeps\Zaver\SDK\Object\RefundResponse;
 use WC_Order;
 use WC_Payment_Gateway;
 use Exception;
+use KrokedilZCODeps\Zaver\SDK\Utils\Error;
+use Zaver\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -174,8 +176,8 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 					'redirect' => $redirect_url,
 				)
 			);
-		} catch ( Exception $e ) {
-			\Zaver\ZCO()->logger()->error( sprintf( '[PROCESS PAYMENT]: Zaver error during payment process: %s', $e->getMessage() ), array( 'orderId' => $order_id ) );
+		} catch ( Exception | Error $e ) {
+			\Zaver\ZCO()->logger()->error( sprintf( '[PROCESS PAYMENT]: Zaver error during payment process: %s', $e->getMessage() ), Helper::extra_logging( $e, array( 'orderId' => $order_id ) ) );
 
 			$message = __( 'An error occurred - please try again, or contact site support', 'zco' );
 			wc_add_notice( $message, 'error' );
@@ -210,16 +212,19 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 			\Zaver\Refund_Processor::process( $order, (float) $amount );
 
 			return true;
-		} catch ( Exception $e ) {
+		} catch ( Exception | Error $e ) {
 			\Zaver\ZCO()->logger()->error(
 				sprintf(
 					'[PROCESS REFUND]: Zaver error during refund process: %s',
 					$e->getMessage()
 				),
-				array(
-					'orderId' => $order_id,
-					'amount'  => $amount,
-					'reason'  => $reason,
+				Helper::extra_logging(
+					$e,
+					array(
+						'orderId' => $order_id,
+						'amount'  => $amount,
+						'reason'  => $reason,
+					)
 				)
 			);
 

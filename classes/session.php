@@ -8,6 +8,8 @@
 namespace Zaver\Classes;
 
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentMethodsRequest;
+use KrokedilZCODeps\Zaver\SDK\Utils\Error;
+use Zaver\Helper;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -86,18 +88,21 @@ class Session {
 
 			$available_payment_methods[ $market ][ $currency ][ $total ] = $payment_methods;
 			WC()->session->set( 'zaver_checkout_available_payment_methods', $available_payment_methods );
-		} catch ( \Exception $e ) {
+		} catch ( \Exception | Error $e ) {
 			\Zaver\ZCO()->logger()->critical(
 				'[SESSION]: Failed to retrieve payment methods',
-				array(
-					'payload' => array(
-						'total'    => $total,
-						'market'   => $market,
-						'currency' => $currency,
-					),
-					'code'    => $e->getCode(),
-					'message' => $e->getMessage(),
-					'trace'   => $e->getTraceAsString(),
+				Helper::extra_logging(
+					$e,
+					array(
+						'payload' => array(
+							'total'    => $total,
+							'market'   => $market,
+							'currency' => $currency,
+						),
+						'code'    => $e->getCode(),
+						'message' => $e->getMessage(),
+						'trace'   => $e->getTraceAsString(),
+					)
 				)
 			);
 		}
