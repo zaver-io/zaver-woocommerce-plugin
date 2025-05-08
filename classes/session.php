@@ -91,7 +91,7 @@ class Session {
 		} catch ( \Exception | Error $e ) {
 			\Zaver\ZCO()->logger()->critical(
 				'[SESSION]: Failed to retrieve payment methods',
-				Helper::extra_logging(
+				Helper::add_request_log_context(
 					$e,
 					array(
 						'payload' => array(

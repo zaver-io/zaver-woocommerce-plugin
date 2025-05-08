@@ -93,7 +93,7 @@ final class Hooks {
 				$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
 			}
 
-			ZCO()->logger()->error( sprintf( '[CALLBACK]: Failed with Zaver payment: %s', $e->getMessage() ), Helper::extra_logging( $e, array( 'orderId' => $order ? $order->get_id() : null ) ) );
+			ZCO()->logger()->error( sprintf( '[CALLBACK]: Failed with Zaver payment: %s', $e->getMessage() ), Helper::add_request_log_context( $e, array( 'orderId' => $order ? $order->get_id() : null ) ) );
 
 			status_header( 400 );
 		}
@@ -124,7 +124,7 @@ final class Hooks {
 		} catch ( Exception | Error $e ) {
 			// translators: %s is the error message.
 			$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-			ZCO()->logger()->error( sprintf( '[ORDER PAY]: Failed with Zaver payment: %s', $e->getMessage() ), Helper::extra_logging( $e, array( 'orderId' => $order->get_id() ) ) );
+			ZCO()->logger()->error( sprintf( '[ORDER PAY]: Failed with Zaver payment: %s', $e->getMessage() ), Helper::add_request_log_context( $e, array( 'orderId' => $order->get_id() ) ) );
 
 			wc_add_notice( __( 'An error occurred with your Zaver payment - please try again, or contact the site support.', 'zco' ), 'error' );
 
@@ -160,7 +160,7 @@ final class Hooks {
 		} catch ( Exception | Error $e ) {
 			// translators: %s is the error message.
 			$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-			ZCO()->logger()->error( sprintf( '[CALLBACK]: Failed with Zaver payment: %s', $e->getMessage() ), Helper::extra_logging( $e, array( 'orderId' => $order->get_id() ) ) );
+			ZCO()->logger()->error( sprintf( '[CALLBACK]: Failed with Zaver payment: %s', $e->getMessage() ), Helper::add_request_log_context( $e, array( 'orderId' => $order->get_id() ) ) );
 
 			status_header( 400 );
 		}

@@ -133,7 +133,7 @@ class Zaver_Checkout_Order_Management {
 					'[OM]: Failed to capture Zaver payment: %s',
 					$e->getMessage()
 				),
-				Helper::extra_logging(
+				Helper::add_request_log_context(
 					$e,
 					array(
 						'orderId'   => $order->get_id(),
@@ -202,7 +202,7 @@ class Zaver_Checkout_Order_Management {
 					'[OM]: Failed to cancel Zaver payment: %s',
 					$e->getMessage()
 				),
-				Helper::extra_logging(
+				Helper::add_request_log_context(
 					$e,
 					array(
 						'orderId'   => $order->get_id(),

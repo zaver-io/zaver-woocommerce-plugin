@@ -94,7 +94,7 @@ class Helper {
 	 * @param array           $arr The array to extend with additional data.
 	 * @return array The same or extended array if ZaverError.
 	 */
-	public static function extra_logging( $e, $arr ) {
+	public static function add_request_log_context( $e, $arr ) {
 		if ( ! $e instanceof Error ) {
 			return $arr;
 		}
