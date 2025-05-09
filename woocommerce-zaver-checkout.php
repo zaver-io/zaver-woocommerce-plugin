@@ -22,7 +22,7 @@
 
 namespace Zaver;
 
-use Zaver\PaymentMethods;
+use Krokedil\Zaver\PaymentMethods;
 use KrokedilZCODeps\Krokedil\Support\Logger;
 use KrokedilZCODeps\Krokedil\Support\SystemReport;
 

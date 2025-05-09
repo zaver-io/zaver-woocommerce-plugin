@@ -5,7 +5,7 @@
  * @package ZCO/PaymentMethods
  */
 
-namespace Zaver\PaymentMethods;
+namespace Krokedil\Zaver\PaymentMethods;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

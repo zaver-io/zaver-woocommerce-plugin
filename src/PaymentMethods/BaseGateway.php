@@ -5,7 +5,7 @@
  * @package ZCO/Classes/PaymentMethods
  */
 
-namespace Zaver\PaymentMethods;
+namespace Krokedil\Zaver\PaymentMethods;
 
 use Zaver\Payment_Processor;
 use KrokedilZCODeps\Zaver\SDK\Checkout;
