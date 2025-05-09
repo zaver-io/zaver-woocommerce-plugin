@@ -97,9 +97,8 @@ class Payment_Processor {
 	 */
 	public static function handle_response( $order, $payment_status = null, $redirect = true ) {
 
-		// TODO: I believe what they meant here is to check for if $order->get_date_paid() is not null.
-		// Ignore orders that are already paid.
-		if ( ! $order->needs_payment() ) {
+		// Checks for if the date paid is set to allow canceled (due to hold stock setting) ordered to be processed in case the customer takes longer time to return from Zaver to the store than expected.
+		if ( ! empty( $order->get_date_paid() ) ) {
 			ZCO()->logger()->debug(
 				'[CALLBACK]: Zaver payment do not need payment',
 				array(
