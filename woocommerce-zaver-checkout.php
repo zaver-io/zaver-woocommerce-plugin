@@ -229,7 +229,7 @@ class Plugin {
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
 		$this->logger        = new Logger( 'zaver_checkout', 'Zaver Checkout' );
-		$this->system_report = new SystemReport( 'zaver_checkout', 'Zaver Checkout' );
+		$this->system_report = new SystemReport( 'zaver_checkout', 'Zaver Checkout', array() );
 		$this->session       = new Classes\Session();
 		Hooks::instance();
 	}
