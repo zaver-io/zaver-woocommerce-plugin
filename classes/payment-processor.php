@@ -64,6 +64,7 @@ class Payment_Processor {
 			$order->update_meta_data( '_zaver_payment_link', $response->getPaymentLink() );
 		}
 
+		$order->update_meta_data( '_zaver_payment_id', $response->getPaymentId() );
 		$order->update_meta_data(
 			'_zaver_payment',
 			array(
@@ -110,22 +111,25 @@ class Payment_Processor {
 			throw new Exception( 'Invalid order key' );
 		}
 
-		$payment = $order->get_meta( '_zaver_payment' );
-		if ( ! isset( $payment['id'] ) ) {
-			throw new Exception( 'Missing payment ID on order' );
+		$payment_id = $order->get_meta( '_zaver_payment_id' );
+		if ( empty( $payment_id ) ) {
+			$payment_id = $order->get_meta( '_zaver_payment' )['id'] ?? null;
+			if ( empty( $payment_id ) ) {
+				throw new Exception( 'Missing payment ID on order' );
+			}
 		}
 
 		if ( null === $payment_status ) {
-			$payment_status = Plugin::gateway()->api()->getPaymentStatus( $payment['id'] );
+			$payment_status = Plugin::gateway()->api()->getPaymentStatus( $payment_id );
 			ZCO()->logger()->info(
 				'Fetched payment status from Zaver',
 				array(
-					'payload'  => $payment['id'],
+					'payload'  => $payment_id,
 					'response' => $payment_status,
 					'orderId'  => $order->get_id(),
 				)
 			);
-		} elseif ( $payment_status->getPaymentId() !== $payment['id'] ) {
+		} elseif ( $payment_status->getPaymentId() !== $payment_id ) {
 			throw new Exception( 'Mismatching payment ID' );
 		}
 
