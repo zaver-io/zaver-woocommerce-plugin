@@ -223,7 +223,7 @@ class Order_Management {
 	 * @return string The formatted price.
 	 */
 	public static function format_price( $amount, $currency ) {
-		return preg_replace( '/[.,]/', wc_get_price_decimal_separator(), $amount, 1 ) . ' ' . $currency;
+		return number_format_i18n( preg_replace( '/[.,]/', wc_get_price_decimal_separator(), $amount, 1 ), 2 ) . " {$currency}";
 	}
 }
 
