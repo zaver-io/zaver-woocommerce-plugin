@@ -99,12 +99,6 @@ class Payment_Processor {
 	 * @return void
 	 */
 	public static function handle_response( $order, $payment_status = null, $redirect = true ) {
-
-		// Ignore orders that are already paid.
-		if ( ! $order->needs_payment() ) {
-			return;
-		}
-
 		// Ensure that the order key is correct.
 		$key = filter_input( INPUT_GET, 'key', FILTER_SANITIZE_SPECIAL_CHARS );
 		if ( empty( $key ) || ! hash_equals( $order->get_order_key(), $key ) ) {
