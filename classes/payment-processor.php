@@ -105,12 +105,9 @@ class Payment_Processor {
 			throw new Exception( 'Invalid order key' );
 		}
 
-		$payment_id = $order->get_meta( '_zaver_payment_id' );
+		$payment_id = $order->get_meta( '_zaver_payment' )['id'] ?? $order->get_meta( '_zaver_payment_id' );
 		if ( empty( $payment_id ) ) {
-			$payment_id = $order->get_meta( '_zaver_payment' )['id'] ?? null;
-			if ( empty( $payment_id ) ) {
-				throw new Exception( 'Missing payment ID on order' );
-			}
+			throw new Exception( 'Missing payment ID on order' );
 		}
 
 		if ( null === $payment_status ) {

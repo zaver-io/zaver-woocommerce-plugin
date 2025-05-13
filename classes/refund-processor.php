@@ -46,12 +46,9 @@ class Refund_Processor {
 	 */
 	public static function process( $order, $amount ) {
 
-		$payment_id = $order->get_meta( '_zaver_payment_id' );
-		if ( ! isset( $payment_id ) ) {
-			$payment_id = $order->get_meta( '_zaver_payment' )['id'] ?? null;
-			if ( empty( $payment_id ) ) {
-				throw new Exception( 'Missing Zaver payment ID for order' );
-			}
+		$payment_id = $order->get_meta( '_zaver_payment' )['id'] ?? $order->get_meta( '_zaver_payment_id' );
+		if ( empty( $payment_id ) ) {
+			throw new Exception( 'Missing Zaver payment ID for order' );
 		}
 
 		$refund = self::find_refund( $order, $amount );

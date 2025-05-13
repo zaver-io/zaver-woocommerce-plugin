@@ -187,12 +187,9 @@ final class Hooks {
 	 * @return void
 	 */
 	public function cancelled_order( $order_id, $order ) {
-		$payment = $order->get_meta( '_zaver_payment_id' );
+		$payment = $order->get_meta( '_zaver_payment' )['id'] ?? $order->get_meta( '_zaver_payment_id' );
 		if ( empty( $payment ) ) {
-			$payment = $order->get_meta( '_zaver_payment' );
-			if ( ! isset( $payment['id'] ) ) {
-				return;
-			}
+			return;
 		}
 
 		try {

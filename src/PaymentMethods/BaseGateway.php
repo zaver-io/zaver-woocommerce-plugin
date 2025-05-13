@@ -238,11 +238,7 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 			return false;
 		}
 
-		$payment_id = $order->get_meta( '_zaver_payment_id' );
-		if ( empty( $payment_id ) ) {
-			$payment_id = $order->get_meta( '_zaver_payment' )['id'] ?? null;
-		}
-
+		$payment_id = $order->get_meta( '_zaver_payment' )['id'] ?? $order->get_meta( '_zaver_payment_id' );
 		return ! empty( $payment_id );
 	}
 
