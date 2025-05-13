@@ -66,6 +66,19 @@ class Order_Management {
 	}
 
 	/**
+	 * Sets metadata to internally consider the order as captured.
+	 *
+	 * Allows orders settled immediately or through the merchant portal to be 'Completed' in WooCommerce.
+	 *
+	 * @param WC_Order $order The WooCommerce order object.
+	 * @return void
+	 */
+	public static function set_as_captured( $order ) {
+		$order->update_meta_data( self::CAPTURED, current_time( ' Y-m-d H:i:s' ) );
+		$order->save();
+	}
+
+	/**
 	 * Captures the Zaver order that the WooCommerce order corresponds to.
 	 *
 	 * @throws Error If the Zaver rejects the capture request.
@@ -129,8 +142,7 @@ class Order_Management {
 			self::format_price( $response->getCapturedAmount(), $response->getCurrency() )
 		);
 
-		$order->update_meta_data( self::CAPTURED, current_time( ' Y-m-d H:i:s' ) );
-		$order->save();
+		self::set_as_captured( $order );
 	}
 
 	/**

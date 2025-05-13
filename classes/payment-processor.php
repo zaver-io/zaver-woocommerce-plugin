@@ -128,7 +128,7 @@ class Payment_Processor {
 
 		switch ( $payment_status->getPaymentStatus() ) {
 			case PaymentStatus::SETTLED:
-				// When the order is initially created, the captured amount is zero.
+				// When the order is initially created, the captured amount is zero. If it is non-zero, it means the payment was settled immediately (e.g., bank transfer).
 				if ( 0 >= ( $payment_status->getCapturedAmount() * 100 ) ) {
 					ZCO()->logger()->info(
 						'Successful payment with Zaver',
@@ -140,6 +140,10 @@ class Payment_Processor {
 					// translators: %s is the payment ID.
 					$order->add_order_note( sprintf( __( 'Successful payment with Zaver - payment ID: %s.', 'zco' ), $payment_status->getPaymentId() ) );
 					$order->payment_complete( $payment_status->getPaymentId() );
+
+					// Adds the metadata to allow the capture to be processed from the admin dashboard.
+					OM::set_as_captured( $order );
+
 				} else {
 					$currency            = $payment_status->getCurrency();
 					$captured            = OM::format_price( $payment_status->getCapturedAmount(), $currency );
@@ -159,8 +163,7 @@ class Payment_Processor {
 
 					if ( ( $remaining * 100 ) <= 0 ) {
 						// Adds the metadata to allow the capture to be processed from the admin dashboard.
-						$order->update_meta_data( OM::CAPTURED, current_time( ' Y-m-d H:i:s' ) );
-						$order->save();
+						OM::set_as_captured( $order );
 					}
 				}
 
