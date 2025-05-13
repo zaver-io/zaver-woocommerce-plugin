@@ -80,14 +80,13 @@ final class Hooks {
 
 			ZCO()->logger()->debug( 'Received Zaver payment callback', (array) $payment_status );
 
-			$order = Helper::get_order_by_payment_id( $payment_status->getPaymentId() );
-			if ( empty( $order ) && ! isset( $meta['orderId'] ) ) {
-				throw new Exception( 'Missing order ID' );
+			// If the orderId wasn't set in the metadata, something went wrong during the order processing in WC. We'll try to recover from the error by looking up the order by payment ID. However, this missing order ID should be logged as it might indicate something wrong (e.g., Zaver kept sending callbacks about a "canceled" non-existing WC orders which filled the log).
+			if ( ! isset( $meta['orderId'] ) ) {
+				ZCO()->logger()->notice( 'Missing order ID in payment callback', (array) $payment_status );
 			}
 
-			$order = empty( $order ) ? wc_get_order( $meta['orderId'] ) : $order;
-
-			if ( ! $order ) {
+			$order = isset( $meta['orderId'] ) && ! empty( $meta['orderId'] ) ? wc_get_order( $meta['orderId'] ) : Helper::get_order_by_payment_id( $payment_status->getPaymentId() );
+			if ( empty( $order ) ) {
 				throw new Exception( 'Order not found' );
 			}
 
