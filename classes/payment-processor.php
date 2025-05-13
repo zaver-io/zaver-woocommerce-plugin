@@ -144,20 +144,27 @@ class Payment_Processor {
 					$order->add_order_note( sprintf( __( 'Successful payment with Zaver - payment ID: %s.', 'zco' ), $payment_status->getPaymentId() ) );
 					$order->payment_complete( $payment_status->getPaymentId() );
 				} else {
-					$currency  = $payment_status->getCurrency();
-					$captured  = OM::format_price( $payment_status->getCapturedAmount(), $currency );
-					$remaining = OM::format_price( $payment_status->getAmount() - $captured, $currency );
+					$currency            = $payment_status->getCurrency();
+					$captured            = OM::format_price( $payment_status->getCapturedAmount(), $currency );
+					$remaining           = $payment_status->getAmount() - $captured;
+					$formatted_remaining = OM::format_price( $remaining, $currency );
 					ZCO()->logger()->info(
 						'Zaver payment was captured',
 						array(
 							'orderId'         => $order->get_id(),
 							'paymentId'       => $payment_status->getPaymentId(),
 							'capturedAmount'  => $captured,
-							'remainingAmount' => $remaining,
+							'remainingAmount' => $formatted_remaining,
 						)
 					);
 					// translators: %1$s is the payment ID, %2$s is the captured amount, %3$s is the remaining amount to capture.
-					$order->add_order_note( sprintf( __( 'Zaver payment was captured - payment ID: %1$s. Captured amount: %2$s. Remaining amount to capture: %3$s.', 'zco' ), $payment_status->getPaymentId(), $captured, $remaining ) );
+					$order->add_order_note( sprintf( __( 'Zaver payment was captured - payment ID: %1$s. Captured amount: %2$s. Remaining amount to capture: %3$s.', 'zco' ), $payment_status->getPaymentId(), $captured, $formatted_remaining ) );
+
+					if ( ( $remaining * 100 ) <= 0 ) {
+						// Adds the metadata to allow the capture to be processed from the admin dashboard.
+						$order->update_meta_data( OM::CAPTURED, current_time( ' Y-m-d H:i:s' ) );
+						$order->save();
+					}
 				}
 
 				break;
