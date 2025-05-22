@@ -108,7 +108,7 @@ class Order {
 	public static function get_line_items( $order ) {
 		$line_items = array();
 
-		foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee', 'coupon' ) ) as $item ) {
+		foreach ( $order->get_items( array( 'line_item', 'shipping', 'fee' ) ) as $item ) {
 			$line_item = LineItem::create()
 				->setName( $item->get_name() )
 				->setQuantity( $item->get_quantity() )
