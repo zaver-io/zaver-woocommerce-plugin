@@ -4,6 +4,9 @@
  *
  * @package ZCO/Classes
  */
+namespace Zaver\Classes;
+
+use KrokedilZCODeps\Krokedil\Support\Logger;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -110,7 +113,7 @@ class Settings {
 			),
 		);
 
-		$settings = KrokedilZCODeps\Krokedil\Support\Logger::add_settings_fields( $settings );
+		$settings = Logger::add_settings_fields( $settings );
 		return apply_filters( 'zaver_checkout_settings', $settings );
 	}
 }
