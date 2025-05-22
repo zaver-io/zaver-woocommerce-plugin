@@ -22,7 +22,7 @@
 
 namespace Zaver;
 
-use Zaver\PaymentMethods;
+use Krokedil\Zaver\PaymentMethods;
 use KrokedilZCODeps\Krokedil\Support\Logger;
 use KrokedilZCODeps\Krokedil\Support\SystemReport;
 use Zaver_Checkout_Order_Management;
@@ -244,19 +244,19 @@ class Plugin {
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'add_settings_link' ) );
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
+		add_action( 'before_woocommerce_init', array( $this, 'declare_wc_compatibility' ) );
 
-		$included_settings   = array(
+		$included_settings      = array(
 			array(
 				'type'       => 'title',
 				'is_section' => true,
 			),
 			array( 'type' => 'checkbox' ),
 		);
-		$this->system_report = new SystemReport( 'zaver_checkout', 'Zaver Checkout', $included_settings );
-		$this->logger        = new Logger( 'zaver_checkout', wc_string_to_bool( $settings['logging'] ?? false ) );
-		$this->session       = new Classes\Session();
+		$this->system_report    = new SystemReport( 'zaver_checkout', 'Zaver Checkout', $included_settings );
+		$this->logger           = new Logger( 'zaver_checkout', wc_string_to_bool( $settings['logging'] ?? false ) );
+		$this->session          = new Classes\Session();
 		$this->order_management = Zaver_Checkout_Order_Management::get_instance();
-
 
 		Hooks::instance();
 	}
@@ -269,6 +269,19 @@ class Plugin {
 	public function load_textdomain() {
 		load_plugin_textdomain( 'zco', false, plugin_basename( __DIR__ ) . '/languages' );
 	}
+
+		/**
+		 * Declare compatibility with WooCommerce features.
+		 *
+		 * @return void
+		 */
+	public function declare_wc_compatibility() {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			// Declare HPOS compatibility.
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		}
+	}
+
 
 	/**
 	 * Initialize composers autoloader.
