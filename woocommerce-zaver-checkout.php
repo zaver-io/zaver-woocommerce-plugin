@@ -107,9 +107,16 @@ class Plugin {
 	/**
 	 * Session management.
 	 *
-	 * @var Classes\Session
+	 * @var Session
 	 */
 	private $session;
+
+	/**
+	 * Order management.
+	 *
+	 * @var Order_Management
+	 */
+	private $order_management;
 
 	/**
 	 * Get the instance of the plugin.
@@ -147,10 +154,19 @@ class Plugin {
 	/**
 	 * Get the session instance.
 	 *
-	 * @return Classes\Session
+	 * @return Session
 	 */
 	public function session() {
 		return $this->session;
+	}
+
+	/**
+	 * Get the order management instance.
+	 *
+	 * @return Order_Management
+	 */
+	public function order_management() {
+		return $this->order_management;
 	}
 
 	/**
@@ -228,16 +244,17 @@ class Plugin {
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
-		$included_settings   = array(
+		$included_settings      = array(
 			array(
 				'type'       => 'title',
 				'is_section' => true,
 			),
 			array( 'type' => 'checkbox' ),
 		);
-		$this->system_report = new SystemReport( 'zaver_checkout', 'Zaver Checkout', $included_settings );
-		$this->logger        = new Logger( 'zaver_checkout', wc_string_to_bool( $settings['logging'] ?? false ) );
-		$this->session       = new Classes\Session();
+		$this->system_report    = new SystemReport( 'zaver_checkout', 'Zaver Checkout', $included_settings );
+		$this->logger           = new Logger( 'zaver_checkout', wc_string_to_bool( $settings['logging'] ?? false ) );
+		$this->session          = new Session();
+		$this->order_management = Order_Management::get_instance();
 
 		Hooks::instance();
 	}
