@@ -255,7 +255,7 @@ class Plugin {
 		);
 		$this->system_report    = new SystemReport( 'zaver_checkout', 'Zaver Checkout', $included_settings );
 		$this->logger           = new Logger( 'zaver_checkout', wc_string_to_bool( $settings['logging'] ?? false ) );
-		$this->session          = new Classes\Session();
+		$this->session          = new Session();
 		$this->order_management = Zaver_Checkout_Order_Management::get_instance();
 
 		Hooks::instance();

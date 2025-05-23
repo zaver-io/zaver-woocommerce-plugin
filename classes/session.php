@@ -5,7 +5,7 @@
  * @package ZCO/Classes
  */
 
-namespace Zaver\Classes;
+namespace Zaver;
 
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentMethodsRequest;
 use KrokedilZCODeps\Zaver\SDK\Utils\Error;
