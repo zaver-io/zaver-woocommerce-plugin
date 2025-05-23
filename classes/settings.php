@@ -4,7 +4,7 @@
  *
  * @package ZCO/Classes
  */
-namespace Zaver\Classes;
+namespace Zaver;
 
 use KrokedilZCODeps\Krokedil\Support\Logger;
 

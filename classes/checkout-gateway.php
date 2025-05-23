@@ -14,7 +14,7 @@ use KrokedilZCODeps\Zaver\SDK\Object\RefundResponse;
 use WC_Order;
 use WC_Payment_Gateway;
 use Exception;
-use Zaver\Classes\Settings;
+use Zaver\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

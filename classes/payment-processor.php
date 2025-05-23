@@ -12,7 +12,7 @@ use WC_Order;
 use KrokedilZCODeps\Zaver\SDK\Config\PaymentStatus;
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentStatusResponse;
 use Zaver\Classes\Helpers\Order;
-use Zaver\Classes\Order_Management as OM;
+use Zaver\Order_Management as OM;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

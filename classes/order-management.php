@@ -8,7 +8,7 @@
  * @package ZCO/Classes
  */
 
-namespace Zaver\Classes;
+namespace Zaver;
 
 use KrokedilZCODeps\Zaver\SDK\Config\PaymentStatus;
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentCaptureRequest;
