@@ -186,22 +186,22 @@ final class Hooks {
 	 * @return void
 	 */
 	public function cancelled_order( $order_id, $order ) {
-		$payment = $order->get_meta( '_zaver_payment' )['id'] ?? $order->get_meta( '_zaver_payment_id' );
+		$payment_id = $order->get_meta( '_zaver_payment' )['id'] ?? $order->get_meta( '_zaver_payment_id' );
 		if ( empty( $payment ) ) {
 			return;
 		}
 
 		try {
-			$response = Plugin::gateway()->api()->cancelPayment( $payment['id'] );
+			$response = Plugin::gateway()->api()->cancelPayment( $payment_id );
 			$order->add_order_note( __( 'Cancelled Zaver payment', 'zco' ) );
 
 			ZCO()->logger()->info(
 				'Cancelled Zaver payment',
 				array(
-					'payload'   => $payment['id'],
+					'payload'   => $payment_id,
 					'response'  => $response,
 					'orderId'   => $order->get_id(),
-					'paymentId' => $payment['id'],
+					'paymentId' => $payment_id,
 				)
 			);
 		} catch ( Exception $e ) {
@@ -215,7 +215,7 @@ final class Hooks {
 				array(
 					'payload'   => $update ?? null,
 					'orderId'   => $order->get_id(),
-					'paymentId' => $payment['id'],
+					'paymentId' => $payment_id,
 				)
 			);
 		}
