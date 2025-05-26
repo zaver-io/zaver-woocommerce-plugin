@@ -83,7 +83,8 @@ class Order {
 			);
 
 		$merchant_urls = MerchantUrls::create()
-			->setSuccessUrl( Plugin::gateway()->get_return_url( $order ) );
+			->setSuccessUrl( Plugin::gateway()->get_return_url( $order ) )
+			->setCancelUrl( wc_get_checkout_url() );
 
 		$callback_url = self::get_callback_url( $order );
 		if ( ! empty( $callback_url ) ) {
