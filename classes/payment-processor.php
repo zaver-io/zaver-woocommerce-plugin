@@ -130,6 +130,10 @@ class Payment_Processor {
 			case PaymentStatus::SETTLED:
 				// When the order is initially created, the captured amount is zero. If it is non-zero, it means the payment was settled immediately (e.g., bank transfer).
 				if ( 0 >= ( $payment_status->getCapturedAmount() * 100 ) ) {
+					if ( ! empty( $order->get_date_paid() ) ) {
+						break;
+					}
+
 					ZCO()->logger()->info(
 						'Successful payment with Zaver',
 						array(
