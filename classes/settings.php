@@ -4,15 +4,18 @@
  *
  * @package ZCO/Classes
  */
+namespace Zaver;
+
+use KrokedilZCODeps\Krokedil\Support\Logger;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * Class for Dintero settings
+ * Class for plugin settings.
  */
-class Zaver_Checkout_Settings {
+class Settings {
 
 	/**
 	 * Returns the settings fields.
@@ -110,6 +113,7 @@ class Zaver_Checkout_Settings {
 			),
 		);
 
+		$settings = Logger::add_settings_fields( $settings );
 		return apply_filters( 'zaver_checkout_settings', $settings );
 	}
 }

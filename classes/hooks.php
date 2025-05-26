@@ -7,6 +7,8 @@
 
 namespace Zaver;
 
+use KrokedilZCODeps\Zaver\SDK\Object\PaymentUpdateRequest;
+use KrokedilZCODeps\Zaver\SDK\Config\PaymentStatus;
 use Exception;
 use WC_Order;
 
@@ -78,24 +80,28 @@ final class Hooks {
 
 			ZCO()->logger()->debug( 'Received Zaver payment callback', (array) $payment_status );
 
+			// If the orderId wasn't set in the metadata, something went wrong during the order processing in WC. We'll try to recover from the error by looking up the order by payment ID. However, this missing order ID should be logged as it might indicate something wrong (e.g., Zaver kept sending callbacks about a "canceled" non-existing WC orders which filled the log).
 			if ( ! isset( $meta['orderId'] ) ) {
-				throw new Exception( 'Missing order ID' );
+				ZCO()->logger()->notice( 'Missing order ID in payment callback', (array) $payment_status );
 			}
 
-			$order = wc_get_order( $meta['orderId'] );
-
-			if ( ! $order ) {
+			$order = isset( $meta['orderId'] ) && ! empty( $meta['orderId'] ) ? wc_get_order( $meta['orderId'] ) : Helper::get_order_by_payment_id( $payment_status->getPaymentId() );
+			if ( empty( $order ) ) {
 				throw new Exception( 'Order not found' );
 			}
 
 			Payment_Processor::handle_response( $order, $payment_status, false );
 		} catch ( Exception $e ) {
+			$ctx = array( 'paymentId' => $payment_status->getPaymentId() ?? null );
+
 			if ( $order ) {
+				$ctx['orderId'] = $order->get_id();
+
 				// translators: %s is the error message.
 				$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-				ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
+				ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), $ctx );
 			} else {
-				ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ) );
+				ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), $ctx );
 			}
 
 			status_header( 400 );
@@ -180,22 +186,22 @@ final class Hooks {
 	 * @return void
 	 */
 	public function cancelled_order( $order_id, $order ) {
-		$payment = $order->get_meta( '_zaver_payment' );
-		if ( ! isset( $payment['id'] ) ) {
+		$payment_id = $order->get_meta( '_zaver_payment' )['id'] ?? $order->get_meta( '_zaver_payment_id' );
+		if ( empty( $payment ) ) {
 			return;
 		}
 
 		try {
-			$response = Plugin::gateway()->api()->cancelPayment( $payment['id'] );
+			$response = Plugin::gateway()->api()->cancelPayment( $payment_id );
 			$order->add_order_note( __( 'Cancelled Zaver payment', 'zco' ) );
 
 			ZCO()->logger()->info(
 				'Cancelled Zaver payment',
 				array(
-					'payload'   => $payment['id'],
+					'payload'   => $payment_id,
 					'response'  => $response,
 					'orderId'   => $order->get_id(),
-					'paymentId' => $payment['id'],
+					'paymentId' => $payment_id,
 				)
 			);
 		} catch ( Exception $e ) {
@@ -209,7 +215,7 @@ final class Hooks {
 				array(
 					'payload'   => $update ?? null,
 					'orderId'   => $order->get_id(),
-					'paymentId' => $payment['id'],
+					'paymentId' => $payment_id,
 				)
 			);
 		}
