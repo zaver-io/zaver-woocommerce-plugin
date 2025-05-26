@@ -120,8 +120,6 @@ class Order {
 				self::prepare_shipping( $line_item, $item );
 			} elseif ( $item->is_type( 'fee' ) ) {
 				self::prepare_fee( $line_item, $item );
-			} elseif ( $item->is_type( 'coupon' ) ) {
-				self::prepare_coupon( $line_item, $item );
 			}
 
 			$line_items[] = $line_item;
