@@ -96,11 +96,6 @@ class Refund_Processor {
 			$request->setDescription( (string) $reason );
 		}
 
-		$representative = self::get_current_representative();
-		if ( $representative ) {
-			$request->setInitializingRepresentative( $representative );
-		}
-
 		$callback_url = self::get_callback_url( $order );
 		if ( $callback_url ) {
 			$merchant_urls = MerchantUrls::create()->setCallbackUrl( $callback_url );
@@ -134,7 +129,6 @@ class Refund_Processor {
 			)
 		);
 
-		// TODO: Why is this redeclared? On line 97 when initializing the representative.
 		$representative = self::get_current_representative();
 		if ( $representative ) {
 			Plugin::gateway()->refund_api()->approveRefund( $response->getRefundId(), RefundUpdateRequest::create()->setActingRepresentative( $representative ) );
