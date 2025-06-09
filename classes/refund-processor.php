@@ -45,6 +45,7 @@ class Refund_Processor {
 	 * @throws Exception When the refund ID is missing.
 	 */
 	public static function process( $order, $amount ) {
+		$amount = abs( Helper::format_number( $amount ) );
 
 		$payment_id = $order->get_meta( '_zaver_payment' )['id'] ?? $order->get_meta( '_zaver_payment_id' );
 		if ( empty( $payment_id ) ) {
@@ -56,7 +57,7 @@ class Refund_Processor {
 		$request = RefundCreationRequest::create()
 			->setPaymentId( $payment_id )
 			->setInvoiceReference( $order->get_order_number() )
-			->setRefundAmount( abs( $refund->get_amount() ) )
+			->setRefundAmount( abs( Helper::format_number( $refund->get_amount() ) ) )
 			->setMerchantMetadata(
 				array(
 					'originPlatform' => 'woocommerce',
@@ -88,7 +89,7 @@ class Refund_Processor {
 			}
 		} else {
 			// Refunded fixed amount.
-			$request->setRefundTaxAmount( abs( $refund->get_total_tax() ) );
+			$request->setRefundTaxAmount( abs( Helper::format_number( $refund->get_total_tax() ) ) );
 		}
 
 		$reason = $refund->get_reason();
@@ -105,12 +106,7 @@ class Refund_Processor {
 		do_action( 'zco_before_process_refund', $request, $refund, $order );
 		try {
 			$response = Plugin::gateway()->refund_api()->createRefund( $request );
-
 			$refund->update_meta_data( '_zaver_refund_id', $response->getRefundId() );
-
-			// translators: 1: Refund amount, 2: Refund currency, 3: Refund ID.
-			$order->add_order_note( sprintf( __( 'Requested a refund of %1$F %2$s - refund ID: %3$s', 'zco' ), $response->getRefundAmount(), $response->getCurrency(), $response->getRefundId() ) );
-			$refund->save();
 
 			$representative = self::get_current_representative();
 			if ( $representative ) {
@@ -118,11 +114,15 @@ class Refund_Processor {
 			}
 
 			do_action( 'zco_after_process_refund', $request, $refund, $order );
+		} catch ( Exception $e ) {
+			// translators: 1: Refund reason.
+			$order->add_order_note( sprintf( __( 'Failed to request a refund with reason: %s', 'zco' ), $e->getMessage() ) );
 
 		} finally {
 			if ( isset( $response ) ) {
+				// If the response is not set, an exception, and we can therefore reference the $e object.
 				ZCO()->logger()->info(
-					sprintf( 'Requested a refund of %F %s', $response->getRefundAmount(), $response->getCurrency() ),
+					sprintf( 'Requested a refund of %F %s. Reason: %s', $response->getRefundAmount(), $response->getCurrency(), $e->getMessage() ),
 					array(
 						'payload'  => $request,
 						'response' => $response,
@@ -132,9 +132,13 @@ class Refund_Processor {
 						'reason'   => $refund->get_reason(),
 					)
 				);
+
+				// translators: 1: Refund amount, 2: Refund currency, 3: Refund ID.
+				$order->add_order_note( sprintf( __( 'Requested a refund of %1$F %2$s - refund ID: %3$s', 'zco' ), Helper::format_number( $response->getRefundAmount() ), $response->getCurrency(), $response->getRefundId() ) );
+
 			} else {
 				ZCO()->logger()->info(
-					sprintf( 'Failed to request a refund of %F %s', $order->get_total(), $order->get_currency() ),
+					sprintf( 'Failed to request a refund of %F %s.', $amount, $order->get_currency() ),
 					array(
 						'payload' => $request,
 						'orderId' => $order->get_id(),
@@ -142,7 +146,10 @@ class Refund_Processor {
 						'reason'  => $refund->get_reason(),
 					)
 				);
+
 			}
+
+			$refund->save();
 		}
 	}
 
@@ -217,9 +224,9 @@ class Refund_Processor {
 	 * @return void
 	 */
 	private static function prepare_item( $zaver_item, $wc_item ) {
-		$tax         = abs( (float) $wc_item->get_total_tax() );
-		$total_price = abs( (float) $wc_item->get_total() + $tax );
-		$unit_price  = $total_price / $wc_item->get_quantity();
+		$tax         = abs( Helper::format_number( $wc_item->get_total_tax() ) );
+		$total_price = abs( Helper::format_number( $wc_item->get_total() + $tax ) );
+		$unit_price  = Helper::format_number( $total_price / $wc_item->get_quantity() );
 
 		$zaver_item
 			->setRefundTotalAmount( $total_price )
