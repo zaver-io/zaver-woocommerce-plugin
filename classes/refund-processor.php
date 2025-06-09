@@ -103,38 +103,47 @@ class Refund_Processor {
 		}
 
 		do_action( 'zco_before_process_refund', $request, $refund, $order );
+		try {
+			$response = Plugin::gateway()->refund_api()->createRefund( $request );
 
-		$response = Plugin::gateway()->refund_api()->createRefund( $request );
+			$refund->update_meta_data( '_zaver_refund_id', $response->getRefundId() );
 
-		$refund->update_meta_data( '_zaver_refund_id', $response->getRefundId() );
+			// translators: 1: Refund amount, 2: Refund currency, 3: Refund ID.
+			$order->add_order_note( sprintf( __( 'Requested a refund of %1$F %2$s - refund ID: %3$s', 'zco' ), $response->getRefundAmount(), $response->getCurrency(), $response->getRefundId() ) );
+			$refund->save();
 
-		// translators: 1: Refund amount, 2: Refund currency, 3: Refund ID.
-		$order->add_order_note( sprintf( __( 'Requested a refund of %1$F %2$s - refund ID: %3$s', 'zco' ), $response->getRefundAmount(), $response->getCurrency(), $response->getRefundId() ) );
+			$representative = self::get_current_representative();
+			if ( $representative ) {
+				Plugin::gateway()->refund_api()->approveRefund( $response->getRefundId(), RefundUpdateRequest::create()->setActingRepresentative( $representative ) );
+			}
 
-		$refund->save();
+			do_action( 'zco_after_process_refund', $request, $refund, $order );
 
-		ZCO()->logger()->info(
-			sprintf(
-				'Requested a refund of %F %s',
-				$response->getRefundAmount(),
-				$response->getCurrency()
-			),
-			array(
-				'payload'  => $request,
-				'response' => $response,
-				'orderId'  => $order->get_id(),
-				'refundId' => $response->getRefundId(),
-				'amount'   => $amount,
-				'reason'   => $refund->get_reason(),
-			)
-		);
-
-		$representative = self::get_current_representative();
-		if ( $representative ) {
-			Plugin::gateway()->refund_api()->approveRefund( $response->getRefundId(), RefundUpdateRequest::create()->setActingRepresentative( $representative ) );
+		} finally {
+			if ( isset( $response ) ) {
+				ZCO()->logger()->info(
+					sprintf( 'Requested a refund of %F %s', $response->getRefundAmount(), $response->getCurrency() ),
+					array(
+						'payload'  => $request,
+						'response' => $response,
+						'orderId'  => $order->get_id(),
+						'refundId' => $response->getRefundId(),
+						'amount'   => $amount,
+						'reason'   => $refund->get_reason(),
+					)
+				);
+			} else {
+				ZCO()->logger()->info(
+					sprintf( 'Failed to request a refund of %F %s', $order->get_total(), $order->get_currency() ),
+					array(
+						'payload' => $request,
+						'orderId' => $order->get_id(),
+						'amount'  => $amount,
+						'reason'  => $refund->get_reason(),
+					)
+				);
+			}
 		}
-
-		do_action( 'zco_after_process_refund', $request, $refund, $order );
 	}
 
 	/**
