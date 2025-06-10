@@ -256,13 +256,12 @@ class Refund_Processor {
 			throw new Exception( 'Invalid order key' );
 		}
 
-		$refund_ids = $order->get_meta( '_zaver_refund_ids' );
-
-		if ( empty( $refund_ids ) || ! is_array( $refund_ids ) ) {
+		$refund_id = $refund->getRefundId();
+		if ( empty( $refund_id ) ) {
 			throw new Exception( 'Missing refund ID on order' );
 		}
 
-		if ( ! in_array( $refund->getPaymentId(), $refund_ids, true ) ) {
+		if ( $refund->getPaymentId() === $refund_id ) {
 			throw new Exception( 'Mismatching refund ID' );
 		}
 
