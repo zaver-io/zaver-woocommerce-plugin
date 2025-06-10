@@ -22,6 +22,7 @@ use WC_Order_Item_Fee;
 use WC_Order_Item_Product;
 use WC_Order_Item_Shipping;
 use WC_Order_Refund;
+use Zaver\Order_Management as OM;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -120,29 +121,33 @@ class Refund_Processor {
 
 		} finally {
 			if ( isset( $response ) ) {
+				$refund_amount = OM::format_price( $response->getRefundAmount(), $response->getCurrency() );
+
 				// If the response is not set, an exception, and we can therefore reference the $e object.
 				ZCO()->logger()->info(
-					sprintf( 'Requested a refund of %F %s. Reason: %s', $response->getRefundAmount(), $response->getCurrency(), $e->getMessage() ),
+					sprintf( 'Requested a refund of %s.', OM::format_price( $response->getRefundAmount(), $response->getCurrency() ) ),
 					array(
 						'payload'  => $request,
 						'response' => $response,
 						'orderId'  => $order->get_id(),
 						'refundId' => $response->getRefundId(),
-						'amount'   => $amount,
+						'amount'   => $refund_amount,
 						'reason'   => $refund->get_reason(),
 					)
 				);
 
 				// translators: 1: Refund amount, 2: Refund currency, 3: Refund ID.
-				$order->add_order_note( sprintf( __( 'Requested a refund of %1$F %2$s - refund ID: %3$s', 'zco' ), Helper::format_number( $response->getRefundAmount() ), $response->getCurrency(), $response->getRefundId() ) );
+				$order->add_order_note( sprintf( __( 'Requested a refund of %1$s - refund ID: %2$s', 'zco' ), $refund_amount, $response->getRefundId() ) );
 
 			} else {
+				$refund_amount = OM::format_price( $amount, $order->get_currency() );
+
 				ZCO()->logger()->info(
-					sprintf( 'Failed to request a refund of %F %s.', $amount, $order->get_currency() ),
+					sprintf( 'Failed to request a refund of %s.', OM::format_price( $amount, $order->get_currency() ) ),
 					array(
 						'payload' => $request,
 						'orderId' => $order->get_id(),
-						'amount'  => $amount,
+						'amount'  => $refund_amount,
 						'reason'  => $refund->get_reason(),
 					)
 				);
@@ -271,19 +276,15 @@ class Refund_Processor {
 			case RefundStatus::PENDING_MERCHANT_APPROVAL:
 				$username = $refund->getInitializingRepresentative()->getUsername();
 				if ( $username ) {
-					// translators: 1: Refund amount, 2: Refund currency, 3: Username, 4: Refund description, 5: Refund ID.
-					$order->add_order_note( sprintf( __( 'Refund of %1$F %2$s initialized by %3$s with the description "%4$s". Refund ID: %5$s', 'zco' ), $refund->getRefundAmount(), $refund->getCurrency(), $username, $refund->getDescription(), $refund->getRefundId() ) );
+					// translators: 1: Refund amount, 2: Username, 3: Refund description, 4: Refund ID.
+					$order->add_order_note( sprintf( __( 'Refund of %1$s initialized by %2$s with the description "%3$s". Refund ID: %4$s', 'zco' ), OM::format_price( $refund->getRefundAmount(), $refund->getCurrency() ), $username, $refund->getDescription(), $refund->getRefundId() ) );
 				} else {
-					// translators: 1: Refund amount, 2: Refund currency, 3: Refund description, 4: Refund ID.
-					$order->add_order_note( sprintf( __( 'Refund of %1$F %2$s initialized with the description "%3$s". Refund ID: %4$s', 'zco' ), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getDescription(), $refund->getRefundId() ) );
+					// translators: 1: Refund amount, 2: Refund description, 3: Refund ID.
+					$order->add_order_note( sprintf( __( 'Refund of %1$s initialized with the description "%2$s". Refund ID: %3$s', 'zco' ), OM::format_price( $refund->getRefundAmount(), $refund->getCurrency() ), $refund->getDescription(), $refund->getRefundId() ) );
 				}
 
 				ZCO()->logger()->info(
-					sprintf(
-						'Refund of %F %s approved',
-						$refund->getRefundAmount(),
-						$refund->getCurrency()
-					),
+					sprintf( 'Refund of %s approved', OM::format_price( $refund->getRefundAmount(), $refund->getCurrency() ) ),
 					array(
 						'orderId'  => $order->get_id(),
 						'refundId' => $refund->getRefundId(),
@@ -294,19 +295,15 @@ class Refund_Processor {
 			case RefundStatus::PENDING_EXECUTION:
 				$username = $refund->getApprovingRepresentative()->getUsername();
 				if ( $username ) {
-					// translators: 1: Refund amount, 2: Refund currency, 3: Username, 4: Refund ID.
-					$order->add_order_note( sprintf( __( 'Refund of %1$F %2$s approved by %3$s - Refund ID: %4$s', 'zco' ), $refund->getRefundAmount(), $refund->getCurrency(), $username, $refund->getRefundId() ) );
+					// translators: 1: Refund amount, 2: Username, 3: Refund ID.
+					$order->add_order_note( sprintf( __( 'Refund of %21$s approved by %2$s - Refund ID: %3$s', 'zco' ), OM::format_price( $refund->getRefundAmount(), $refund->getCurrency() ), $username, $refund->getRefundId() ) );
 				} else {
-					// translators: 1: Refund amount, 2: Refund currency, 3: Refund ID.
-					$order->add_order_note( sprintf( __( 'Refund of %1$F %2$s approved - Refund ID: %3$s', 'zco' ), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getRefundId() ) );
+					// translators: 1: Refund amount, 2: Refund ID.
+					$order->add_order_note( sprintf( __( 'Refund of %1$s approved - Refund ID: %2$s', 'zco' ), OM::format_price( $refund->getRefundAmount(), $refund->getCurrency() ), $refund->getRefundId() ) );
 				}
 
 				ZCO()->logger()->info(
-					sprintf(
-						'Refund of %F %s approved',
-						$refund->getRefundAmount(),
-						$refund->getCurrency()
-					),
+					sprintf( 'Refund of %s approved', OM::format_price( $refund->getRefundAmount(), $refund->getCurrency() ) ),
 					array(
 						'orderId'  => $order->get_id(),
 						'refundId' => $refund->getRefundId(),
@@ -315,14 +312,10 @@ class Refund_Processor {
 				break;
 
 			case RefundStatus::EXECUTED:
-				// translators: 1: Refund amount, 2: Refund currency, 3: Refund ID.
-				$order->add_order_note( sprintf( __( 'Refund of %1$F %2$s completed - Refund ID: %3$s', 'zco' ), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getRefundId() ) );
+				// translators: 1: Refund amount, 2: Refund ID.
+				$order->add_order_note( sprintf( __( 'Refund of %1$s completed - Refund ID: %2$s', 'zco' ), OM::format_price( $refund->getRefundAmount(), $refund->getCurrency() ), $refund->getRefundId() ) );
 				ZCO()->logger()->info(
-					sprintf(
-						'Refund of %F %s completed',
-						$refund->getRefundAmount(),
-						$refund->getCurrency()
-					),
+					sprintf( 'Refund of %s completed', OM::format_price( $refund->getRefundAmount(), $refund->getCurrency() ) ),
 					array(
 						'orderId'  => $order->get_id(),
 						'refundId' => $refund->getRefundId(),
@@ -333,19 +326,15 @@ class Refund_Processor {
 			case RefundStatus::CANCELLED:
 				$username = $refund->getApprovingRepresentative()->getUsername();
 				if ( $username ) {
-					// translators: 1: Refund amount, 2: Refund currency, 3: Username, 4: Refund ID.
-					$order->add_order_note( sprintf( __( 'Refund of %1$F %2$s cancelled by %3$s - Refund ID: %4$s', 'zco' ), $refund->getRefundAmount(), $refund->getCurrency(), $username, $refund->getRefundId() ) );
+					// translators: 1: Refund amount, 2: Username, 4: Refund ID.
+					$order->add_order_note( sprintf( __( 'Refund of %1$s cancelled by %2$s - Refund ID: %3$s', 'zco' ), OM::format_price( $refund->getRefundAmount(), $refund->getCurrency() ), $username, $refund->getRefundId() ) );
 				} else {
-					// translators: 1: Refund amount, 2: Refund currency, 3: Refund ID.
-					$order->add_order_note( sprintf( __( 'Refund of %1$F %2$s cancelled - Refund ID: %3$s', 'zco' ), $refund->getRefundAmount(), $refund->getCurrency(), $refund->getRefundId() ) );
+					// translators: 1: Refund amount, 2: Refund ID.
+					$order->add_order_note( sprintf( __( 'Refund of %1$s cancelled - Refund ID: %2$s', 'zco' ), OM::format_price( $refund->getRefundAmount(), $refund->getCurrency() ), $refund->getRefundId() ) );
 				}
 
 				ZCO()->logger()->info(
-					sprintf(
-						'Refund of %F %s cancelled',
-						$refund->getRefundAmount(),
-						$refund->getCurrency()
-					),
+					sprintf( 'Refund of %s cancelled', OM::format_price( $refund->getRefundAmount(), $refund->getCurrency() ) ),
 					array(
 						'orderId'  => $order->get_id(),
 						'refundId' => $refund->getRefundId(),

@@ -72,7 +72,7 @@ class Order_Management {
 	 *
 	 * Allows orders settled immediately or through the merchant portal to be 'Completed' in WooCommerce.
 	 *
-	 * @param WC_Order $order The WooCommerce order object.
+	 * @param \WC_Order $order The WooCommerce order object.
 	 * @return void
 	 */
 	public static function set_as_captured( $order ) {
@@ -85,8 +85,8 @@ class Order_Management {
 	 *
 	 * @throws Error If the Zaver rejects the capture request.
 	 *
-	 * @param int      $order_id The WooCommerce order id.
-	 * @param WC_Order $order The WooCommerce order object.
+	 * @param int       $order_id The WooCommerce order id.
+	 * @param \WC_Order $order The WooCommerce order object.
 	 * @return void
 	 */
 	public function capture_order( $order_id, $order ) {
@@ -150,8 +150,8 @@ class Order_Management {
 	/**
 	 * Cancels the Zaver order that the WooCommerce order corresponds to.
 	 *
-	 * @param int      $order_id The WooCommerce order id.
-	 * @param WC_Order $order The WooCommerce order object.
+	 * @param int       $order_id The WooCommerce order id.
+	 * @param \WC_Order $order The WooCommerce order object.
 	 * @return void
 	 */
 	public function cancel_order( $order_id, $order ) {
@@ -232,12 +232,12 @@ class Order_Management {
 	/**
 	 * Format the price for display.
 	 *
-	 * @param string $amount The amount to format.
-	 * @param string $currency The currency.
+	 * @param float|string $amount The amount to format.
+	 * @param string       $currency The currency.
 	 * @return string The formatted price.
 	 */
-	public static function format_price( $amount, $currency ) {
-		return number_format_i18n( floatval( preg_replace( '/[.,]/', wc_get_price_decimal_separator(), $amount, 1 ) ), 2 ) . " {$currency}";
+	public static function format_price( $amount, $currency = '' ) {
+		return wc_price( $amount, array( 'currency' => $currency ) );
 	}
 }
 
