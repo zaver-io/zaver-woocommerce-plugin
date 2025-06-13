@@ -85,13 +85,17 @@ class Order_Management {
 
 		try {
 			// If it has not been refunded as indicated by the metadata, issue a request to Zaver to check if it can be refunded.
-			$is_refunded = ! empty( $order->get_meta( self::REFUNDED ) );
-			if ( ! $is_refunded ) {
+			$can_refund = empty( $order->get_meta( self::REFUNDED ) );
+			if ( $can_refund ) {
 				$payment_status = Plugin::gateway()->api()->getPaymentStatus( $order->get_transaction_id() );
-				return self::can_refund( $payment_status );
+				$can_refund     = self::can_refund( $payment_status );
+				if ( ! $can_refund ) {
+					$order->update_meta_data( self::REFUNDED, $order->get_meta( '_zaver_refund_id' ) );
+					$order->save_meta_data();
+				}
 			}
 
-			return false;
+			return $can_refund;
 		} catch ( \Exception $e ) {
 			return $should_render;
 		}
