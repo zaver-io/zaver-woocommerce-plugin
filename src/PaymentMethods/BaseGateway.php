@@ -16,6 +16,8 @@ use WC_Order;
 use WC_Payment_Gateway;
 use Exception;
 
+use Zaver\Order_Management as OM;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -228,18 +230,13 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Checks if the gateway can refund an order.
+	 * Checks if the gateway can refund a given order.
 	 *
 	 * @param WC_Order $order The WooCommerce order.
 	 * @return bool
 	 */
 	public function can_refund_order( $order ) {
-		if ( ! $order instanceof WC_Order || ! $this->supports( 'refunds' ) ) {
-			return false;
-		}
-
-		$payment_id = $order->get_meta( '_zaver_payment' )['id'] ?? $order->get_meta( '_zaver_payment_id' );
-		return ! empty( $payment_id );
+		return OM::can_refund( $order );
 	}
 
 
