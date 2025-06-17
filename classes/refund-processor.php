@@ -278,11 +278,19 @@ class Refund_Processor {
 			case RefundStatus::PENDING_MERCHANT_APPROVAL:
 				$username = $refund->getInitializingRepresentative()->getUsername();
 				if ( $username ) {
-					// translators: 1: Refund amount, 2: Username, 3: Refund description, 4: Refund ID.
-					$order->add_order_note( sprintf( __( 'Refund of %1$s initialized by %2$s with the description "%3$s". Refund ID: %4$s', 'zco' ), $refund_amount, $username, $refund->getDescription(), $refund->getRefundId() ) );
-				} else {
+					if ( ! empty( $refund->getDescription() ) ) {
+						// translators: 1: Refund amount, 2: Username, 3: Refund description, 4: Refund ID.
+						$order->add_order_note( sprintf( __( 'Refund of %1$s initialized by %2$s with the description "%3$s". Refund ID: %4$s', 'zco' ), $refund_amount, $username, $refund->getDescription(), $refund_id ) );
+					} else {
+						// translators: 1: Refund amount, 2: Username, 3: Refund ID.
+						$order->add_order_note( sprintf( __( 'Refund of %1$s initialized by %2$s. Refund ID: %3$s', 'zco' ), $refund_amount, $username, $refund_id ) );
+					}
+				} elseif ( ! empty( $refund->getDescription() ) ) {
 					// translators: 1: Refund amount, 2: Refund description, 3: Refund ID.
 					$order->add_order_note( sprintf( __( 'Refund of %1$s initialized with the description "%2$s". Refund ID: %3$s', 'zco' ), $refund_amount, $refund->getDescription(), $refund_id ) );
+				} else {
+					// translators: 1: Refund amount, 2: Refund ID.
+					$order->add_order_note( sprintf( __( 'Refund of %1$s initialized. Refund ID: %2$s', 'zco' ), $refund_amount, $refund_id ) );
 				}
 
 				ZCO()->logger()->info(
