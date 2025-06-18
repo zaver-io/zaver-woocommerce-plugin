@@ -72,7 +72,7 @@ class Order_Management {
 	 *
 	 * Allows orders settled immediately or through the merchant portal to be 'Completed' in WooCommerce.
 	 *
-	 * @param WC_Order $order The WooCommerce order object.
+	 * @param \WC_Order $order The WooCommerce order object.
 	 * @return void
 	 */
 	public static function set_as_captured( $order ) {
@@ -85,8 +85,8 @@ class Order_Management {
 	 *
 	 * @throws Error If the Zaver rejects the capture request.
 	 *
-	 * @param int      $order_id The WooCommerce order id.
-	 * @param WC_Order $order The WooCommerce order object.
+	 * @param int       $order_id The WooCommerce order id.
+	 * @param \WC_Order $order The WooCommerce order object.
 	 * @return void
 	 */
 	public function capture_order( $order_id, $order ) {
@@ -150,8 +150,8 @@ class Order_Management {
 	/**
 	 * Cancels the Zaver order that the WooCommerce order corresponds to.
 	 *
-	 * @param int      $order_id The WooCommerce order id.
-	 * @param WC_Order $order The WooCommerce order object.
+	 * @param int       $order_id The WooCommerce order id.
+	 * @param \WC_Order $order The WooCommerce order object.
 	 * @return void
 	 */
 	public function cancel_order( $order_id, $order ) {
@@ -220,24 +220,44 @@ class Order_Management {
 	}
 
 	/**
-	 * Whether the Zaver order can be refunded.
+	 * Check whether the order can be refunded.
 	 *
+	 * @param \WC_Order             $order The WooCommerce order object.
 	 * @param PaymentStatusResponse $payment_status The Zaver payment status.
-	 * @return boolean Whether the Zaver order can be refunded.
+	 * @return boolean|null Whether the order can be refunded, or `null` if not Zaver order.
 	 */
-	public function can_refund( $payment_status ) {
-		return $payment_status->getAllowedPaymentOperations()->getCanRefund();
+	public static function can_refund( $order, $payment_status = null ) {
+		if ( ! Plugin::gateway()->is_chosen_gateway( $order ) ) {
+			return null;
+		}
+
+		try {
+			// If it has not been refunded as indicated by the metadata, issue a request to Zaver to check if it can be refunded.
+			$can_refund = empty( $order->get_meta( self::REFUNDED ) );
+			if ( $can_refund ) {
+				$payment_status = empty( $payment_status ) ? Plugin::gateway()->api()->getPaymentStatus( $order->get_transaction_id() ) : $payment_status;
+				$can_refund     = $payment_status->getAllowedPaymentOperations()->getCanRefund();
+				if ( ! $can_refund ) {
+					$order->update_meta_data( self::REFUNDED, $order->get_meta( '_zaver_refund_id' ) );
+					$order->save_meta_data();
+				}
+			}
+
+			return $can_refund;
+		} catch ( \Exception $e ) {
+			return false;
+		}
 	}
 
 	/**
 	 * Format the price for display.
 	 *
-	 * @param string $amount The amount to format.
-	 * @param string $currency The currency.
+	 * @param float|string $amount The amount to format.
+	 * @param string       $currency The currency.
 	 * @return string The formatted price.
 	 */
-	public static function format_price( $amount, $currency ) {
-		return number_format_i18n( preg_replace( '/[.,]/', wc_get_price_decimal_separator(), $amount, 1 ), 2 ) . " {$currency}";
+	public static function format_price( $amount, $currency = '' ) {
+		return wc_price( $amount, array( 'currency' => $currency ) );
 	}
 }
 
