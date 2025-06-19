@@ -14,7 +14,7 @@
  * @package ZCO
  *
  * WC requires at least: 6.0.0
- * WC tested up to: 6.2.1
+ * WC tested up to: 9.9.1
  *
  * License: GNU General Public License v3.0
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
