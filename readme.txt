@@ -3,8 +3,9 @@ Contributors: webbmaffian
 Tags: woocommerce, zaver, checkout, payment, refund, swish
 Stable tag: 0.0.0-dev
 Requires at least: 4.7
-Tested up to: 5.9.2
+Tested up to: 6.8.1
 Requires PHP: 7.4
+WC tested up to: 9.9.1
 License: GNU General Public License v3.0
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
