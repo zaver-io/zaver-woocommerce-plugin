@@ -1,7 +1,7 @@
 {
   "require": {
     "php": ">=7.4",
-    "krokedil/support": "dev-develop",
+    "krokedil/support": "^1.0.0",
     "krokedil/woocommerce": "^1.0.0",
     "zaver/sdk": "dev-main"
   },
