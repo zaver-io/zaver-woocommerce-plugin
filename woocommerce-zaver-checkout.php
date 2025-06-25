@@ -43,14 +43,14 @@ class Plugin {
 	public const PAYMENT_METHOD = 'zaver_checkout';
 
 	/**
-	 * The logger instance.
+	 * Logger instance.
 	 *
 	 * @var Logger
 	 */
 	private $logger;
 
 	/**
-	 * The system report instance.
+	 * SystemReport instance.
 	 *
 	 * @var SystemReport
 	 */
@@ -244,14 +244,26 @@ class Plugin {
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
-		$included_settings      = array(
+		// Include the fields whose type is mentioned in the system report, but excludes those who has the 'code' class as those are used for sensitive keys and should not be included in the system report.
+		$included_setting_fields = array(
+			array( 'type' => 'select' ),
+			array( 'type' => 'color' ),
+			array( 'type' => 'textarea' ),
 			array(
-				'type'       => 'title',
-				'is_section' => true,
+				'type'    => 'text',
+				'exclude' => array(
+					'class' => 'code',
+				),
 			),
-			array( 'type' => 'checkbox' ),
+			array(
+				'type'    => 'checkbox',
+				'exclude' => array(
+					'empty' => 'title',
+				),
+			),
+
 		);
-		$this->system_report    = new SystemReport( 'zaver_checkout', 'Zaver Checkout', $included_settings );
+		$this->system_report    = new SystemReport( 'zaver_checkout', 'Zaver Checkout', $included_setting_fields );
 		$this->logger           = new Logger( 'zaver_checkout', wc_string_to_bool( $settings['logging'] ?? false ) );
 		$this->session          = new Session();
 		$this->order_management = Order_Management::get_instance();
