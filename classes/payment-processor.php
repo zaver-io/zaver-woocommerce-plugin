@@ -64,7 +64,7 @@ class Payment_Processor {
 			$order->update_meta_data( '_zaver_payment_link', $response->getPaymentLink() );
 		}
 
-		$order->update_meta_data( '_zaver_last_payment_status', $response->getPaymentStatus() );
+		$order->update_meta_data( '_zaver_status_history', array( $response->getPaymentStatus() ) );
 		$order->update_meta_data( '_zaver_payment_id', $response->getPaymentId() );
 		$order->update_meta_data(
 			'_zaver_payment',
@@ -87,32 +87,6 @@ class Payment_Processor {
 		}
 
 		do_action( 'zco_after_process_payment', $payment, $order, $response );
-	}
-
-
-	/**
-	 * Check if the payment can transition from the current Zaver status to the new status.
-	 *
-	 * @docs https://api-docs-9sv4lksrb24zkgpv.zaver.com/v2/pay-link.html#payment-status
-	 *
-	 * @param string $new_status The new status to transition to.
-	 * @param string $current_status The current status of the payment.
-	 * @return bool True if the transition is allowed, false otherwise.
-	 */
-	public static function can_transition( $new_status, $current_status ) {
-		$new_status     = strtolower( $new_status );
-		$current_status = strtolower( $current_status );
-
-		if ( $current_status === 'created' && in_array( $new_status, array( 'cancelled', 'pending_merchant_capture', 'pending_confirmation', 'settled' ), true ) ) {
-			return true;
-		}
-
-		// While 'pending_merchant_capture' can transition to itself, we will not allow it so as to not perform the same processing again.
-		if ( $current_status === 'pending_merchant_capture' && in_array( $new_status, array( 'settled' ), true ) ) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -151,23 +125,25 @@ class Payment_Processor {
 			throw new Exception( 'Mismatching payment ID' );
 		}
 
-		$last_payment_status = $order->get_meta( '_zaver_last_payment_status' );
-		$new_status          = $payment_status->getPaymentStatus();
-		$can_transition      = self::can_transition( $new_status, $last_payment_status );
+		// To prevent processing the same payment status multiple times, we keep track of the status history.
+		$status_history = $order->get_meta( '_zaver_status_history' );
+		$new_status     = $payment_status->getPaymentStatus();
 
-		if ( ! $can_transition ) {
-			ZCO()->logger()->error(
-				"Received unhandled payment status from Zaver: cannot transition from '$last_payment_status' to '$new_status'",
+		if ( in_array( $new_status, $status_history, true ) ) {
+			ZCO()->logger()->info(
+				"Received an already processed payment status from Zaver: $new_status",
 				array(
 					'orderId'       => $order->get_id(),
 					'paymentId'     => $payment_status->getPaymentId(),
 					'paymentStatus' => $payment_status->getPaymentStatus(),
+					'statusHistory' => $status_history,
 				)
 			);
 
 			return;
 		} else {
-			$order->update_meta_data( '_zaver_last_payment_status', $new_status );
+			$status_history[] = $new_status;
+			$order->update_meta_data( '_zaver_status_history', $status_history );
 			$order->save_meta_data();
 
 		}
