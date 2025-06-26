@@ -130,7 +130,7 @@ class Payment_Processor {
 		$new_status     = $payment_status->getPaymentStatus();
 
 		if ( in_array( $new_status, $status_history, true ) ) {
-			ZCO()->logger()->info(
+			ZCO()->logger()->debug(
 				"Received an already processed payment status from Zaver: $new_status",
 				array(
 					'orderId'       => $order->get_id(),
