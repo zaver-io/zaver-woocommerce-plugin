@@ -32,3 +32,4 @@ README.DEV.md
 release.config.js
 tsconfig.json
 webpack.config.js
+scoper.custom.php
