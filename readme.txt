@@ -1,7 +1,7 @@
 === Zaver Checkout for WooCommerce ===
 Contributors: webbmaffian
 Tags: woocommerce, zaver, checkout, payment, refund, swish
-Stable tag: 0.0.0-dev
+Stable tag: 1.0.18
 Requires at least: 4.7
 Tested up to: 6.8.1
 Requires PHP: 7.4
@@ -21,10 +21,10 @@ Our WooCommerce plugin is easy to install, fully responsive and fits seamlessly 
 
 = With this plugin you will: =
 
-- Be able to achieve high conversion rates for transactions in all sizes, microscopically small, to astronomically large. 
+- Be able to achieve high conversion rates for transactions in all sizes, microscopically small, to astronomically large.
 - Get instant callbacks and follow payments and refunds in real-time.
 - Have access to our Merchant Portal and be able to track your business performance with a widescreen-like overview and collect reports of your sales.
-- Offer frictionless shopping experiences with the most popular payment methods included in the package. 
+- Offer frictionless shopping experiences with the most popular payment methods included in the package.
 - Increase your liquidity with super-duper fast settlements.
 - Always be up to date with a checkout that constantly improves and optimises.
 - Have access to our dedicated and friendly support.
@@ -41,11 +41,11 @@ Unlock your customers' purchasing power and help them get what they came for. Ou
 
 = How to Get Started: =
 
-To get started with Zaver you need to sign up for an account. Once you have gone through the onboarding process and the account has been approved, you’ll be up and running in no time. 
+To get started with Zaver you need to sign up for an account. Once you have gone through the onboarding process and the account has been approved, you’ll be up and running in no time.
 
 1. [Sign up for an account](https://zaver.com/woocommerce).
 2. Wait for the account to be approved.
-3. [Install the plugin](https://wordpress.org/plugins/zaver-checkout-for-woocommerce/)​ on your site. 
+3. [Install the plugin](https://wordpress.org/plugins/zaver-checkout-for-woocommerce/)​ on your site.
 4. Go to the payment method settings and add your credentials received from Zaver.
 5. Get paid. ✌️
 
