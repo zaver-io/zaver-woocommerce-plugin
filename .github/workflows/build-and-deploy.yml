@@ -18,12 +18,6 @@ jobs:
     - name: Composer Install (Prod)
       run: composer install --no-dev
 
-    # Install and build Block release.
-    - name: Build block release versions.
-      run: |
-        npm ci
-        npm run build
-
     # Install SVN ( Subversion )
     - name: Install SVN ( Subversion )
       run: |
