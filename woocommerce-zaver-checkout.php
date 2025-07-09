@@ -14,7 +14,7 @@
  * @package ZCO
  *
  * WC requires at least: 6.0.0
- * WC tested up to: 9.9.1
+ * WC tested up to: 9.9.5
  *
  * License: GNU General Public License v3.0
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -39,7 +39,7 @@ define( 'ZCO_PLUGIN_PATH', __DIR__ );
  * Handles the plugins initialization.
  */
 class Plugin {
-	public const VERSION        = '1.0.18';
+	public const VERSION        = '1.1.0';
 	public const PAYMENT_METHOD = 'zaver_checkout';
 
 	/**

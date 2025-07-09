@@ -5,7 +5,7 @@ Stable tag: 1.0.18
 Requires at least: 4.7
 Tested up to: 6.8.1
 Requires PHP: 7.4
-WC tested up to: 9.9.1
+WC tested up to: 9.9.5
 License: GNU General Public License v3.0
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -50,6 +50,17 @@ To get started with Zaver you need to sign up for an account. Once you have gone
 5. Get paid. ✌️
 
 == Changelog ==
+= 2025.07.09    - version 1.1.0 =
+* Feature       - Added support for separate payment methods. This allows you to conditionally show the individual payment methods in the checkout.
+* Feature       - Added support for WooCommerce High-Performance Storage (HPOS).
+* Feature       - Added support for the support package to facilitate troubleshooting and support.
+* Feature       - Added support for a PENDING_CONFIRMATION status.
+* Feature       - You can now capture and cancel, in addition to refunding, a Zaver order directly from the WooCommerce order admin page.
+* Tweak         - The order number will now be used as the purchase title. Previously, the product name was used, or the order number if it had more than one product.
+* Tweak         - The refund button will now be hidden unless the order can be refunded.
+* Tweak         - Added check for whether the order status can be transitioned in callback before further processing.
+* Fix           - Fixed logic for checking whether an order can be refunded.
+* Fix           - Fixed incorrect use of metadata when processing a refund in callback.
 
 = 1.0.16 - 1.0.18 =
 * Updated plugin description.
