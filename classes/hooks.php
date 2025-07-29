@@ -45,7 +45,6 @@ final class Hooks {
 	private function __construct() {
 		add_action( 'woocommerce_api_zaver_payment_callback', array( $this, 'handle_payment_callback' ) );
 		add_action( 'woocommerce_api_zaver_refund_callback', array( $this, 'handle_refund_callback' ) );
-		add_action( 'woocommerce_order_status_cancelled', array( $this, 'cancelled_order' ), 10, 2 );
 		add_action( 'template_redirect', array( $this, 'check_order_received' ) );
 		add_action( 'zco_before_checkout', array( $this, 'add_cancel_link' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_checkout_styles' ) );
@@ -172,52 +171,6 @@ final class Hooks {
 			ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
 
 			status_header( 400 );
-		}
-	}
-
-	/**
-	 * Cancel the Zaver payment when the order is cancelled.
-	 *
-	 * @throws Exception If the payment ID is missing.
-	 *
-	 * @param int      $order_id The WooCommerce order ID.
-	 * @param WC_Order $order The WooCommerce order.
-	 *
-	 * @return void
-	 */
-	public function cancelled_order( $order_id, $order ) {
-		$payment_id = $order->get_meta( '_zaver_payment' )['id'] ?? $order->get_meta( '_zaver_payment_id' );
-		if ( empty( $payment ) ) {
-			return;
-		}
-
-		try {
-			$response = Plugin::gateway()->api()->cancelPayment( $payment_id );
-			$order->add_order_note( __( 'Cancelled Zaver payment', 'zco' ) );
-
-			ZCO()->logger()->info(
-				'Cancelled Zaver payment',
-				array(
-					'payload'   => $payment_id,
-					'response'  => $response,
-					'orderId'   => $order->get_id(),
-					'paymentId' => $payment_id,
-				)
-			);
-		} catch ( Exception $e ) {
-			// translators: %s is the error message.
-			$order->add_order_note( sprintf( __( 'Failed to cancel Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-			ZCO()->logger()->error(
-				sprintf(
-					'Failed to cancel Zaver payment: %s',
-					$e->getMessage()
-				),
-				array(
-					'payload'   => $update ?? null,
-					'orderId'   => $order->get_id(),
-					'paymentId' => $payment_id,
-				)
-			);
 		}
 	}
 
