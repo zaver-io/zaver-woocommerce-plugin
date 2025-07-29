@@ -122,6 +122,14 @@ class Payment_Processor {
 				)
 			);
 		} elseif ( $payment_status->getPaymentId() !== $payment_id ) {
+			ZCO()->logger()->info(
+				"Mismatching payment ID. Expected {$payment_id}, received {$payment_status->getPaymentId()}",
+				array(
+					'payload'  => $payment_id,
+					'response' => $payment_status,
+					'orderId'  => $order->get_id(),
+				)
+			);
 			throw new Exception( 'Mismatching payment ID' );
 		}
 
