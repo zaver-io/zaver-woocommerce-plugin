@@ -79,19 +79,20 @@ final class Hooks {
 
 			ZCO()->logger()->debug( 'Received Zaver payment callback', (array) $payment_status );
 
-			// If the orderId wasn't set in the metadata, something went wrong during the order processing in WC. We'll try to recover from the error by looking up the order by payment ID. However, this missing order ID should be logged as it might indicate something wrong (e.g., Zaver kept sending callbacks about a "canceled" non-existing WC orders which filled the log).
-			if ( ! isset( $meta['orderId'] ) ) {
-				ZCO()->logger()->notice( 'Missing order ID in payment callback', (array) $payment_status );
+			$payment_id = $payment_status->getPaymentId();
+			if ( empty( $payment_id ) ) {
+				ZCO()->logger()->notice( 'Missing payment ID in payment callback', (array) $payment_status );
+				throw new Exception( 'Missing payment ID' );
 			}
 
-			$order = isset( $meta['orderId'] ) && ! empty( $meta['orderId'] ) ? wc_get_order( $meta['orderId'] ) : Helper::get_order_by_payment_id( $payment_status->getPaymentId() );
+			$order = Helper::get_order_by_payment_id( $payment_id );
 			if ( empty( $order ) ) {
 				throw new Exception( 'Order not found' );
 			}
 
 			Payment_Processor::handle_response( $order, $payment_status, false );
 		} catch ( Exception $e ) {
-			$ctx = array( 'paymentId' => $payment_status->getPaymentId() ?? null );
+			$ctx = array( 'paymentId' => $payment_id ?? 'missing' );
 
 			if ( $order ) {
 				$ctx['orderId'] = $order->get_id();
@@ -149,16 +150,22 @@ final class Hooks {
 	 */
 	public function handle_refund_callback() {
 		try {
-			$refund = Plugin::gateway()->receive_refund_callback();
-			$meta   = $refund->getMerchantMetadata();
+			$refund     = Plugin::gateway()->receive_refund_callback();
+			$meta       = $refund->getMerchantMetadata();
+			$payment_id = $refund->getPaymentId();
 
 			ZCO()->logger()->debug( 'Received Zaver refund callback', (array) $refund );
 
-			if ( ! isset( $meta['orderId'] ) ) {
+			$order_id = Helper::get_order_by_payment_id( $payment_id );
+			if ( empty( $order_id ) ) {
+				$order_id = $meta['orderId'] ?? null;
+			}
+
+			if ( empty( $order_id ) ) {
 				throw new Exception( 'Missing order ID' );
 			}
 
-			$order = wc_get_order( $meta['orderId'] );
+			$order = wc_get_order( $order_id );
 
 			if ( ! $order ) {
 				throw new Exception( 'Order not found' );
