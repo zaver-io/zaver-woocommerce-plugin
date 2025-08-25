@@ -97,8 +97,12 @@ final class Hooks {
 			if ( $order ) {
 				$ctx['orderId'] = $order->get_id();
 
-				// translators: %s is the error message.
-				$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
+				// Do not change the status if the order has already been paid.
+				if ( empty( $order->get_date_paid() ) ) {
+					// translators: %s is the error message.
+					$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
+
+				}
 				ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), $ctx );
 			} else {
 				ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), $ctx );
@@ -131,8 +135,13 @@ final class Hooks {
 
 			Payment_Processor::handle_response( $order );
 		} catch ( Exception $e ) {
-			// translators: %s is the error message.
-			$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
+
+			// Do not change the status if the order has already been paid.
+			if ( empty( $order->get_date_paid() ) ) {
+				// translators: %s is the error message.
+				$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
+			}
+
 			ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
 
 			wc_add_notice( __( 'An error occurred with your Zaver payment - please try again, or contact the site support.', 'zco' ), 'error' );
@@ -173,8 +182,12 @@ final class Hooks {
 
 			Refund_Processor::handle_response( $order, $refund );
 		} catch ( Exception $e ) {
-			// translators: %s is the error message.
-			$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
+
+			// Do not change the status if the order has already been paid.
+			if ( empty( $order->get_date_paid() ) ) {
+				// translators: %s is the error message.
+				$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
+			}
 			ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
 
 			status_header( 400 );
