@@ -182,14 +182,7 @@ final class Hooks {
 
 			Refund_Processor::handle_response( $order, $refund );
 		} catch ( Exception $e ) {
-
-			// Do not change the status if the order has already been paid.
-			if ( empty( $order->get_date_paid() ) ) {
-				// translators: %s is the error message.
-				$order->update_status( 'failed', sprintf( __( 'Failed with Zaver payment: %s', 'zco' ), $e->getMessage() ) );
-			}
-			ZCO()->logger()->error( sprintf( 'Failed with Zaver payment: %s', $e->getMessage() ), array( 'orderId' => $order->get_id() ) );
-
+			ZCO()->logger()->error( sprintf( 'An error occurred will processing the refund callback: %s', $e->getMessage() ), array( 'orderId' => $meta['orderId'] ?? 'missing' ) );
 			status_header( 400 );
 		}
 	}
