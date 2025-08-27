@@ -63,8 +63,12 @@ class Order_Management {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		add_action( 'woocommerce_order_status_completed', array( $this, 'capture_order' ), 10, 2 );
-		add_action( 'woocommerce_order_status_cancelled', array( $this, 'cancel_order' ), 10, 2 );
+		$settings = get_option( 'woocommerce_zaver_checkout_settings', array() );
+
+		if ( wc_string_to_bool( $settings['order_management'] ?? 'no' ) ) {
+			add_action( 'woocommerce_order_status_completed', array( $this, 'capture_order' ), 10, 2 );
+			add_action( 'woocommerce_order_status_cancelled', array( $this, 'cancel_order' ), 10, 2 );
+		}
 	}
 
 	/**
@@ -145,6 +149,16 @@ class Order_Management {
 		);
 
 		self::set_as_captured( $order );
+
+		ZCO()->logger()->info(
+			"Captured Zaver payment: {$order->get_transaction_id()}",
+			array(
+				'payload'   => $order->get_transaction_id(),
+				'response'  => $response,
+				'orderId'   => $order->get_id(),
+				'paymentId' => $order->get_transaction_id(),
+			)
+		);
 	}
 
 	/**
@@ -192,11 +206,21 @@ class Order_Management {
 		}
 
 		// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will still complete the status transition, but write an order note about the error, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
-		Plugin::gateway()->api()->cancelPayment( $order->get_transaction_id() );
+		$response = Plugin::gateway()->api()->cancelPayment( $order->get_transaction_id() );
 
 		$order->add_order_note( __( 'The Zaver order has been canceled.', 'zco' ) );
 		$order->update_meta_data( self::CANCELED, current_time( ' Y-m-d H:i:s' ) );
 		$order->save();
+
+		ZCO()->logger()->info(
+			"Cancelled Zaver payment: {$order->get_transaction_id()}",
+			array(
+				'payload'   => $order->get_transaction_id(),
+				'response'  => $response,
+				'orderId'   => $order->get_id(),
+				'paymentId' => $order->get_transaction_id(),
+			)
+		);
 	}
 
 	/**

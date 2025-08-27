@@ -71,6 +71,14 @@ class Settings {
 				'title'       => __( 'Callback Token', 'zco' ),
 				'description' => __( 'The callback token is optional but recommended - it is used to validate requests from Zaver.', 'zco' ),
 			),
+			'order_management'                    => array(
+				'type'        => 'checkbox',
+				'default'     => 'no',
+				'desc_tip'    => true,
+				'title'       => __( 'Order management', 'zco' ),
+				'label'       => __( 'Enable order management', 'zco' ),
+				'description' => __( 'Enable order management to automatically capture and cancel orders in Zaver for payment methods that support it when the order status changed in WooCommerce.', 'zco' ),
+			),
 			'separate_payment_methods_title'      => array(
 				'type'  => 'title',
 				'title' => __( 'Show as separate payment methods', 'zco' ),
