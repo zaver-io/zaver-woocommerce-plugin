@@ -8,6 +8,7 @@
 namespace Zaver;
 
 use Exception;
+use KrokedilZCODeps\Zaver\SDK\Utils\Error;
 use WC_Order_Item;
 use WC_Product;
 use WC_Tax;
@@ -121,5 +122,43 @@ class Helper {
 	 */
 	public static function format_number( $number ) {
 		return floatval( number_format( floatval( $number ), 2, '.', '' ) );
+	}
+
+	/**
+	 * Add the request and response body from a exception if it is of the Error type from the Zaver SDK.
+	 *
+	 * @param \Exception $e The exception to check.
+	 * @param array $context The context to include in the error log.
+	 *
+	 * @return array
+	 */
+	public static function add_zaver_error_details( $e, $context ) {
+		if ( ! ( $e instanceof Error ) ) {
+			return $context;
+		}
+
+		$context['request_body']  = $e->getRequestBody();
+		$context['response_body'] = $e->getResponseBody();
+
+		if ( null !== $e->getPrevious() ) {
+			$context['exception_error'] = $e->getPrevious()->getMessage();
+		}
+
+		return self::add_log_plugin_context( $context );
+	}
+
+	/**
+	 * Add log context for the plugin.
+	 *
+	 * @param array $context The context to include in the log.
+	 *
+	 * @return array
+	 */
+	public static function add_log_plugin_context( $context ) {
+		$context['plugin_version'] = Plugin::VERSION;
+		$context['stack']          = wp_debug_backtrace_summary( null, 3, false );
+		$context['user_agent']     = wc_get_user_agent();
+		$context['timestamp']      = date( 'Y-m-d H:i:s' );
+		return $context;
 	}
 }
