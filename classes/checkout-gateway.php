@@ -11,6 +11,7 @@ use KrokedilZCODeps\Zaver\SDK\Checkout;
 use KrokedilZCODeps\Zaver\SDK\Refund;
 use KrokedilZCODeps\Zaver\SDK\Object\PaymentStatusResponse;
 use KrokedilZCODeps\Zaver\SDK\Object\RefundResponse;
+use KrokedilZCODeps\Zaver\SDK\Utils\Error;
 use WC_Order;
 use WC_Payment_Gateway;
 use Exception;
@@ -181,7 +182,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 				)
 			);
 		} catch ( Exception $e ) {
-			ZCO()->logger()->error( sprintf( 'Zaver error during payment process: %s', $e->getMessage() ), array( 'orderId' => $order_id ) );
+			ZCO()->logger()->error( sprintf( 'Zaver error during payment process: %s', $e->getMessage() ), Helper::add_zaver_error_details( $e, array( 'orderId' => $order_id ) ) );
 
 			$message = __( 'An error occurred - please try again, or contact site support', 'zco' );
 			wc_add_notice( $message, 'error' );
@@ -222,10 +223,13 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 					'Zaver error during refund process: %s',
 					$e->getMessage()
 				),
-				array(
-					'orderId' => $order_id,
-					'amount'  => $amount,
-					'reason'  => $reason,
+				Helper::add_zaver_error_details(
+					$e,
+					array(
+						'orderId' => $order_id,
+						'amount'  => $amount,
+						'reason'  => $reason,
+					)
 				)
 			);
 
@@ -276,9 +280,7 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	 * @return PaymentStatusResponse
 	 */
 	public function receive_payment_callback() {
-		$callback = $this->api()->receiveCallback( $this->get_option( 'callback_token' ) );
-		ZCO()->logger()->info( 'Received Zaver payment callback', (array) $callback );
-		return $callback;
+		return $this->api()->receiveCallback( $this->get_option( 'callback_token' ) );
 	}
 
 	/**
@@ -287,8 +289,6 @@ class Checkout_Gateway extends WC_Payment_Gateway {
 	 * @return RefundResponse
 	 */
 	public function receive_refund_callback() {
-		$callback = $this->refund_api()->receiveCallback( $this->get_option( 'callback_token' ) );
-		ZCO()->logger()->info( 'Received Zaver refund callback', (array) $callback );
-		return $callback;
+		return $this->refund_api()->receiveCallback( $this->get_option( 'callback_token' ) );
 	}
 }
