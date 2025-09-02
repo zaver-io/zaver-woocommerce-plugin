@@ -89,15 +89,17 @@ class Session {
 		} catch ( \Exception $e ) {
 			\Zaver\ZCO()->logger()->critical(
 				'Failed to retrieve payment methods',
-				array(
-					'payload' => array(
-						'total'    => $total,
-						'market'   => $market,
-						'currency' => $currency,
-					),
-					'code'    => $e->getCode(),
-					'message' => $e->getMessage(),
-					'trace'   => $e->getTraceAsString(),
+				Helper::add_zaver_error_details( $e,
+					array(
+						'payload' => array(
+							'total'    => $total,
+							'market'   => $market,
+							'currency' => $currency,
+						),
+						'code'    => $e->getCode(),
+						'message' => $e->getMessage(),
+						'trace'   => $e->getTraceAsString(),
+					)
 				)
 			);
 		}
