@@ -1,7 +1,7 @@
 === Zaver Checkout for WooCommerce ===
 Contributors: krokedil
 Tags: woocommerce, zaver, checkout, payment, refund, swish
-Stable tag: 1.0.18
+Stable tag: 2.0.0
 Requires at least: 4.7
 Tested up to: 6.8.2
 Requires PHP: 7.4
