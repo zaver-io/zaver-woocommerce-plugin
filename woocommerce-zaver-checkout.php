@@ -3,21 +3,22 @@
  * Plugin Name: Zaver Checkout for WooCommerce
  * Plugin URI: https://wordpress.org/plugins/zaver-checkout-for-woocommerce/
  * Description: The official Zaver Checkout payment gateway for WooCommerce.
- * Version: 1.0.18
+ * Version: 2.0.0
  * Author: Zaver
  * Author URI: https://zaver.com/woocommerce
- * Developer: Webbmaffian, Krokedil
- * Developer URI: https://www.webbmaffian.se/
+ * Developer: Krokedil
+ * Developer URI: https://www.krokedil.com/
  * Text Domain: zco
  * Domain Path: /languages
  *
- * @package ZCO
- *
  * WC requires at least: 6.0.0
- * WC tested up to: 9.9.5
+ * WC tested up to: 10.1.2
+ * Requires Plugins: woocommerce
  *
  * License: GNU General Public License v3.0
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * @package ZCO
  */
 
 namespace Zaver;
@@ -39,7 +40,7 @@ define( 'ZCO_PLUGIN_PATH', __DIR__ );
  * Handles the plugins initialization.
  */
 class Plugin {
-	public const VERSION        = '1.1.0';
+	public const VERSION        = '2.0.0';
 	public const PAYMENT_METHOD = 'zaver_checkout';
 
 	/**
