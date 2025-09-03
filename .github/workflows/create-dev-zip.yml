@@ -42,6 +42,7 @@ jobs:
       run: |
         mkdir -p ~/.composer/cache
         composer install --prefer-dist --no-progress
+        composer install --prefer-dist --no-progress --no-dev
 
     - name: Get branch name and commit hash
       id: vars
@@ -60,7 +61,7 @@ jobs:
         rsync -av --exclude-from='.distignore' --exclude='dev-zip-temp' . dev-zip-temp/${{ env.PLUGIN_SLUG }}
         cd dev-zip-temp
         zip -r ../${{ env.ZIP_FILE_NAME }} ${{ env.PLUGIN_SLUG }}
-        
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
