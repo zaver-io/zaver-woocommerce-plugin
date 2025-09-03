@@ -178,58 +178,58 @@ class Order_Management {
 	 */
 	public function cancel_order( $order_id, $order ) {
 		try{
-		if ( ! Plugin::gateway()->is_chosen_gateway( $order ) ) {
-			return;
-		}
+			if ( ! Plugin::gateway()->is_chosen_gateway( $order ) ) {
+				return;
+			}
 
-		if ( $order->get_meta( self::CANCELED ) ) {
-			$order->add_order_note( __( 'The Zaver order has already been canceled.', 'zco' ) );
-			return;
-		}
+			if ( $order->get_meta( self::CANCELED ) ) {
+				$order->add_order_note( __( 'The Zaver order has already been canceled.', 'zco' ) );
+				return;
+			}
 
-		// The order has not yet been processed.
-		if ( empty( $order->get_date_paid() ) ) {
-			return;
-		}
+			// The order has not yet been processed.
+			if ( empty( $order->get_date_paid() ) ) {
+				return;
+			}
 
-		if ( empty( $order->get_transaction_id() ) ) {
-			$order->add_order_note( __( 'The order is missing a transaction ID.', 'zco' ) );
-			$order->update_status( 'on-hold' );
-			return;
-		}
+			if ( empty( $order->get_transaction_id() ) ) {
+				$order->add_order_note( __( 'The order is missing a transaction ID.', 'zco' ) );
+				$order->update_status( 'on-hold' );
+				return;
+			}
 
-		if ( $order->get_meta( self::CAPTURED ) ) {
-			$order->add_order_note( __( 'The Zaver order has been captured, and can therefore no longer be canceled.', 'zco' ) );
-			return;
-		}
+			if ( $order->get_meta( self::CAPTURED ) ) {
+				$order->add_order_note( __( 'The Zaver order has been captured, and can therefore no longer be canceled.', 'zco' ) );
+				return;
+			}
 
-		if ( $order->get_meta( self::REFUNDED ) ) {
-			$order->add_order_note( __( 'The Zaver order has been refunded and can no longer be canceled.', 'zco' ) );
-			return;
-		}
+			if ( $order->get_meta( self::REFUNDED ) ) {
+				$order->add_order_note( __( 'The Zaver order has been refunded and can no longer be canceled.', 'zco' ) );
+				return;
+			}
 
-		$payment_status = Plugin::gateway()->api()->getPaymentStatus( $order->get_transaction_id() );
-		if ( ! $this->can_cancel( $payment_status ) ) {
-			$order->add_order_note( __( 'The Zaver order cannot be canceled.', 'zco' ) );
-			return;
-		}
+			$payment_status = Plugin::gateway()->api()->getPaymentStatus( $order->get_transaction_id() );
+			if ( ! $this->can_cancel( $payment_status ) ) {
+				$order->add_order_note( __( 'The Zaver order cannot be canceled.', 'zco' ) );
+				return;
+			}
 
-		// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will still complete the status transition, but write an order note about the error, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
-		$response = Plugin::gateway()->api()->cancelPayment( $order->get_transaction_id() );
+			// If the request fails, an ZaverError exception will be thrown. This is caught by WooCommerce which will still complete the status transition, but write an order note about the error, and include the error message from Zaver in that note. Therefore, we don't have to catch the exception here.
+			$response = Plugin::gateway()->api()->cancelPayment( $order->get_transaction_id() );
 
-		$order->add_order_note( __( 'The Zaver order has been canceled.', 'zco' ) );
-		$order->update_meta_data( self::CANCELED, current_time( ' Y-m-d H:i:s' ) );
-		$order->save();
+			$order->add_order_note( __( 'The Zaver order has been canceled.', 'zco' ) );
+			$order->update_meta_data( self::CANCELED, current_time( ' Y-m-d H:i:s' ) );
+			$order->save();
 
-		ZCO()->logger()->info(
-			"Cancelled Zaver payment: {$order->get_transaction_id()}",
-			array(
-				'payload'   => $order->get_transaction_id(),
-				'response'  => $response,
-				'orderId'   => $order->get_id(),
-				'paymentId' => $order->get_transaction_id(),
-			)
-		);
+			ZCO()->logger()->info(
+				"Cancelled Zaver payment: {$order->get_transaction_id()}",
+				array(
+					'payload'   => $order->get_transaction_id(),
+					'response'  => $response,
+					'orderId'   => $order->get_id(),
+					'paymentId' => $order->get_transaction_id(),
+				)
+			);
 		} catch (Exception $e) {
 			ZCO()->logger()->error( sprintf( 'Zaver error when cancelling order: %s', $e->getMessage() ), Helper::add_zaver_error_details( $e, array( 'orderId' => $order_id ) ) );
 			// translators: The error message.
