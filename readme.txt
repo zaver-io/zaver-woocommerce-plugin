@@ -1,10 +1,11 @@
 === Zaver Checkout for WooCommerce ===
-Contributors: webbmaffian
+Contributors: krokedil
 Tags: woocommerce, zaver, checkout, payment, refund, swish
-Stable tag: 0.0.0-dev
+Stable tag: 1.0.18
 Requires at least: 4.7
-Tested up to: 5.9.2
+Tested up to: 6.8.2
 Requires PHP: 7.4
+WC tested up to: 10.1.2
 License: GNU General Public License v3.0
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -20,10 +21,10 @@ Our WooCommerce plugin is easy to install, fully responsive and fits seamlessly 
 
 = With this plugin you will: =
 
-- Be able to achieve high conversion rates for transactions in all sizes, microscopically small, to astronomically large. 
+- Be able to achieve high conversion rates for transactions in all sizes, microscopically small, to astronomically large.
 - Get instant callbacks and follow payments and refunds in real-time.
 - Have access to our Merchant Portal and be able to track your business performance with a widescreen-like overview and collect reports of your sales.
-- Offer frictionless shopping experiences with the most popular payment methods included in the package. 
+- Offer frictionless shopping experiences with the most popular payment methods included in the package.
 - Increase your liquidity with super-duper fast settlements.
 - Always be up to date with a checkout that constantly improves and optimises.
 - Have access to our dedicated and friendly support.
@@ -40,15 +41,27 @@ Unlock your customers' purchasing power and help them get what they came for. Ou
 
 = How to Get Started: =
 
-To get started with Zaver you need to sign up for an account. Once you have gone through the onboarding process and the account has been approved, you’ll be up and running in no time. 
+To get started with Zaver you need to sign up for an account. Once you have gone through the onboarding process and the account has been approved, you’ll be up and running in no time.
 
 1. [Sign up for an account](https://zaver.com/woocommerce).
 2. Wait for the account to be approved.
-3. [Install the plugin](https://wordpress.org/plugins/zaver-checkout-for-woocommerce/)​ on your site. 
+3. [Install the plugin](https://wordpress.org/plugins/zaver-checkout-for-woocommerce/)​ on your site.
 4. Go to the payment method settings and add your credentials received from Zaver.
 5. Get paid. ✌️
 
 == Changelog ==
+= 2025.09.03    - version 2.0.0 =
+* Feature       - Added support for separate payment methods. This allows you to conditionally show the individual payment methods in the checkout.
+* Feature       - Added support for WooCommerce High-Performance Storage (HPOS).
+* Feature       - Added support for the support package to facilitate troubleshooting and support.
+* Feature       - Added support for a PENDING_CONFIRMATION status.
+* Feature       - You can now capture and cancel, in addition to refunding, a Zaver order directly from the WooCommerce order admin page, by enabling the Order management setting.
+* Feature       - Added a setting to enable or disable logging.
+* Tweak         - The order number will now be used as the purchase title. Previously, the product name was used, or the order number if it had more than one product.
+* Tweak         - The refund button will now be hidden unless the order can be refunded.
+* Tweak         - Added check for whether the order status can be transitioned in callback before further processing.
+* Fix           - Fixed logic for checking whether an order can be refunded.
+* Fix           - Fixed incorrect use of metadata when processing a refund in callback.
 
 = 1.0.16 - 1.0.18 =
 * Updated plugin description.

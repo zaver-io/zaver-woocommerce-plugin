@@ -1,0 +1,489 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Zaver Checkout\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-03-07 11:35+0000\n"
+"PO-Revision-Date: 2025-09-03 09:49+0000\n"
+"Last-Translator: \n"
+"Language-Team: Swedish\n"
+"Language: sv_SE\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.5.8; wp-5.9.2\n"
+"X-Domain: zco"
+
+#: classes/order-management.php:127
+msgid " while pending confirmation."
+msgstr " medan den väntar på bekräftelse."
+
+#. %1$s: Sign up link, %2$s: Contact link.
+#: classes/settings.php:62
+#, fuzzy, php-format
+#| msgid ""
+#| "%s if you don't have any account, or %s if you miss your API key / "
+#| "callback token."
+msgid ""
+"%1$s if you don't have any account, or %2$s if you miss your API key / "
+"callback token."
+msgstr ""
+"%s om du inte har något konto, eller %s om du saknar din API-nyckel / "
+"callback-token."
+
+#: classes/checkout-gateway.php:187 src/PaymentMethods/BaseGateway.php:182
+#, fuzzy
+#| msgid "An error occured - please try again, or contact site support"
+msgid "An error occurred - please try again, or contact site support"
+msgstr "Ett fel inträffade - vänligen prova igen, eller kontakta supporten"
+
+#: classes/hooks.php:157
+#, fuzzy
+#| msgid ""
+#| "An error occured with your Zaver payment - please try again, or contact "
+#| "the site support."
+msgid ""
+"An error occurred with your Zaver payment - please try again, or contact the "
+"site support."
+msgstr ""
+"Ett fel inträffade med din Zaver-betalning - vänligen prova igen, eller "
+"kontakta supporten."
+
+#: classes/settings.php:59
+msgid "API Key"
+msgstr "API-nyckel"
+
+#: classes/settings.php:99
+msgid "Bank Transfer"
+msgstr "Banköverföring"
+
+#: src/PaymentMethods/BankTransfer.php:26
+msgid "Banköverföring"
+msgstr "Banköverföring"
+
+#: src/PaymentMethods/InstantDebit.php:26
+msgid "Betala nu"
+msgstr "Betala nu"
+
+#: src/PaymentMethods/PayLater.php:27
+msgid "Betala senare"
+msgstr "Betala senare"
+
+#: src/PaymentMethods/Installments.php:27
+msgid "Betala över tid"
+msgstr "Betala över tid"
+
+#: classes/settings.php:71
+msgid "Callback Token"
+msgstr "Callback-token"
+
+#: classes/hooks.php:209
+msgid "Change payment method"
+msgstr "Byt betalningsmetod"
+
+#: classes/settings.php:64
+msgid "contact Zaver"
+msgstr "kontakta Zaver"
+
+#: src/PaymentMethods/Installments.php:26
+msgid "Delbetalning"
+msgstr "Delbetalning"
+
+#: includes/zaver-checkout-settings.php:32 classes/settings.php:44
+msgid "Description"
+msgstr "Beskrivning"
+
+#: classes/settings.php:101
+msgid "Enable \"Bank Transfer\" payment as separate payment method"
+msgstr "Aktivera \"Banköverföring\" som ett separat betalsätt."
+
+#: classes/settings.php:113
+msgid "Enable \"Installments\" payment as separate payment method"
+msgstr "Aktivera \"Betala över tid\" som ett separat betalsätt."
+
+#: classes/settings.php:107
+msgid "Enable \"Instant Debit\" payment as separate payment method"
+msgstr "Aktivera \"Betala nu\" som ett separat betalsätt."
+
+#: classes/settings.php:95
+msgid "Enable \"Pay Later\" payment as separate payment method"
+msgstr "Aktivera \"Betala senare\" som ett separat betalsätt."
+
+#: classes/settings.php:89
+msgid "Enable \"Swish\" payment as separate payment method"
+msgstr "Aktivera \"Swish\" som ett separat betalsätt."
+
+#: classes/settings.php:119
+msgid "Enable \"Vipps\" payment as separate payment method"
+msgstr "Aktivera \"Vipps\" som ett separat betalsätt."
+
+#: classes/settings.php:79
+msgid "Enable order management"
+msgstr "Aktivera orderhantering"
+
+#: classes/settings.php:80
+msgid ""
+"Enable order management to automatically capture and cancel orders in Zaver "
+"for payment methods that support it when the order status changed in "
+"WooCommerce."
+msgstr ""
+"Aktivera orderhantering för att automatiskt aktivera och avbryt ordrar i "
+"Zaver för betalsätt som stödjer det när statusen ändras i WooCommerce."
+
+#: classes/settings.php:52
+msgid "Enable test mode"
+msgstr "Aktiva testläge"
+
+#: includes/zaver-checkout-settings.php:20 classes/settings.php:32
+msgid "Enable Zaver Checkout"
+msgstr "Aktiva Zaver Checkout"
+
+#: includes/zaver-checkout-settings.php:19 classes/settings.php:31
+msgid "Enable/Disable"
+msgstr "Aktivera/Inaktivera"
+
+#: src/PaymentMethods/InstantDebit.php:27
+msgid "Extra smidigt vid större köp"
+msgstr "Extra smidigt vid större köp"
+
+#. The error message.
+#: classes/order-management.php:236
+#, php-format
+msgid "Failed to cancel the Zaver order: %s"
+msgstr "Misslyckades att avbryta Zaver ordern: %s"
+
+#. The error message.
+#: classes/order-management.php:167
+#, php-format
+msgid "Failed to capture the Zaver order: %s"
+msgstr "Misslyckades att aktivera Zaver ordern: %s"
+
+#. 1: Refund reason.
+#: classes/refund-processor.php:120
+#, php-format
+msgid "Failed to request a refund with reason: %s"
+msgstr "Misslyckades att återbetala Zaver ordern med orsaken: %s"
+
+#. %s is the error message.
+#: classes/hooks.php:113 classes/hooks.php:152
+#, php-format
+msgid "Failed with Zaver payment: %s"
+msgstr "Misslyckades med Zaver-betalningen: %s"
+
+#: src/PaymentMethods/PayLater.php:26
+msgid "Faktura"
+msgstr "Faktura"
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/zaver-checkout-for-woocommerce/"
+msgstr "https://wordpress.org/plugins/zaver-checkout-for-woocommerce/"
+
+#: classes/settings.php:64
+msgid "https://zaver.com/en/contact"
+msgstr "https://zaver.com/se/kontakt"
+
+#. Author URI of the plugin
+msgid "https://zaver.com/woocommerce"
+msgstr "https://zaver.com/woocommerce"
+
+#: classes/settings.php:53
+msgid ""
+"If you received any test credentials from Zaver, this checkbox should be "
+"checked."
+msgstr ""
+"Om du har fått testuppgifter från Zaver, så ska denna kryssruta vara "
+"ikryssad."
+
+#: classes/settings.php:111
+msgid "Installments"
+msgstr "Betala över tid"
+
+#: classes/settings.php:105
+msgid "Instant Debit"
+msgstr "Betala nu"
+
+#. %s: Order number.
+#: classes/helpers/order.php:140
+#, php-format
+msgid "Order %s"
+msgstr "Order %s"
+
+#: classes/settings.php:78
+msgid "Order management"
+msgstr "Orderhantering"
+
+#: classes/settings.php:93
+msgid "Pay Later"
+msgstr "Betala Senare"
+
+#: classes/checkout-gateway.php:64 src/PaymentMethods/Installments.php:33
+#: src/PaymentMethods/BaseGateway.php:70 src/PaymentMethods/Swish.php:33
+#: src/PaymentMethods/InstantDebit.php:33 src/PaymentMethods/Vipps.php:33
+#: src/PaymentMethods/BankTransfer.php:33 src/PaymentMethods/PayLater.php:33
+msgid "Pay with Zaver"
+msgstr "Betala med Zaver"
+
+#: src/PaymentMethods/BankTransfer.php:27
+msgid "Pengarna dras från din bank"
+msgstr "Pengarna dras från din bank"
+
+#: src/PaymentMethods/Swish.php:27
+msgid "Perfekt för mindre belopp"
+msgstr "Perfekt för mindre belopp"
+
+#. 1: Refund amount, 2: Refund ID.
+#: classes/refund-processor.php:312
+#, php-format
+#| msgid "Refund of %F %s approved - Refund ID: %s"
+msgid "Refund of %1$s approved - Refund ID: %2$s"
+msgstr "Återbetalning på %1$s godkänd - Återbetalnings-ID: %2$s"
+
+#. 1: Refund amount, 2: Username, 3: Refund ID.
+#: classes/refund-processor.php:309
+#, php-format
+#| msgid "Refund of %21$s approved by %2$s - Refund ID: %3$s"
+msgid "Refund of %1$s approved by %2$s - Refund ID: %3$s"
+msgstr "Återbetalning på %1$s godkänd av %2$s - Återbetalnings-ID: %3$s"
+
+#. 1: Refund amount, 2: Refund ID.
+#: classes/refund-processor.php:343
+#, php-format
+#| msgid "Refund of %F %s cancelled - Refund ID: %s"
+msgid "Refund of %1$s cancelled - Refund ID: %2$s"
+msgstr "Återbetalning på %1$s avbruten - Återbetalnings-ID: %2$s"
+
+#. 1: Refund amount, 2: Username, 4: Refund ID.
+#: classes/refund-processor.php:340
+#, php-format
+#| msgid "Refund of %F %s cancelled by %s - Refund ID: %s"
+msgid "Refund of %1$s cancelled by %2$s - Refund ID: %3$s"
+msgstr "Återbetalning på %1$s avbruten av %2$s - Återbetalnings-ID: %3$s"
+
+#. 1: Refund amount, 2: Refund ID.
+#: classes/refund-processor.php:326
+#, php-format
+#| msgid "Refund of %F %s completed - Refund ID: %s"
+msgid "Refund of %1$s completed - Refund ID: %2$s"
+msgstr "Återbetalning på %1$s färdig - Återbetalnings-ID: %2$s"
+
+#. 1: Refund amount, 2: Username, 3: Refund description, 4: Refund ID.
+#: classes/refund-processor.php:283
+#, php-format
+#| msgid ""
+#| "Refund of %F %s initialized by %s with the description \"%s\". Refund ID: "
+#| "%s"
+msgid ""
+"Refund of %1$s initialized by %2$s with the description \"%3$s\". Refund ID: "
+"%4$s"
+msgstr ""
+"Återbetalning på %1$s initierad av %2$s med beskrivningen \"%3$s\" - "
+"Återbetalnings-ID: %4$s"
+
+#. 1: Refund amount, 2: Username, 3: Refund ID.
+#: classes/refund-processor.php:286
+#, php-format
+msgid "Refund of %1$s initialized by %2$s. Refund ID: %3$s"
+msgstr "Återbetalning på %1$s initierad av %2$s - Återbetalnings-ID: %3$s"
+
+#. 1: Refund amount, 2: Refund description, 3: Refund ID.
+#: classes/refund-processor.php:290
+#, php-format
+#| msgid ""
+#| "Refund of %F %s initialized with the description \"%s\". Refund ID: %s"
+msgid ""
+"Refund of %1$s initialized with the description \"%2$s\". Refund ID: %3$s"
+msgstr ""
+"Återbetalning på %1$s initierad med beskrivningen \"%2$s\" - Återbetalnings-"
+"ID: %3$s"
+
+#. 1: Refund amount, 2: Refund ID.
+#: classes/refund-processor.php:293
+#, php-format
+msgid "Refund of %1$s initialized. Refund ID: %2$s"
+msgstr "Återbetalning på %1$s initierad - Återbetalnings-ID: %2$s"
+
+#. 1: Refund amount, 2: Refund currency, 3: Refund ID.
+#: classes/refund-processor.php:140
+#, php-format
+#| msgid "Requested a refund of %F %s - refund ID: %s"
+msgid "Requested a refund of %1$s - refund ID: %2$s"
+msgstr "Begäran av återbetalning på %1$s - Återbetalnings-ID: %2$s"
+
+#: woocommerce-zaver-checkout.php:426
+msgid "Settings"
+msgstr "Inställningar"
+
+#: classes/settings.php:84
+msgid "Show as separate payment methods"
+msgstr "Visa som separata betalsätt"
+
+#: classes/settings.php:63
+msgid "Sign up"
+msgstr "Registrera dig"
+
+#. %s is the payment ID.
+#: classes/payment-processor.php:173 classes/payment-processor.php:233
+#, fuzzy, php-format
+#| msgid "Successful payment with Zaver - payment ID: %s"
+msgid "Successful payment with Zaver - payment ID: %s."
+msgstr "Lyckad betalning med Zaver - Betalnings-ID: %s"
+
+#: classes/settings.php:87 src/PaymentMethods/Swish.php:26
+msgid "Swish"
+msgstr "Swish"
+
+#: classes/settings.php:51
+msgid "Test mode"
+msgstr "Testläge"
+
+#: classes/settings.php:72
+msgid ""
+"The callback token is optional but recommended - it is used to validate "
+"requests from Zaver."
+msgstr ""
+"Callback-tokenet är frivilligt men rekommenderat - det används för att "
+"validera anrop från Zaver."
+
+#. Description of the plugin
+msgid "The official Zaver Checkout payment gateway for WooCommerce."
+msgstr "Den officiella betalningsmetoden för Zaver Checkout i WooCommerce."
+
+#: classes/order-management.php:109 classes/order-management.php:196
+msgid "The order is missing a transaction ID."
+msgstr "Ordern saknar ett transaktions id."
+
+#: classes/order-management.php:213
+msgid "The Zaver order cannot be canceled."
+msgstr "Zaver ordern kan inte avbrytas."
+
+#. %s is the additional note.
+#: classes/order-management.php:131
+#, php-format
+msgid "The Zaver order cannot be captured%s"
+msgstr "Zaver ordern kan inte aktiveras%s"
+
+#: classes/order-management.php:186
+msgid "The Zaver order has already been canceled."
+msgstr "Zaver ordern är redan avbruten."
+
+#: classes/order-management.php:104
+msgid "The Zaver order has already been captured."
+msgstr "Zaver ordern är redan aktiverad."
+
+#: classes/order-management.php:220
+msgid "The Zaver order has been canceled."
+msgstr "Zaver ordern har avbrutits."
+
+#: classes/order-management.php:202
+msgid ""
+"The Zaver order has been captured, and can therefore no longer be canceled."
+msgstr ""
+"Zavern ordern har blivit aktiverad, och kan därför inte längre avbrytas."
+
+#. the amount including currency.
+#: classes/order-management.php:149
+#, php-format
+msgid "The Zaver order has been captured. Captured amount: %1$.2f."
+msgstr "Zaver ordern har aktiverats. Aktiverat belopp: %1$.2f."
+
+#: classes/order-management.php:207
+msgid "The Zaver order has been refunded and can no longer be canceled."
+msgstr ""
+"Zaver ordern har blivit återbetald och kan därför inte längre bli avbruten."
+
+#: classes/order-management.php:120
+msgid "The Zaver order has been refunded and can no longer be captured."
+msgstr ""
+"Zaver ordern har blivit återbetald och kan därför inte längre bli aktiverad."
+
+#: classes/order-management.php:115
+msgid "The Zaver order was canceled and can no longer be captured."
+msgstr ""
+"Zaver ordern har blivit avbruten och kan därför inte längre bli aktiverad."
+
+#: includes/zaver-checkout-settings.php:33 classes/settings.php:45
+msgid "This controls the description which the user sees during checkout."
+msgstr "Det här styr den beskrivning som kunden ser i kassan."
+
+#: includes/zaver-checkout-settings.php:26 classes/settings.php:38
+msgid "This controls the title which the user sees during checkout."
+msgstr "Det här styr vad användaren ser i kassan"
+
+#: includes/zaver-checkout-settings.php:25 classes/settings.php:37
+msgid "Title"
+msgstr "Titel"
+
+#: classes/settings.php:117 src/PaymentMethods/Vipps.php:27
+msgid "Vipps"
+msgstr "Vipps"
+
+#. phpcs:ignore
+#: woocommerce-zaver-checkout.php:327 woocommerce-zaver-checkout.php:336
+msgid ""
+"Your installation of Zaver Checkout is not complete. If you installed this "
+"plugin directly from Github please refer to the README.DEV.md file in the "
+"plugin."
+msgstr ""
+"Din installation av Zaver Checkout är inte komplett. Om du installerade "
+"pluginet direkt från Github var vänlig läs README.DEV.md filen i pluginet."
+
+#. Author of the plugin
+msgid "Zaver"
+msgstr "Zaver"
+
+#: classes/settings.php:39 classes/checkout-gateway.php:58
+msgid "Zaver Checkout"
+msgstr "Zaver Checkout"
+
+#: src/PaymentMethods/BaseGateway.php:64 src/PaymentMethods/BankTransfer.php:25
+msgid "Zaver Checkout Bank Transfer"
+msgstr "Zaver Checkout Banköverföring"
+
+#. Name of the plugin
+msgid "Zaver Checkout for WooCommerce"
+msgstr "Zaver Checkout for WooCommerce"
+
+#: src/PaymentMethods/Installments.php:25
+msgid "Zaver Checkout Installments"
+msgstr "Zaver Checkout Betala över tid"
+
+#: src/PaymentMethods/InstantDebit.php:25
+msgid "Zaver Checkout Instant Debit"
+msgstr "Zaver Checkout Betala nu"
+
+#: src/PaymentMethods/PayLater.php:25
+msgid "Zaver Checkout Pay Later"
+msgstr "Zaver Checkout Betala Senare"
+
+#: src/PaymentMethods/Swish.php:25
+msgid "Zaver Checkout Swish"
+msgstr "Zaver Checkout Swish"
+
+#: src/PaymentMethods/Vipps.php:26
+msgid "Zaver Checkout Vipps"
+msgstr "Zaver Checkout Vipps"
+
+#: classes/payment-processor.php:234
+msgid "Zaver payment is pending capture."
+msgstr "Zaver betalningen väntar på aktivering."
+
+#: classes/payment-processor.php:248
+msgid "Zaver Payment is pending confirmation."
+msgstr "Zaver betalningen väntar på bekräftelse."
+
+#: classes/payment-processor.php:219
+#, fuzzy
+#| msgid "Zaver payment was cancelled - cancelling order"
+msgid "Zaver payment was cancelled - cancelling order."
+msgstr "Zaver-betalningen avbröts - avbryter order"
+
+#. %1$s is the payment ID, %2$s is the captured amount, %3$s is the remaining amount to capture.
+#: classes/payment-processor.php:195
+#, php-format
+msgid ""
+"Zaver payment was captured - payment ID: %1$s. Captured amount: %2$s. "
+"Remaining amount to capture: %3$s."
+msgstr ""
+"Zaver betalningen blev aktiverad - betalnings ID: %1$s. Aktiverat belopp "
+"%2$s. Belopp kvar att aktivera: %3$s."
