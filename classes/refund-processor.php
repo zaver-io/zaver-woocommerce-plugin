@@ -306,7 +306,7 @@ class Refund_Processor {
 				$username = $refund->getApprovingRepresentative()->getUsername();
 				if ( $username ) {
 					// translators: 1: Refund amount, 2: Username, 3: Refund ID.
-					$order->add_order_note( sprintf( __( 'Refund of %21$s approved by %2$s - Refund ID: %3$s', 'zco' ), $refund_amount, $username, $refund_id ) );
+					$order->add_order_note( sprintf( __( 'Refund of %1$s approved by %2$s - Refund ID: %3$s', 'zco' ), $refund_amount, $username, $refund_id ) );
 				} else {
 					// translators: 1: Refund amount, 2: Refund ID.
 					$order->add_order_note( sprintf( __( 'Refund of %1$s approved - Refund ID: %2$s', 'zco' ), $refund_amount, $refund_id ) );
