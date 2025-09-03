@@ -177,7 +177,7 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 				)
 			);
 		} catch ( Exception $e ) {
-			\Zaver\ZCO()->logger()->error( sprintf( 'Zaver error during payment process: %s', $e->getMessage() ), array( 'orderId' => $order_id ) );
+			\Zaver\ZCO()->logger()->error( sprintf( 'Zaver error during payment process: %s', $e->getMessage() ), \Zaver\Helper::add_zaver_error_details( $e, array( 'orderId' => $order_id ) ) );
 
 			$message = __( 'An error occurred - please try again, or contact site support', 'zco' );
 			wc_add_notice( $message, 'error' );
@@ -218,10 +218,13 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 					'Zaver error during refund process: %s',
 					$e->getMessage()
 				),
-				array(
-					'orderId' => $order_id,
-					'amount'  => $amount,
-					'reason'  => $reason,
+				\Zaver\Helper::add_zaver_error_details(
+					$e,
+					array(
+						'orderId' => $order_id,
+						'amount'  => $amount,
+						'reason'  => $reason,
+					)
 				)
 			);
 

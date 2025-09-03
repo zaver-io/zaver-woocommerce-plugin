@@ -76,18 +76,28 @@ final class Hooks {
 		try {
 			$payment_status = Plugin::gateway()->receive_payment_callback();
 			$meta           = $payment_status->getPaymentMetadata();
+			$status         = $payment_status->getPaymentStatus();
+
+			// If the status is "CREATED" we can just return 200 OK, since this status is not processed by us.
+			if ( $status === PaymentStatus::CREATED ) {
+				status_header( 200 );
+				return;
+			}
 
 			ZCO()->logger()->debug( 'Received Zaver payment callback', (array) $payment_status );
 
 			$payment_id = $payment_status->getPaymentId();
-			if ( empty( $payment_id ) ) {
-				ZCO()->logger()->notice( 'Missing payment ID in payment callback', (array) $payment_status );
-				throw new Exception( 'Missing payment ID' );
-			}
+			$order_id   = $meta['orderId'];
+			$order      = wc_get_order( $order_id );
 
-			$order = Helper::get_order_by_payment_id( $payment_id );
+			// If we could not find an order related to the order id, throw an error.
 			if ( empty( $order ) ) {
 				throw new Exception( 'Order not found' );
+			}
+
+			// If the payment id from the callback does not match the payment id stored in the order meta, throw an exception.
+			if ( $payment_id !== $order->get_meta( '_zaver_payment_id' ) ) {
+				throw new Exception( 'Payment ID mismatch' );
 			}
 
 			Payment_Processor::handle_response( $order, $payment_status, false );
