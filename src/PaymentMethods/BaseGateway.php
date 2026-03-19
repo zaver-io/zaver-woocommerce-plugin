@@ -67,7 +67,7 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->has_fields   = false;
+		$this->has_fields = false;
 
 		$this->init_form_fields();
 		$this->init_settings();
@@ -186,10 +186,7 @@ abstract class BaseGateway extends WC_Payment_Gateway {
 			\Zaver\ZCO()->logger()->error( sprintf( 'Zaver error during payment process: %s', $e->getMessage() ), \Zaver\Helper::add_zaver_error_details( $e, array( 'orderId' => $order_id ) ) );
 
 			$message = __( 'An error occurred - please try again, or contact site support', 'zco' );
-			wc_add_notice( $message, 'error' );
-			return array(
-				'result' => 'error',
-			);
+			throw new Exception( esc_html( $message ) );
 		}
 	}
 
