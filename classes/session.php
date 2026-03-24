@@ -89,7 +89,8 @@ class Session {
 		} catch ( \Exception $e ) {
 			\Zaver\ZCO()->logger()->critical(
 				'Failed to retrieve payment methods',
-				Helper::add_zaver_error_details( $e,
+				Helper::add_zaver_error_details(
+					$e,
 					array(
 						'payload' => array(
 							'total'    => $total,
@@ -123,10 +124,14 @@ class Session {
 		$id              = str_replace( 'zaver_checkout_', '', strtolower( $id ) );
 		$payment_methods = WC()->session->get( 'zaver_checkout_available_payment_methods' );
 		if ( ! empty( $payment_methods ) ) {
-			foreach ( $payment_methods[ $market ][ $currency ][ $total ] as $payment_method ) {
-				$payment_method_id = strtolower( $payment_method['paymentMethod'] );
-				if ( $payment_method_id === $id ) {
-					return true;
+			$zaver_payment_methods = $payment_methods[ $market ][ $currency ][ $total ] ?? array();
+
+			if ( ! empty( $zaver_payment_methods ) ) {
+				foreach ( $zaver_payment_methods as $payment_method ) {
+					$payment_method_id = strtolower( $payment_method['paymentMethod'] ?? '' );
+					if ( ! empty( $payment_method_id ) && $payment_method_id === $id ) {
+						return true;
+					}
 				}
 			}
 		}
