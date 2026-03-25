@@ -43,6 +43,7 @@ class Order {
 		$store_id = preg_replace( '/(https?:\/\/|www.|\/\s*$)/i', '', get_home_url() );
 
 		$billing_address = ( new Address() )
+		->setName( $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() )
 		->setAddressLine1( $order->get_billing_address_1() )
 		->setAddressLine2( $order->get_billing_address_2() )
 		->setCity( $order->get_billing_city() )
@@ -51,6 +52,7 @@ class Order {
 		->setCountry( $order->get_billing_country() );
 
 		$shipping_address = ( new Address() )
+		->setName( $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name() )
 		->setAddressLine1( $order->get_shipping_address_1() )
 		->setAddressLine2( $order->get_shipping_address_2() )
 		->setPostalCode( $order->get_shipping_postcode() )
