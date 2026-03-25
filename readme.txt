@@ -50,9 +50,10 @@ To get started with Zaver you need to sign up for an account. Once you have gone
 5. Get paid. ✌️
 
 == Changelog ==
-= 2026.03.24    - version 2.1.1 =
+= 2026.03.25    - version 2.1.1 =
 * Fix           - Updated error handling for recent WooCommerce changes so payment failures now display the actual error message instead of a generic one.
 * Fix           - Added the billing/shipping recipient name to the address sent in payment requests to Zaver.
+* Fix           - Resolved PHP warnings that could occur during checkout when certain data was not yet set.
 
 = 2025.11.10    - version 2.1.0 =
 * Feature       - Added support for updating Zaver orders with a reduced price for PAY_LATER and INSTALLMENTS payment types, before the payment is captured or cancelled.
