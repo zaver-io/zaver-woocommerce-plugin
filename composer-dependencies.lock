@@ -217,16 +217,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.8.0",
+            "version": "2.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "21dc724a0583619cd1652f673303492272778051"
+                "reference": "7d0ed42f28e42d61352a7a79de682e5e67fec884"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/21dc724a0583619cd1652f673303492272778051",
-                "reference": "21dc724a0583619cd1652f673303492272778051",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/7d0ed42f28e42d61352a7a79de682e5e67fec884",
+                "reference": "7d0ed42f28e42d61352a7a79de682e5e67fec884",
                 "shasum": ""
             },
             "require": {
@@ -242,6 +242,7 @@
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
                 "http-interop/http-factory-tests": "0.9.0",
+                "jshttp/mime-db": "1.54.0.1",
                 "phpunit/phpunit": "^8.5.44 || ^9.6.25"
             },
             "suggest": {
@@ -313,7 +314,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.8.0"
+                "source": "https://github.com/guzzle/psr7/tree/2.9.0"
             },
             "funding": [
                 {
@@ -329,20 +330,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-23T21:21:41+00:00"
+            "time": "2026-03-10T16:41:02+00:00"
         },
         {
             "name": "krokedil/support",
-            "version": "1.0.2",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/support.git",
-                "reference": "99059b1b27cc4ed7667c1d04968aec45413fe533"
+                "reference": "e4ee49d1c862e45fb284247c84d7c1f5583cb6ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/support/zipball/99059b1b27cc4ed7667c1d04968aec45413fe533",
-                "reference": "99059b1b27cc4ed7667c1d04968aec45413fe533",
+                "url": "https://api.github.com/repos/krokedil/support/zipball/e4ee49d1c862e45fb284247c84d7c1f5583cb6ba",
+                "reference": "e4ee49d1c862e45fb284247c84d7c1f5583cb6ba",
                 "shasum": ""
             },
             "require": {
@@ -382,23 +383,23 @@
             ],
             "description": "The support library allows you to extend your plugin with logging that can be optionally toggled through your plugin settings, generate an entry in the system report from your plugin settings, and report issues to the system report.",
             "support": {
-                "source": "https://github.com/krokedil/support/tree/1.0.2",
+                "source": "https://github.com/krokedil/support/tree/1.0.3",
                 "issues": "https://github.com/krokedil/support/issues"
             },
-            "time": "2025-10-08T12:47:46+00:00"
+            "time": "2026-03-30T09:30:26+00:00"
         },
         {
             "name": "krokedil/woocommerce",
-            "version": "1.9.0",
+            "version": "1.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/woocommerce.git",
-                "reference": "5867595f76b16f17d971d7e668f6cd3a7038ab0a"
+                "reference": "4f87f20eaa89ebdba21868011e395dacdecd06df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/woocommerce/zipball/5867595f76b16f17d971d7e668f6cd3a7038ab0a",
-                "reference": "5867595f76b16f17d971d7e668f6cd3a7038ab0a",
+                "url": "https://api.github.com/repos/krokedil/woocommerce/zipball/4f87f20eaa89ebdba21868011e395dacdecd06df",
+                "reference": "4f87f20eaa89ebdba21868011e395dacdecd06df",
                 "shasum": ""
             },
             "require-dev": {
@@ -429,10 +430,10 @@
             ],
             "description": "A library package for Krokedils plugins that contains helper methods when working with WooCommerce.",
             "support": {
-                "source": "https://github.com/krokedil/woocommerce/tree/1.9.0",
+                "source": "https://github.com/krokedil/woocommerce/tree/1.9.1",
                 "issues": "https://github.com/krokedil/woocommerce/issues"
             },
-            "time": "2025-08-29T14:16:04+00:00"
+            "time": "2025-12-18T12:51:08+00:00"
         },
         {
             "name": "psr/http-client",
@@ -711,12 +712,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/krokedil/zaver-php-sdk.git",
-                "reference": "5321b9ff6ac1d4f9ed7e61f0c28f168b9d273ed5"
+                "reference": "9ae15d5f3f74ddabbe03fe144ba4c3edb90fdf2e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/krokedil/zaver-php-sdk/zipball/5321b9ff6ac1d4f9ed7e61f0c28f168b9d273ed5",
-                "reference": "5321b9ff6ac1d4f9ed7e61f0c28f168b9d273ed5",
+                "url": "https://api.github.com/repos/krokedil/zaver-php-sdk/zipball/9ae15d5f3f74ddabbe03fe144ba4c3edb90fdf2e",
+                "reference": "9ae15d5f3f74ddabbe03fe144ba4c3edb90fdf2e",
                 "shasum": ""
             },
             "require": {
@@ -765,7 +766,7 @@
                 "issues": "https://github.com/zaver-io/zaver-php-sdk/issues",
                 "source": "https://github.com/krokedil/zaver-php-sdk/tree/main"
             },
-            "time": "2025-09-03T06:47:09+00:00"
+            "time": "2026-04-08T05:40:05+00:00"
         }
     ],
     "packages-dev": [],
@@ -783,5 +784,5 @@
     "platform-overrides": {
         "php": "7.4"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
