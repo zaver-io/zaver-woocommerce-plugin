@@ -1,11 +1,11 @@
 === Zaver Checkout for WooCommerce ===
 Contributors: krokedil
 Tags: woocommerce, zaver, checkout, payment, refund, swish
-Stable tag: 2.1.2
+Stable tag: 2.1.3
 Requires at least: 4.7
-Tested up to: 6.9.4
+Tested up to: 7.1
 Requires PHP: 7.4
-WC tested up to: 10.6.2
+WC tested up to: 11.0.1
 License: GNU General Public License v3.0
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -50,6 +50,9 @@ To get started with Zaver you need to sign up for an account. Once you have gone
 5. Get paid. ✌️
 
 == Changelog ==
+= 2026.08.18    - version 2.1.3 =
+* Fix           - Ensured a success order note is added to the WooCommerce order when a Zaver payment capture succeeds.
+
 = 2026.04.08    - version 2.1.2 =
 * Fix           - Updated the SDK to resolve an issue where placing an order would fail when Vipps was enabled at checkout.
 
